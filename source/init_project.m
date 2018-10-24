@@ -100,11 +100,10 @@ proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_
 
 %% Inrinsic (IN) control path
 proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
-proj.path.ctrl.in_ctrl_loocv = [proj.path.data,proj.path.ctrl.name,'in_ctrl_loocv/'];
 
 %% Analysis path
-proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'dynamics/'];
-proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'dynamics/'];
+proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'er_skill/'];
+proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 
 %% ----------------------------------------
 %% Task file nomenclature

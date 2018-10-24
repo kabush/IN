@@ -65,47 +65,47 @@ init_project;
 %                     % performs performance estimation using LOOCV
 %                     % basis for stimulus refitting (see below)
 % 
-% mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
-%                     % performs performance estimation using LOOCV
-%                     % also constructs and saves single model for
-%                     % application to IN formats
-% 
-% % ----------------------------------------
-% % TICKET  Modify the above mvpa codes to save
-% % out the basis function for project to low-dim
-% % space.  Will use the inverse to project Haufe-transformed
-% % hyperplanes back into GM space for viewing.
-% 
-% %% ------------------------------------------------------------
-% %% STEP 7: Conduct MVPA for Secondary Measures
-% %%% mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
-% 
-% %% ------------------------------------------------------------ 
-% %% STEP 8: Format project design for IN afni-based beta-series
-% format_in_3dlss;
-% 
-% %% ------------------------------------------------------------
-% %% STEP 9: Calcuate Intrinsic (IN) Stimuli Beta-Series
-% 
-% %% fMRI data
-% calc_fmri_in_beta;
-%
-% %% Physio data
-% % - calc_scr_in_beta (TBD);
-%
-% %% ------------------------------------------------------------ 
-% %% STEP 10: Compute IN Cognitive Dynamics
-% dynamics_fmri_in_gm;
+mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
+                    % performs performance estimation using LOOCV
+                    % also constructs and saves single model for
+                    % application to IN formats
+
+% ----------------------------------------
+% TICKET  Modify the above mvpa codes to save
+% out the basis function for project to low-dim
+% space.  Will use the inverse to project Haufe-transformed
+% hyperplanes back into GM space for viewing.
+
+%% ------------------------------------------------------------
+%% STEP 7: Conduct MVPA for Secondary Measures
+%%% mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
+
+%% ------------------------------------------------------------ 
+%% STEP 8: Format project design for IN afni-based beta-series
+format_in_3dlss;
+
+%% ------------------------------------------------------------
+%% STEP 9: Calcuate Intrinsic (IN) Stimuli Beta-Series
+
+%% fMRI data
+calc_fmri_in_beta;
+
+%% Physio data
+% - calc_scr_in_beta (TBD);
+
+%% ------------------------------------------------------------ 
+%% STEP 10: Compute IN Cognitive Dynamics
+dynamics_fmri_in_gm;
 
 % %% ------------------------------------------------------------ 
 % %% STEP 11: Analysis IN Cognitive Dynamics
-analyze_in_dynamics;
+% analyze_in_dynamics;
 
-% %% ------------------------------------------------------------ 
-% %% STEP 12: Analysis of IN ER performance
-% analyze_in_er_skill;
-% analyze_in_er_labels;
-% 
+%% ------------------------------------------------------------ 
+%% STEP 12: Analysis of IN ER performance
+analyze_in_er_skill;
+analyze_in_er_labels;
+
 % %% ------------------------------------------------------------ 
 % %% STEP 12: Analyze EX SCR Response (see  SciReports 2018 paper)
 % analyze_ex_scr;
@@ -117,6 +117,5 @@ analyze_in_dynamics;
 % %% ------------------------------------------------------------ 
 % %% STEP 14: Stimulus adjusted performance (see Frontiers 2018 paper)
 % % TBD
-
 
 toc

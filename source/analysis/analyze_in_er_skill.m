@@ -24,7 +24,6 @@ if(proj.flag.clean_build)
     eval(['! mkdir ',proj.path.analysis.er_skill]);
 end
 
-
 %% ----------------------------------------
 %% load subjs
 subjs = load_subjs(proj);
@@ -60,10 +59,6 @@ for i = 1:numel(subjs)
             
             %% extract stims and mean "feel"
             stim = prds.v_dcmp.stim;
-
-            %% quality check (these are in units of zscore)
-            
-
             sort_stim = sort(stim');
             feel = mean(prds.v_dcmp.feel,2);
             
@@ -89,8 +84,8 @@ for i = 1:numel(subjs)
             [b stat] = robustfit(stim,feel);
             subj.b1 = b(2); % slope
             subj.b0 = b(1); % intercept
-            subj.p1 = stat.p(2);
-            subj.p0 = stat.p(1);
+            subj.p1 = stat.p(2); %slope
+            subj.p0 = stat.p(1); %intercept
  
              %% sort subjects by significance
              if(subj.p1<0.05)
