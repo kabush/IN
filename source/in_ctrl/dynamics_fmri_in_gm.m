@@ -37,8 +37,6 @@ a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 %% load subjs
 subjs = load_subjs(proj);
 
-
-
 %% ----------------------------------------
 %% Transform beta-series into affect series {v,a}
 for i = 1:numel(subjs)
@@ -70,7 +68,7 @@ for i = 1:numel(subjs)
         base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
         
         %% Concatenate the MASKED base image
-        subj_img = base_img(in_brain,:)';
+        subj_img = zscore(base_img(in_brain,:)'); %z-score voxels independently
         
         %% Concatenate all label/subj identifiers
         subj_id = [repmat(id,numel(label_id),1)];
@@ -98,7 +96,7 @@ for i = 1:numel(subjs)
                 [tst_predict,hd] = predict(v_model,subj_img(j,:));
                 prds.v_hd(j) = hd(2);
                 
-                %% predict
+                %% arousal
                 [tst_predict,hd] = predict(a_model,subj_img(j,:));
                 prds.a_hd(j) = hd(2);
                 
@@ -124,13 +122,13 @@ for i = 1:numel(subjs)
             % plot(3:5,prds.v_dcmp.d2h(1,:));
             % hold off;              
             % drawnow
+
+            %% Save out prediction structure
+            save([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
             
         else
             logger('   -failed quality check',proj.path.logfile);
         end
-
-        %% Save out prediction structure
-        save([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
 
     catch
         logger('   -dynamics error: predictions not made',proj.path.logfile);

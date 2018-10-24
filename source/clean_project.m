@@ -22,12 +22,13 @@ if(proj.flag.clean_build)
     eval(['! mkdir ',proj.path.data]);
 
     %% Create all top-level directories
-    eval(['! mkdir ',proj.path.data,proj.path.mri.name]);
-    eval(['! mkdir ',proj.path.data,proj.path.physio.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.analysis.name]);
     eval(['! mkdir ',proj.path.data,proj.path.betas.name]);
-    eval(['! mkdir ',proj.path.data,proj.path.trg.name]);
-    eval(['! mkdir ',proj.path.data,proj.path.mvpa.name]);
-    eval(['! mkdir ',proj.path.data,proj.path.haufe.name]);
     eval(['! mkdir ',proj.path.data,proj.path.ctrl.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.haufe.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.mri.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.mvpa.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.physio.name]);
+    eval(['! mkdir ',proj.path.data,proj.path.trg.name]);
 
 end

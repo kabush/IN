@@ -29,7 +29,7 @@ init_project;
 % %% ------------------------------------------------------------
 % %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 % 
-% %%  fMRI data
+% %% fMRI data
 % preprocess_fmri;
 % preprocess_mask;
 % % - preprocess_fd (TBD);
@@ -49,12 +49,13 @@ init_project;
 % %% ------------------------------------------------------------
 % %% STEP 5: Calculate Extrinsic (EX) Stimuli Beta-Series
 % 
-% %% fMRI beta-series
+% %% fMRI data
 % calc_fmri_ex_beta;
-%  
-% %% Physio beta-series
+%
+% %% Physio data
 % calc_scr_ex_beta;
-% - calc_emg_ex_beta (TBD);
+% % - calc_hrv_ex_beta (TBD);
+% % - calc_emg_ex_beta (TBD);
 % 
 % %% ------------------------------------------------------------
 % %% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -86,32 +87,35 @@ init_project;
 % %% ------------------------------------------------------------
 % %% STEP 9: Calcuate Intrinsic (IN) Stimuli Beta-Series
 % 
-% %% fMRI betas
+% %% fMRI data
 % calc_fmri_in_beta;
-% 
-% %% Physio betas
-% % TBD
-% 
+%
+% %% Physio data
+% % - calc_scr_in_beta (TBD);
+%
 % %% ------------------------------------------------------------ 
 % %% STEP 10: Compute IN Cognitive Dynamics
 % dynamics_fmri_in_gm;
-% 
-%% ------------------------------------------------------------ 
-%% STEP 11: Analysis of IN performance
-plot_er_skill_summary;
-plot_er_dyna_summary;
-
 
 % %% ------------------------------------------------------------ 
-% %% STEP 12: Secondary Analysis of SCR (SciReports 2018 paper)
+% %% STEP 11: Analysis IN Cognitive Dynamics
+analyze_in_dynamics;
+
+% %% ------------------------------------------------------------ 
+% %% STEP 12: Analysis of IN ER performance
+% analyze_in_er_skill;
+% analyze_in_er_labels;
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 12: Analyze EX SCR Response (see  SciReports 2018 paper)
 % analyze_ex_scr;
-% 
+
 % %% ------------------------------------------------------------ 
-% %% STEP 13: Hyperplane analysis (SciReports 2018 paper)
+% %% STEP 13: Hyperplane analysis (see SciReports 2018 paper)
 % % TBD
 
 % %% ------------------------------------------------------------ 
-% %% STEP 14: Stimulus adjusted performance (Frontiers 2018 paper)
+% %% STEP 14: Stimulus adjusted performance (see Frontiers 2018 paper)
 % % TBD
 
 

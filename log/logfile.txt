@@ -1,8 +1,9 @@
 *************************************************
-Plotting  Stim vs Feel figure                    
+Analyzing ER Skill                               
 *************************************************
 CTM_001
 CTM_003
+  -Could not find/load prds for: CTM_003
 CTM_004
 CTM_007
 CTM_008
@@ -22,12 +23,14 @@ CTM_029
 CTM_030
 CTM_031
 CTM_033
+  -Could not find/load prds for: CTM_033
 CTM_034
 CTM_035
-  -Could not find load prds for: CTM_035
+  -Could not find/load prds for: CTM_035
 CTM_036
 CTM_039
 CTM_040
+  -Could not find/load prds for: CTM_040
 CTM_042
 CTM_043
 CTM_044
@@ -39,9 +42,10 @@ CTM_051
 CTM_055
 CTM_056
 CTM_057
+  -Could not find/load prds for: CTM_057
 CTM_058
 CTM_060
-  -Could not find load prds for: CTM_060
+  -Could not find/load prds for: CTM_060
 CTM_061
 CTM_062
 INCA_003
@@ -55,6 +59,7 @@ INCA_016
 INCA_017
 INCA_018
 INCA_020
+  -Could not find/load prds for: INCA_020
 INCA_021
 INCA_019
 INCA_023
@@ -63,8 +68,47 @@ INCA_031
 INCA_033
 INCA_035
 INCA_037
-*************************************************
+----------------------------------------
+Statistical Summary
+  -Group effect: 0.34223, p=1.5544e-25
+  -Percent sign. subjs. (p<0.05): 62.2642*************************************************
 Plotting "Feel" dynamics                         
+*************************************************
+CTM_009
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_026
+CTM_028
+CTM_031
+CTM_036
+CTM_039
+CTM_042
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_056
+CTM_058
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_021
+INCA_019
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+*************************************************
+Analyzing SCR responses to EX stimuli            
 *************************************************
 CTM_001
 CTM_003
@@ -89,7 +133,6 @@ CTM_031
 CTM_033
 CTM_034
 CTM_035
-  -Could not find load prds for: CTM_035
 CTM_036
 CTM_039
 CTM_040
@@ -106,7 +149,6 @@ CTM_056
 CTM_057
 CTM_058
 CTM_060
-  -Could not find load prds for: CTM_060
 CTM_061
 CTM_062
 INCA_003

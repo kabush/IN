@@ -135,7 +135,7 @@ for i = 1:numel(subjs)
             rnd_v_cmb_ids = [rnd_v_pos_ids,rnd_v_neg_ids];
             
             %% Fit classifier
-            v_model = fitcsvm(ex_img(rnd_v_cmb_ids,:),ex_v_label(rnd_v_cmb_ids,1), ...
+            v_model = fitcsvm(zscore(ex_img(rnd_v_cmb_ids,:)),ex_v_label(rnd_v_cmb_ids,1), ...
                               'KernelFunction',proj.param.mvpa.kernel);
             save([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_v_model.mat'],'v_model');
             
@@ -182,7 +182,7 @@ for i = 1:numel(subjs)
             rnd_a_cmb_ids = [rnd_a_pos_ids,rnd_a_neg_ids];
             
             %% Fit classifier
-            a_model = fitcsvm(ex_img(rnd_a_cmb_ids,:),ex_a_label(rnd_a_cmb_ids,1), ...
+            a_model = fitcsvm(zscore(ex_img(rnd_a_cmb_ids,:)),ex_a_label(rnd_a_cmb_ids,1), ...
                               'KernelFunction',proj.param.mvpa.kernel);
             save([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_a_model.mat'],'a_model');
             

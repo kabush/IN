@@ -13,7 +13,7 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
-logger(['Plotting  Stim vs Feel figure                    '],proj.path.logfile);
+logger(['Plotting "Feel" dynamics                         '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
 %% ----------------------------------------
@@ -25,8 +25,8 @@ set(gcf,'color','w');
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
-indv_b = [];
-indv_sort_stim = [];
+mu_traj_v = [];
+max_traj_dv = [];
 
 for i = 1:numel(subjs)
 
@@ -40,6 +40,7 @@ for i = 1:numel(subjs)
 
     try
         %% Load IN trajectory structures
+        %load([proj.path.ctrl.in_ctrl_loocv,subj_study,'_',name,'_prds_loocv.mat']);
         load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
     catch
         % do nothing
@@ -48,21 +49,9 @@ for i = 1:numel(subjs)
 
     if(isfield(prds,'v_dcmp'))
 
-        %% extract stims and mean "feel"
-        stim = prds.v_dcmp.stim;
-        indv_sort_stim = [indv_sort_stim; sort(stim')];
-        feel = mean(prds.v_dcmp.feel,2);
+        traj_v = prds.v_dcmp.h-prds.v_dcmp.h(:,1);
+        mu_traj_v = [mu_traj_v;median(traj_v)];
 
-        %% scatter plot specific points        
-        scatter(stim,feel,10,'MarkerFaceColor', ...
-                proj.param.plot.white,'MarkerEdgeColor', ...
-                proj.param.plot.light_grey);
-        hold on;
-
-        %% robust fit
-        [b stat] = robustfit(stim,feel);
-        indv_b = [indv_b;b'];
-        
     else
         disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
     end
@@ -71,38 +60,63 @@ end
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
-for i = 1:size(indv_sort_stim,1)
-
-    plot(indv_sort_stim(i,:),indv_sort_stim(i,:)*indv_b(i,2)+ ...
-         indv_b(i,1),'Color',proj.param.plot.dark_grey,'LineWidth',2);
+for i = 1:size(mu_traj_v,1)
+    plot(1:size(mu_traj_v,2),mu_traj_v(i,:),'Color',proj.param.plot.light_grey,'LineWidth',2);
     hold on;
-
 end
 
 %% ----------------------------------------
+%% overlay the mean CI trajectory
+hi_vec = [];
+lo_vec = [];
+for i = 1:size(mu_traj_v,2)
+    [h p ci stat] = ttest(mu_traj_v(:,i));
+    hi_vec = [hi_vec,ci(2)];
+    lo_vec = [lo_vec,ci(1)];
+end
+
+plot(1:size(mu_traj_v,2),hi_vec,'r-','LineWidth',3);
+plot(1:size(mu_traj_v,2),lo_vec,'r-','LineWidth',3);
+
+%% ----------------------------------------
 %% overlay VR goal
-vseq = linspace(-3,3);
-plot(vseq,vseq,'k:','LineWidth',2)
+vseq = linspace(0,size(mu_traj_v,2));
+plot(vseq,0*vseq,'k:','LineWidth',2)
 hold on;
 
 %% ----------------------------------------
-%% overlay the group VR skill plot
-plot(vseq,vseq*mean(indv_b(:,2))+mean(indv_b(:,1)),'r-','LineWidth',3);
-hold off
+%% Set y limits
+hi_rng = 1.25;
+lo_rng = -1.5;
+
+%% ----------------------------------------
+%% fill in sections of trajectories
+h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+set(h,'facealpha',.3);
+h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+set(h,'facealpha',.2);
+h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+set(h,'facealpha',.1);
 
 %% ----------------------------------------
 %% format figure
-xlim([-3,3]);
-ylim([-2,2]);
+xlim([0,size(mu_traj_v,2)]);
+ylim([lo_rng,hi_rng]);
 hold off;
 fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
+xlabel('Volitional Recall (volume)');
+ylabel('Valence(mod)-Valence(cue)');
+text(0.22,lo_rng+0.1,'cue','FontSize',proj.param.plot.axisLabelFontSize);
+text(1.15,lo_rng+0.1,'prep','FontSize',proj.param.plot.axisLabelFontSize);
+text(3.3,lo_rng+0.1,'modulate','FontSize',proj.param.plot.axisLabelFontSize);
+text(6.3,lo_rng+0.1,'ITI','FontSize',proj.param.plot.axisLabelFontSize);
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'ER_v_skill_summary.png' -r300  
-eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ',proj.path.fig]);
+export_fig 'ER_v_dyna_grp_summary.png' -r300  
+eval(['! mv ',proj.path.code,'ER_v_dyna_summary.png ',proj.path.fig]);
 
 %% ****************************************
 %% TICKET

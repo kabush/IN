@@ -65,30 +65,26 @@ eval(['! rm ',proj.path.logfile]); % clear at initialization
 
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)
-proj.path.mri.name = 'mri/';
-proj.path.physio.name = 'physio/';
+proj.path.analysis.name = 'analysis/';
 proj.path.betas.name = 'beta_series/';
-proj.path.trg.name = 'target/';
-proj.path.mvpa.name = 'mvpa/';
-proj.path.haufe.name = 'haufe/';
 proj.path.ctrl.name = 'ctrl/';
+proj.path.haufe.name = 'haufe/';
+proj.path.mri.name = 'mri/';
+proj.path.mvpa.name = 'mvpa/';
+proj.path.physio.name = 'physio/';
+proj.path.trg.name = 'target/';
 
 %% ----------------------------------------
 %% Specific Output Paths
 
 %% fMRI paths (all)
-proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name, ...
-                    'mri_clean/'];
-proj.path.mri.gm_mask = [proj.path.data,proj.path.mri.name, ...
-                    'gm_mask/'];
-proj.path.betas.fmri_ex_beta = [proj.path.data, ...
-                    proj.path.betas.name,'fmri_ex_beta/'];
-proj.path.betas.fmri_in_beta = [proj.path.data, ...
-                    proj.path.betas.name,'fmri_in_beta/'];
+proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name,'mri_clean/'];
+proj.path.mri.gm_mask = [proj.path.data,proj.path.mri.name,'gm_mask/'];
+proj.path.betas.fmri_ex_beta = [proj.path.data,proj.path.betas.name,'fmri_ex_beta/'];
+proj.path.betas.fmri_in_beta = [proj.path.data,proj.path.betas.name,'fmri_in_beta/'];
 
 %% SCR paths (all)
-proj.path.physio.scr_clean = [proj.path.data, ...
-                    proj.path.physio.name,'scr_clean/'];
+proj.path.physio.scr_clean = [proj.path.data,proj.path.physio.name,'scr_clean/'];
 proj.path.betas.scr_beta = [proj.path.data,proj.path.betas.name,'scr_beta/']; %ex and in put in
                                                                               %the same directory
 %% EMG/HRV paths (all)
@@ -104,6 +100,11 @@ proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_
 
 %% Inrinsic (IN) control path
 proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
+proj.path.ctrl.in_ctrl_loocv = [proj.path.data,proj.path.ctrl.name,'in_ctrl_loocv/'];
+
+%% Analysis path
+proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'dynamics/'];
+proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 
 %% ----------------------------------------
 %% Task file nomenclature
