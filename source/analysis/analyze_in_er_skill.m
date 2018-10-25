@@ -58,17 +58,28 @@ for i = 1:numel(subjs)
         if(isfield(prds,'v_dcmp'))
             
             %% extract stims and mean "feel"
-            stim = prds.v_dcmp.stim;
-            sort_stim = sort(stim');
-            feel = mean(prds.v_dcmp.feel,2);
-            
+            raw_stim = prds.v_dcmp.stim;
+            [~,ids] = sort(raw_stim');
+            stim = raw_stim(ids,:);
+            feel = mean(prds.v_dcmp.feel(ids,:),2);
+            feel_traj = prds.v_dcmp.feel(ids,:);
+
+            %% remove extreme outliers (TICKET hardcoded outliers)
+            stim_keep_ids = find(abs(stim)<=3);
+            stim_feel_ids = find(abs(feel)<=3);
+            cmb_keep_ids = intersect(stim_keep_ids,stim_feel_ids);
+            disp(['                  ',num2str(numel(cmb_keep_ids))]);
+            stim_clean = stim(cmb_keep_ids);
+            feel_clean = feel(cmb_keep_ids);
+            feel_traj_clean = feel_traj(cmb_keep_ids);
+
             %% build data for group GLMM
             predictors = [predictors;double(stim)];
             measures = [measures;double(feel)];
             subjects = [subjects;repmat(i,numel(feel),1)];
             
             %% scatter plot specific points        
-            scatter(stim,feel,10,'MarkerFaceColor', ...
+            scatter(stim_clean,feel_clean,10,'MarkerFaceColor', ...
                     proj.param.plot.white,'MarkerEdgeColor', ...
                     proj.param.plot.very_light_grey);
             hold on;
@@ -78,10 +89,11 @@ for i = 1:numel(subjs)
             subj.study = subj_study;
             subj.name = name;
             
-            subj.stim = sort_stim;
-            subj.feel = feel;
+            subj.stim = stim_clean;
+            subj.feel = feel_clean;
+            subj.feel_traj = feel_traj_clean;
 
-            [b stat] = robustfit(stim,feel);
+            [b stat] = robustfit(stim_clean,feel_clean);
             subj.b1 = b(2); % slope
             subj.b0 = b(1); % intercept
             subj.p1 = stat.p(2); %slope
@@ -122,6 +134,13 @@ end
 for i =1:numel(sig_subjs)
     plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
          sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
+
+%%     disp([sig_subjs{i}.study,'_',sig_subjs{i}.name,', b0=', ...
+%%           num2str(sig_subjs{i}.b0),' b1=',num2str(sig_subjs{i}.b1)]); 
+%%     disp(['          p0=', ...
+%%           num2str(sig_subjs{i}.p0),' p1=',num2str(sig_subjs{i}.p1)]); 
+
+
 end
 
 

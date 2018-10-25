@@ -120,8 +120,8 @@ hold on;
 
 %% ----------------------------------------
 %% Set y limits
-hi_rng = 1.25;
-lo_rng = -1.5;
+hi_rng = 1.0;
+lo_rng = -1.0;
 
 %% ----------------------------------------
 %% fill in sections of trajectories
