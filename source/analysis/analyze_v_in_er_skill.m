@@ -12,9 +12,12 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Analyzing ER Skill                               '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
+logger(['Analyzing ER Skill                               '], ...
+       proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
@@ -53,7 +56,8 @@ for i = 1:numel(subjs)
     try
 
         %% Load IN trajectory structures
-        load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
+        load([proj.path.ctrl.in_ctrl,subj_study,'_',name, ...
+              '_prds.mat']);
 
         if(isfield(prds,'v_dcmp'))
             
@@ -68,7 +72,8 @@ for i = 1:numel(subjs)
             stim_keep_ids = find(abs(stim)<=3);
             stim_feel_ids = find(abs(feel)<=3);
             cmb_keep_ids = intersect(stim_keep_ids,stim_feel_ids);
-            disp(['                  ',num2str(numel(cmb_keep_ids))]);
+            disp(['                  ', ...
+                  num2str(numel(cmb_keep_ids))]);
             stim_clean = stim(cmb_keep_ids);
             feel_clean = feel(cmb_keep_ids);
             feel_traj_clean = feel_traj(cmb_keep_ids);
@@ -99,7 +104,7 @@ for i = 1:numel(subjs)
             subj.p1 = stat.p(2); %slope
             subj.p0 = stat.p(1); %intercept
  
-             %% sort subjects by significance
+            %% sort subjects by significance
              if(subj.p1<0.05)
                  sig_subjs{sig_cnt} = subj;
                  sig_cnt = sig_cnt + 1;
@@ -109,38 +114,35 @@ for i = 1:numel(subjs)
              end
              
         else
-            disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
+            disp(['  -Could not find v_dcmp for: ',subj_study,'_', ...
+                  name],proj.path.logfile);
         end
         
     catch
         % do nothing
-        logger(['  -Could not find/load prds for: ',subj_study,'_',name],proj.path.logfile);
+        logger(['  -Could not find/load prds for: ',subj_study,'_', ...
+                name],proj.path.logfile);
     end
 
 end
 
 %% ----------------------------------------
 %% save out subject groups
-save([proj.path.analysis.er_skill,'sig_subjs.mat'],'sig_subjs');
-save([proj.path.analysis.er_skill,'non_subjs.mat'],'non_subjs');
+save([proj.path.analysis.er_skill,'v_sig_subjs.mat'],'sig_subjs');
+save([proj.path.analysis.er_skill,'v_non_subjs.mat'],'non_subjs');
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
 for i =1:numel(non_subjs)
     plot(non_subjs{i}.stim,non_subjs{i}.stim*non_subjs{i}.b1+ ...
-         non_subjs{i}.b0,'Color',proj.param.plot.light_grey,'LineWidth',1);
+         non_subjs{i}.b0,'Color',proj.param.plot.light_grey, ...
+         'LineWidth',1);
 end
 
 for i =1:numel(sig_subjs)
     plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
-         sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
-
-%%     disp([sig_subjs{i}.study,'_',sig_subjs{i}.name,', b0=', ...
-%%           num2str(sig_subjs{i}.b0),' b1=',num2str(sig_subjs{i}.b1)]); 
-%%     disp(['          p0=', ...
-%%           num2str(sig_subjs{i}.p0),' p1=',num2str(sig_subjs{i}.p1)]); 
-
-
+         sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey, ...
+         'LineWidth',2);
 end
 
 
@@ -148,15 +150,6 @@ end
 %% identify max/min x-range|y-rang
 %%
 %% TICKET (automate this decision)
-% cmb_subjs = [non_subjs,sig_subjs]
-% xrngs = [];
-% yrngs = [];
-% for i=1:numel(cmb_subjs)
-%     xrngs = [xrngs, range(cmb_subjs{i}.stim)];
-%     yrngs = [yrngs  range(cmb_subjs{i}.feel)];
-% end
-% [xmin,xmax] = range(xrngs);
-% [ymin,ymax] = range(yrngs);
 xmin = -3;
 xmax = 3;
 ymin = -2;
@@ -170,14 +163,22 @@ hold on;
 
 %% ----------------------------------------
 %% Group GLMM fit
-tbl = table(measures,predictors,subjects,'VariableNames',{'measures','predictors','subjects'});
-mdl = fitlme(tbl,'measures ~ 1 + predictors + (1|subjects) + (predictors-1|subjects)');
+tbl = table(measures,predictors,subjects,'VariableNames', ...
+            {'measures','predictors','subjects'});
+mdl = fitlme(tbl,['measures ~ 1 + predictors + (1|subjects) + ' ...
+                  '(predictors-1|subjects)']);
 [~,~,FE] = fixedEffects(mdl);
 
 %% ----------------------------------------
 %% overlay the group VR skill plot
 y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
 plot(vseq,y_hat,'r-','LineWidth',3);
+
+%% ----------------------------------------
+%% indicate goal
+text(1.9,1.8,'\itgoal','FontSize', ...
+     proj.param.plot.axisLabelFontSize-4);
+
 
 %% ----------------------------------------
 %% format figure
@@ -195,7 +196,8 @@ ylabel('Mean Valence(modulate)');
 %% ----------------------------------------
 %% explot hi-resolution figure
 export_fig 'ER_v_skill_summary.png' -r300  
-eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ',proj.path.fig]);
+eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ', ...
+      proj.path.fig]);
 
 %% ****************************************
 %% TICKET
@@ -218,8 +220,9 @@ ns = num2str(n_sig);
 nt = num2str(n_tot);
 ssp = num2str(100*(n_sig/n_tot));
 
-logger(['----------------------------------------'],proj.path.logfile);
+logger(['----------------------------------------'], ...
+       proj.path.logfile);
 logger(['Statistical Summary'],proj.path.logfile);
 logger(['  -Group effect: ',ge,', p=',gep],proj.path.logfile);
-logger(['  -Percent sign. subjs. (p<0.05): ',ssp,'% (',ns,'/',nt,')'],proj.path.logfile);
-
+logger(['  -Percent sign. subjs. (p<0.05): ',ssp,'% (',ns,'/',nt, ...
+        ')'],proj.path.logfile);

@@ -48,9 +48,10 @@ for i = 1:numel(subjs)
 
     % log processing of subject
     logger([subj_study,'_',name],proj.path.logfile);
-    
-    try
 
+    data_exist = 0;
+    try
+        
         %% Load gray matter mask 
         gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
         mask = double(gm_nii.img);
@@ -62,13 +63,16 @@ for i = 1:numel(subjs)
         path = [proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii'];
         base_nii = load_nii(path);
         brain_size = size(base_nii.img);
-        
+
+        %% Data is present
+        data_exist = 1;
+
         %% Vectorize the base image
         base_img = vec_img_2d_nii(base_nii);
         base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
         
         %% Concatenate the MASKED base image
-        subj_img = zscore(base_img(in_brain,:)'); %z-score voxels independently
+        subj_img = base_img(in_brain,:)';
         
         %% Concatenate all label/subj identifiers
         subj_id = [repmat(id,numel(label_id),1)];
@@ -77,17 +81,30 @@ for i = 1:numel(subjs)
         %% Perform quality
         qlty = check_gm_img_qlty(subj_img);
         
-        if(qlty.ok)
-            
-            %% Initialize the prediction structure of this subject
-            prds = struct();
-            prds.v_hd = zeros(numel(label_id),1);
-            prds.a_hd = zeros(numel(label_id),1);
-            
+    catch
+        logger(['   -mask or beta-series does not exist'],proj.path.logfile);
+    end
+    
+    
+    if(qlty.ok & data_exist)
+        
+        %% Initialize the prediction structure of this subject
+        prds = struct();
+        prds.v_hd = zeros(numel(label_id),1);
+        prds.a_hd = zeros(numel(label_id),1);
+        
+        mdl_exist = 0;
+        try
             %% Load SVM models
-            load([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_v_model.mat']);
-            load([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_a_model.mat']);
+            load([proj.path.mvpa.fmri_ex_gm_mdl,subj_study,'_',name,'_v_model.mat']);
+            load([proj.path.mvpa.fmri_ex_gm_mdl,subj_study,'_',name,'_a_model.mat']);
+            mdl_exist = 1;
+        catch
+            logger(['   -model does not exist.'],proj.path.logfile);
+        end
             
+        if(mdl_exist==1)
+
             %% ----------------------------------------
             %% predict IN task using EX-based models
             for j=1:numel(label_id)
@@ -122,16 +139,14 @@ for i = 1:numel(subjs)
             % plot(3:5,prds.v_dcmp.d2h(1,:));
             % hold off;              
             % drawnow
-
+            
             %% Save out prediction structure
             save([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
-            
-        else
-            logger('   -failed quality check',proj.path.logfile);
+
         end
-
-    catch
-        logger('   -dynamics error: predictions not made',proj.path.logfile);
+            
+    else
+        logger('   -failed quality check',proj.path.logfile);
     end
-
+    
 end

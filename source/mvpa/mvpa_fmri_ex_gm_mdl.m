@@ -13,15 +13,15 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['************************************************'],proj.path.logfile);
-logger(['Intra-subject LOOCV MVPA of Gray Matter Features'],proj.path.logfile);
+logger(['Intra-subject LOOCV MVPA of Gray Matter Models  '],proj.path.logfile);
 logger(['************************************************'],proj.path.logfile);
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.mvpa.fmri_ex_gm_cls]);
-    eval(['! rm -rf ',proj.path.mvpa.fmri_ex_gm_cls]);
-    disp(['Creating ',proj.path.mvpa.fmri_ex_gm_cls]);
-    eval(['! mkdir ',proj.path.mvpa.fmri_ex_gm_cls]);
+    disp(['Removing ',proj.path.mvpa.fmri_ex_gm_mdl]);
+    eval(['! rm -rf ',proj.path.mvpa.fmri_ex_gm_mdl]);
+    disp(['Creating ',proj.path.mvpa.fmri_ex_gm_mdl]);
+    eval(['! mkdir ',proj.path.mvpa.fmri_ex_gm_mdl]);
 end
 
 %% ----------------------------------------
@@ -35,11 +35,6 @@ a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 %% ----------------------------------------
 %% load subjs
 subjs = load_subjs(proj);
-
-%% ----------------------------------------
-%% allocate storage
-all_v_cls_acc = [];
-all_a_cls_acc = [];
 
 %% ----------------------------------------
 %% iterate over study subjects
@@ -89,52 +84,55 @@ for i = 1:numel(subjs)
         
         if(qlty.ok)
             
-            %% Initialize the prediction structure of this subject
-            prds = struct();
-            prds.v_cls_acc = [];
-            prds.v_cls_hd = [];
-            prds.a_cls_acc = [];
-            prds.a_cls_hd = [];
-            
             %% ----------------------------------------
-            %% LOOCV extrinsic VALENCE examples
-            for j=1:proj.param.mvpa.n_resamp
-                
-                %% Fit the data space
-                [~,~,v_tst_hd,~,v_cls_stats] = classify_loocv(ex_img, ...
-                                                              ex_v_label,ex_subj_id,id, proj.param.mvpa.kernel);
-                
-                %% Store results
-                prds.v_cls_acc = [prds.v_cls_acc;cell2mat(v_cls_stats.tst_acc)];
-                prds.v_cls_hd = [prds.v_cls_hd;v_tst_hd'];
-                
+            %% Construct & save a representative VALENCE model
+            
+            %% Balance positive and negative VALENCE examples
+            v_pos_ids = find(ex_v_label==1);
+            v_neg_ids = find(ex_v_label==-1);
+            Npos = numel(v_pos_ids);
+            Nneg = numel(v_neg_ids);
+            
+            if(Npos >= Nneg)
+                Nsample = Nneg;
+            else
+                Nsample = Npos;
             end
             
-            % debug
-            all_v_cls_acc = [all_v_cls_acc;mean(mean(prds.v_cls_acc,1))];
-            logger(['  v acc: ',num2str(mean(mean(prds.v_cls_acc,2)))],proj.path.logfile);
+            %% Randomly re-order and combined samples
+            rnd_v_pos_ids = v_pos_ids(randsample(1:numel(v_pos_ids),Nsample));
+            rnd_v_neg_ids = v_neg_ids(randsample(1:numel(v_neg_ids),Nsample));
+            rnd_v_cmb_ids = [rnd_v_pos_ids,rnd_v_neg_ids];
+            
+            %% Fit classifier
+            v_model = fitcsvm(ex_img(rnd_v_cmb_ids,:),ex_v_label(rnd_v_cmb_ids,1), ...
+                              'KernelFunction',proj.param.mvpa.kernel);
+            save([proj.path.mvpa.fmri_ex_gm_mdl,subj_study,'_',name,'_v_model.mat'],'v_model');
             
             %% ----------------------------------------
-            %% Classify extrinsic AROUSAL examples
-            for j=1:proj.param.mvpa.n_resamp
-                
-                %% Fit the data space            
-                [~,~,a_tst_hd,~,a_cls_stats] = classify_loocv(ex_img, ...
-                                                              ex_a_label,ex_subj_id,id, proj.param.mvpa.kernel);
-                
-                %% Store results
-                prds.a_cls_acc = [prds.a_cls_acc;cell2mat(a_cls_stats.tst_acc)];
-                prds.a_cls_hd = [prds.a_cls_hd;a_tst_hd'];
-                
+            %% Construct & save a representative AROUSAL model
+            
+            %% Balance positive and negative VALENCE examples
+            a_pos_ids = find(ex_a_label==1);
+            a_neg_ids = find(ex_a_label==-1);
+            Npos = numel(a_pos_ids);
+            Nneg = numel(a_neg_ids);
+            
+            if(Npos >= Nneg)
+                Nsample = Nneg;
+            else
+                Nsample = Npos;
             end
             
-            %% ----------------------------------------
-            %% Save out results
-            save([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_prds.mat'],'prds');
+            %% Randomly re-order and combined samples
+            rnd_a_pos_ids = a_pos_ids(randsample(1:numel(a_pos_ids),Nsample));
+            rnd_a_neg_ids = a_neg_ids(randsample(1:numel(a_neg_ids),Nsample));
+            rnd_a_cmb_ids = [rnd_a_pos_ids,rnd_a_neg_ids];
             
-            % debug
-            all_a_cls_acc = [all_a_cls_acc;mean(mean(prds.a_cls_acc,1))];
-            logger(['  a acc: ',num2str(mean(mean(prds.a_cls_acc,2)))],proj.path.logfile);
+            %% Fit classifier
+            a_model = fitcsvm(ex_img(rnd_a_cmb_ids,:),ex_a_label(rnd_a_cmb_ids,1), ...
+                              'KernelFunction',proj.param.mvpa.kernel);
+            save([proj.path.mvpa.fmri_ex_gm_mdl,subj_study,'_',name,'_a_model.mat'],'a_model');
             
         end
         
@@ -143,12 +141,3 @@ for i = 1:numel(subjs)
     end
 
 end
-
-% log summary results
-[h p ci stat] = ttest(all_v_cls_acc);
-logger(['  grp v acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
-                    'p='],num2str(p)],proj.path.logfile);
-
-[h p ci stat] = ttest(all_a_cls_acc);
-logger(['g  rp a acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
-                    'p='],num2str(p)],proj.path.logfile);

@@ -22,120 +22,127 @@ addpath(genpath('./source/'));
 %% STEP 1: Initialize the projects directories and parameters.
 init_project;
 
-%% ------------------------------------------------------------
-%% STEP 2: Clear and reconstruct the project data folder
-clean_project;
-
-%% ------------------------------------------------------------
-%% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
-
-%% fMRI data
-preprocess_fmri;
-preprocess_mask;
-% - preprocess_fd (TBD);
-
-%% Physio data
-preprocess_scr; 
-% - preprocess_hrv (TBD); 
-% - preprocess_emg (TBD);
- 
-%% Cognitive data
-% - preprocess_cog (TBD);
-
-%% ------------------------------------------------------------
-%% STEP 4: Format Extrinsic Stimuli Design
-format_ex_3dlss; 
-
-%% ------------------------------------------------------------
-%% STEP 5: Calculate Extrinsic (EX) Stimuli Beta-Series
-
-%% fMRI data
-calc_fmri_ex_beta;
-
-%% Physio data
-calc_scr_ex_beta;
-% - calc_hrv_ex_beta (TBD);
-% - calc_emg_ex_beta (TBD);
-
-%% ------------------------------------------------------------
-%% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
- 
-%% Classification of Affect Scores
-mvpa_fmri_ex_gs_cls % intra-subj Gram-Schmidt MVPA classification
-                    % performs performance estimation using LOOCV
-                    % basis for stimulus refitting (see below)
-
-mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
-                    % performs performance estimation using LOOCV
-                    % also constructs and saves single model for
-                    % application to IN formats
-
-% ----------------------------------------
-% TICKET  Modify the above mvpa codes to save
-% out the basis function for project to low-dim
-% space.  Will use the inverse to project Haufe-transformed
-% hyperplanes back into GM space for viewing.
-
-%% ------------------------------------------------------------ 
-%% STEP 7: compare GS vs GM features (Frontiers 2018 paper)
-% TBD
-
-%% ------------------------------------------------------------ 
-%% STEP 8: Stimulus adjusted performance (see Frontiers 2018 paper)
-% TBD
-
-%% ------------------------------------------------------------ 
-%% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
-analyze_ex_scr; % (draft code, convert to GLMM)
-
-%% ------------------------------------------------------------ 
-%% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
-% TBD
-
-%% ------------------------------------------------------------
-%% STEP 11: Conduct MVPA for Secondary Measures
-% mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
-
-%% ------------------------------------------------------------ 
-%% STEP 12: Format project design for IN afni-based beta-series
-format_in_3dlss;
-
-%% ------------------------------------------------------------
-%% STEP 13: Calcuate Intrinsic (IN) Stimuli Beta-Series
-
-%% fMRI data
-calc_fmri_in_beta;
-
-%% Physio data
+% %% ------------------------------------------------------------
+% %% STEP 2: Clear and reconstruct the project data folder
+% clean_project;
+% 
+% %% ------------------------------------------------------------
+% %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
+% 
+% %% fMRI data
+% preprocess_fmri;
+% preprocess_mask;
+% % - preprocess_fd (TBD);
+% 
+% %% Physio data
+% preprocess_scr; 
+% % - preprocess_hrv (TBD); 
+% % - preprocess_emg (TBD);
+%  
+% %% Cognitive data
+% % - preprocess_cog (TBD);
+% 
+% %% ------------------------------------------------------------
+% %% STEP 4: Format Extrinsic Stimuli Design
+% format_ex_3dlss; 
+% 
+% %% ------------------------------------------------------------
+% %% STEP 5: Calculate Extrinsic (EX) Stimuli Beta-Series
+% 
+% %% fMRI data
+% calc_fmri_ex_beta;
+% 
+% %% Physio data
+% calc_scr_ex_beta;
+% % - calc_hrv_ex_beta (TBD);
+% % - calc_emg_ex_beta (TBD);
+% 
+% %% ------------------------------------------------------------
+% %% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
+%  
+% %% Classification of Affect Scores
+% mvpa_fmri_ex_gs_cls % intra-subj Gram-Schmidt MVPA classification
+%                     % performs performance estimation using LOOCV
+%                     % basis for stimulus refitting (see below)
+% 
+% mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
+%                     % performs performance estimation using LOOCV
+%                     % also constructs and saves single model for
+%                     % application to IN formats
+% 
+% mvpa_fmri_ex_gm_mdl % intra-subj whole-brain GM MVPA models
+% 
+% % ----------------------------------------
+% % TICKET  Modify the above mvpa codes to save
+% % out the basis function for project to low-dim
+% % space.  Will use the inverse to project Haufe-transformed
+% % hyperplanes back into GM space for viewing.
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 7: compare GS vs GM features (Frontiers 2018 paper)
+% % TBD
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 8: Stimulus adjusted performance (see Frontiers 2018 paper)
+% % TBD
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
+% analyze_ex_scr; % (draft code, convert to GLMM)
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
+% % TBD
+% 
+% %% ------------------------------------------------------------
+% %% STEP 11: Conduct MVPA for Secondary Measures
+% % mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 12: Format project design for IN afni-based beta-series
+% format_in_3dlss;
+% 
+% %% ------------------------------------------------------------
+% %% STEP 13: Calcuate Intrinsic (IN) Stimuli Beta-Series
+% 
+% %% fMRI data
+% calc_fmri_in_beta;
+% 
+% %% Physio data
 % - calc_scr_in_beta (TBD);
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 14: Compute IN Cognitive Dynamics
+% dynamics_fmri_in_gm;
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 15: Analysis IN Cognitive Dynamics
+% analyze_in_dynamics;
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 16: Analysis IN ER performance (Valence only currently)
+analyze_v_in_er_skill;
+analyze_v_in_er_labels;
+%%%% analyze_in_er_extr_subjs;
 
-%% ------------------------------------------------------------ 
-%% STEP 14: Compute IN Cognitive Dynamics
-dynamics_fmri_in_gm;
+analyze_a_in_er_skill;
+analyze_a_in_er_labels;
+%%%% analyze_a_in_er_extr_subjs;
 
-%% ------------------------------------------------------------ 
-%% STEP 11: Analysis IN Cognitive Dynamics
-analyze_in_dynamics;
-
-%% ------------------------------------------------------------ 
-%% STEP 12: Analysis IN ER performance
-analyze_in_er_skill;
-analyze_in_er_labels;
-% - predict labels from cog-behave measures
-
-%% ------------------------------------------------------------ 
-%% STEP 15: Conduct MVPA for Cognitive Dynamics
-% TBD
-
-
-%% ------------------------------------------------------------ 
-%% STEP 13: Hyperplane analysis (see SciReports 2018 paper)
-%% (Last position b/c it's slow ... lots of resampling)
-
-%% EX Hyperplanes (global permutation test)
-% TBD
-
-%% IN Dynamics (global permutation test)
+% % - predict labels from cog-behave measures
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 17: Conduct MVPA for Cognitive Dynamics
+% % TBD
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 18: Hyperplane analysis (see SciReports 2018 paper)
+% %% (Last position b/c it's slow ... lots of resampling)
+% 
+% %% EX Hyperplanes (global permutation test)
+% haufe_fmri_ex_gm;
+% 
+% %% IN Dynamics (global permutation test)
 % TBD
 
 toc

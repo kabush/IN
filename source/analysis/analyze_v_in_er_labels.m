@@ -12,13 +12,16 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Plotting "Feel" dynamics                         '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
+logger(['Plotting "Feel" dynamics                         '], ...
+       proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
 
 %% ----------------------------------------
 %% load subjs
-load([proj.path.analysis.er_skill,'sig_subjs']);
+load([proj.path.analysis.er_skill,'v_sig_subjs.mat']);
 
 figure(1)
 set(gcf,'color','w');
@@ -38,7 +41,8 @@ for i = 1:numel(sig_subjs);
 
     try
         %% Load IN trajectory structures
-        load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
+        load([proj.path.ctrl.in_ctrl,subj_study,'_',name, ...
+              '_prds.mat']);
 
         %% Analyze 
         if(isfield(prds,'v_dcmp'))
@@ -46,7 +50,8 @@ for i = 1:numel(sig_subjs);
             traj_v = prds.v_dcmp.h-prds.v_dcmp.h(:,1);
             in_ctrl = 1; % set by default to true (search for loss)
             
-            %% Determine if subject lost control (TICKET, remove hardcode)
+            %% Determine if subject lost control (TICKET, remove
+            %% hardcode)
             for j=3:6
                 p = signrank(traj_v(:,j));
                 if(p<0.05);
@@ -70,7 +75,8 @@ for i = 1:numel(sig_subjs);
 
             %% Assign subject label
             if(~in_ctrl & p_best<0.05)
-                sbj_labs = [sbj_labs; sign(median(traj_v(:,id_best)))];
+                sbj_labs = [sbj_labs; sign(median(traj_v(:, ...
+                                                         id_best)))];
             else
                 sbj_labs = [sbj_labs; 0];
             end
@@ -79,15 +85,23 @@ for i = 1:numel(sig_subjs);
             mu_traj_v = [mu_traj_v;median(traj_v)];
 
         else
-            disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
+            disp(['  -Could not find v_dcmp for: ',subj_study,'_', ...
+                  name],proj.path.logfile);
         end
 
     catch
         % do nothing
-        logger(['  -Could not find load prds for: ',subj_study,'_',name],proj.path.logfile);
+        logger(['  -Could not find load prds for: ',subj_study,'_', ...
+                name],proj.path.logfile);
     end
 
 end
+
+%% ----------------------------------------
+%% Report out breakdown
+logger(['  Control: ',num2str(numel(find(sbj_labs==0))),'/',num2str(numel(sig_subjs))]);
+logger(['  Pos out: ',num2str(numel(find(sbj_labs==1))),'/',num2str(numel(sig_subjs))]);
+logger(['  Neg out: ',num2str(numel(find(sbj_labs==-1))),'/',num2str(numel(sig_subjs))]);
 
 %% ----------------------------------------
 %% transfer labels and mu trajectories to
@@ -96,12 +110,13 @@ for i=1:numel(sig_subjs)
     sig_subjs{i}.in_ctrl = sbj_labs(i);
     sig_subjs{i}.mu_traj_v = mu_traj_v(i,:);
 end
-save([proj.path.analysis.er_skill,'sig_subjs.mat'],'sig_subjs');
+save([proj.path.analysis.er_skill,'v_sig_subjs.mat'],'sig_subjs');
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
 ctrl_ids = find(sbj_labs==0);
-plot(mu_traj_v(ctrl_ids,:)','Color', proj.param.plot.dark_grey,'LineWidth',2);
+plot(mu_traj_v(ctrl_ids,:)','Color', proj.param.plot.dark_grey, ...
+     'LineWidth',2);
 hold on;
 
 pos_ids = find(sbj_labs==1);
@@ -120,16 +135,19 @@ hold on;
 
 %% ----------------------------------------
 %% Set y limits
-hi_rng = 1.0;
-lo_rng = -1.0;
+hi_rng = max(max(mu_traj_v))+0.1;
+lo_rng = min(min(mu_traj_v))-0.2;
 
 %% ----------------------------------------
 %% fill in sections of trajectories
-h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+         'none');
 set(h,'facealpha',.3);
-h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+         'none');
 set(h,'facealpha',.2);
-h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor','none');
+h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+         'none');
 set(h,'facealpha',.1);
 
 %% ----------------------------------------
@@ -142,15 +160,23 @@ ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 xlabel('Volitional Recall (volume)');
 ylabel('Valence(modulate)-Valence(cue)');
-text(0.22,lo_rng+0.1,'cue','FontSize',proj.param.plot.axisLabelFontSize);
-text(1.15,lo_rng+0.1,'prep','FontSize',proj.param.plot.axisLabelFontSize);
-text(3.3,lo_rng+0.1,'modulate','FontSize',proj.param.plot.axisLabelFontSize);
-text(6.3,lo_rng+0.1,'ITI','FontSize',proj.param.plot.axisLabelFontSize);
+text(0.22,lo_rng+0.1,'cue','FontSize', ...
+     proj.param.plot.axisLabelFontSize);
+text(1.15,lo_rng+0.1,'prep','FontSize', ...
+     proj.param.plot.axisLabelFontSize);
+text(3.3,lo_rng+0.1,'modulate','FontSize', ...
+     proj.param.plot.axisLabelFontSize);
+text(6.3,lo_rng+0.1,'ITI','FontSize', ...
+     proj.param.plot.axisLabelFontSize);
+text(0.22,0.075,'\itgoal','FontSize', ...
+     proj.param.plot.axisLabelFontSize-4);
+
 
 %% ----------------------------------------
 %% explot hi-resolution figure
 export_fig 'ER_v_dyna_sbj_labels.png' -r300  
-eval(['! mv ',proj.path.code,'ER_v_dyna_sbj_labels.png ',proj.path.fig]);
+eval(['! mv ',proj.path.code,'ER_v_dyna_sbj_labels.png ', ...
+      proj.path.fig]);
 
 %% ****************************************
 %% TICKET

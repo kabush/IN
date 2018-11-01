@@ -12,9 +12,12 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Analyzing ER Skill                               '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
+logger(['Analyzing ER Skill                               '], ...
+       proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
@@ -47,7 +50,8 @@ for i = 1:numel(subjs)
     try
 
         %% Load IN trajectory structures
-        load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
+        load([proj.path.ctrl.in_ctrl,subj_study,'_',name, ...
+              '_prds.mat']);
 
         if(isfield(prds,'v_dcmp'))
 
@@ -70,18 +74,23 @@ for i = 1:numel(subjs)
             hold on;
 
             stats1  = regstats(t0_vec,t1_vec,'linear');
-            stats2  = regstats(t0_vec,[t1_vec,t2_vec,t3_vec,t4_vec],'linear');
+            stats2  = regstats(t0_vec,[t1_vec,t2_vec,t3_vec, ...
+                                t4_vec],'linear');
 
-%%             all_b_t1 = [all_b_t1, stats1.tstat_beta];
-%%             all_b_t1 = [all_b_t1, stats1.tstat_beta];
-%% 
+            %%             all_b_t1 = [all_b_t1,
+            %%             stats1.tstat_beta];
+            %%             all_b_t1 = [all_b_t1,
+            %%             stats1.tstat_beta];
+            %% 
         else
-            disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
+            disp(['  -Could not find v_dcmp for: ',subj_study,'_', ...
+                  name],proj.path.logfile);
         end
         
     catch
         % do nothing
-        logger(['  -Could not find/load prds for: ',subj_study,'_',name],proj.path.logfile);
+        logger(['  -Could not find/load prds for: ',subj_study,'_', ...
+                name],proj.path.logfile);
     end
 
 end
@@ -104,4 +113,3 @@ ax.FontSize = proj.param.plot.axisLabelFontSize;
 
 xlabel('err(t-1)');
 ylabel('err(t)');
-

@@ -97,6 +97,10 @@ proj.path.trg.in = [proj.path.data,proj.path.trg.name,'target_in/'];
 %% MVPA path
 proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_cls/'];
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
+proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
+
+%% Haufe path
+proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_gm_mdl/'];
 
 %% Inrinsic (IN) control path
 proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
@@ -175,7 +179,6 @@ proj.param.mri.n_trs_rest = 225;
 proj.param.mri.n_trs_mod1 = 310;
 proj.param.mri.n_trs_mod2 = 310;
 
-
 %% Design construction fidelity (20 hz) 
 %% all designs are manufactured at hi-fidelity
 %% before downsampling to match fMRI acquisition
@@ -207,7 +210,7 @@ proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; % should be >= 30
 
 %% Haufe parameters
-proj.param.haufe.npermute = 480;
+proj.param.haufe.npermute = 1000;
 proj.param.haufe.chunk = 10;
 
 %% Plotting parameters

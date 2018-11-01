@@ -12,9 +12,12 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Analyzing SCR responses to EX stimuli            '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
+logger(['Analyzing SCR responses to EX stimuli            '], ...
+       proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
 
 %% plot parameters
 axisLabelFontSize = 18;
@@ -57,9 +60,11 @@ for i = 1:numel(subjs)
     logger([subj_study,'_',name],proj.path.logfile);
 
     try
-        load([proj.path.betas.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
+        load([proj.path.betas.scr_beta,subj_study,'_',name, ...
+              '_ex_betas.mat']);
     catch
-        logger('    Could not find scr beta file for processing.',proj.path.logfile);
+        logger('    Could not find scr beta file for processing.', ...
+               proj.path.logfile);
     end
 
     scr_betas = [ex_betas.id1,ex_betas.id2];
@@ -83,7 +88,8 @@ for i = 1:numel(subjs)
     if(~isempty(scr_betas))
 
         %% scatter plot specific points        
-        scatter(scr_betas,scr_a_score,10,'MarkerFaceColor',white,'MarkerEdgeColor',light_grey);
+        scatter(scr_betas,scr_a_score,10,'MarkerFaceColor',white, ...
+                'MarkerEdgeColor',light_grey);
         hold on;
         
         %% robust fit
@@ -99,4 +105,5 @@ end
 
 [h p ci stat] = ttest(indv_b(:,2));
 disp(['***EX response beta ci=[',num2str(ci(1)),' ',num2str(ci(2)),['], ' ...
+                    '' ...
                     'p='],num2str(p),'***']);

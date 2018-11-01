@@ -23,8 +23,7 @@ end
 subjs = load_subjs(proj);
 
 logger(['****************************************'],proj.path.logfile);
-logger(['Processing GM Mask of ',num2str(numel(subjs)),[' ' ...
-                    'subjects'],proj.path.logfile);
+logger(['Processing GM Mask of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
 logger(['****************************************'],proj.path.logfile);
 
 %%========================================
