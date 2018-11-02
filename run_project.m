@@ -117,19 +117,21 @@ init_project;
 % 
 %% ------------------------------------------------------------ 
 %% STEP 15: Analysis IN Cognitive Dynamics
-analyze_in_dynamics;
-% 
-% %% ------------------------------------------------------------ 
-% %% STEP 16: Analysis IN VR performance (Valence only currently)
-% analyze_v_in_vr_skill;
-% analyze_v_in_vr_labels;
-% analyze_v_in_vr_extr_subjs;
-% 
-% analyze_a_in_vr_skill;
-% analyze_a_in_vr_labels;
-% analyze_a_in_vr_extr_subjs;
-% 
-% summarize_vr;
+analyze_v_in_vr_dynamics;
+analyze_a_in_vr_dynamics;
+
+%% ------------------------------------------------------------ 
+%% STEP 16: Analysis IN VR performance 
+%% TICKET: Current code is clunky, repeating scripts separately for V and A.
+analyze_v_in_vr_skill;
+analyze_v_in_vr_labels;
+analyze_v_in_vr_extr_subjs;
+
+analyze_a_in_vr_skill;
+analyze_a_in_vr_labels;
+analyze_a_in_vr_extr_subjs;
+
+summarize_vr;
 % 
 % % - predict labels from cog-behave measures
 % 
