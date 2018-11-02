@@ -115,20 +115,22 @@ init_project;
 % %% STEP 14: Compute IN Cognitive Dynamics
 % dynamics_fmri_in_gm;
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 15: Analysis IN Cognitive Dynamics
-% analyze_in_dynamics;
+%% ------------------------------------------------------------ 
+%% STEP 15: Analysis IN Cognitive Dynamics
+analyze_in_dynamics;
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 16: Analysis IN ER performance (Valence only currently)
-analyze_v_in_er_skill;
-analyze_v_in_er_labels;
-%%%% analyze_in_er_extr_subjs;
-
-analyze_a_in_er_skill;
-analyze_a_in_er_labels;
-%%%% analyze_a_in_er_extr_subjs;
-
+% %% STEP 16: Analysis IN VR performance (Valence only currently)
+% analyze_v_in_vr_skill;
+% analyze_v_in_vr_labels;
+% analyze_v_in_vr_extr_subjs;
+% 
+% analyze_a_in_vr_skill;
+% analyze_a_in_vr_labels;
+% analyze_a_in_vr_extr_subjs;
+% 
+% summarize_vr;
+% 
 % % - predict labels from cog-behave measures
 % 
 % %% ------------------------------------------------------------ 

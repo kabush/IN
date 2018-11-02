@@ -21,14 +21,14 @@ logger(['*************************************************'], ...
 
 %% ----------------------------------------
 %% load subjs
-load([proj.path.analysis.er_skill,'a_sig_subjs.mat']);
+load([proj.path.analysis.vr_skill,'v_sig_subjs.mat']);
 
 figure(1)
 set(gcf,'color','w');
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
-mu_traj_a = [];
+mu_traj_v = [];
 sbj_labs = [];
 
 for i = 1:numel(sig_subjs);
@@ -39,53 +39,90 @@ for i = 1:numel(sig_subjs);
     % log analysis of subject
     logger([subj_study,'_',name],proj.path.logfile);
 
+
     try
         %% Load IN trajectory structures
         load([proj.path.ctrl.in_ctrl,subj_study,'_',name, ...
               '_prds.mat']);
 
         %% Analyze 
-        if(isfield(prds,'a_dcmp'))
+        if(isfield(prds,'v_dcmp'))
             
-            traj_a = prds.a_dcmp.h-prds.a_dcmp.h(:,1);
-            in_ctrl = 1; % set by default to true (search for loss)
-            
-            %% Determine if subject lost control (TICKET, remove
-            %% hardcode)
-            for j=3:6
-                p = signrank(traj_a(:,j));
-                if(p<0.05);
-                    in_ctrl = 0;
-                end
+            traj_v = prds.v_dcmp.h-prds.v_dcmp.h(:,1);
+
+            % conduct interval analysis
+            cimed = @(x)median(x);
+            Nboot = 1000;
+            max_traj = [];
+            min_traj = [];
+            for j=1:size(traj_v,2)
+                ci = bootci(Nboot,cimed,traj_v(:,j));
+                max_traj = [max_traj,ci(2)];
+                min_traj = [min_traj,ci(1)];
             end
 
-            %% Determine point of max loss of control (TICKET,
-            %% remove hardcode))
-            if(~in_ctrl)
-                p_best = 1.0;
-                id_best = -1;
-                for j=3:6
-                    p = signrank(traj_a(:,j));
-                    if(p<p_best)
-                        p_best = p;
-                        id_best = j;
-                    end
-                end
-            end
+            neg_ctrl_err = 0-max_traj(3:6);
+            pos_ctrl_err = min_traj(3:6);
 
-            %% Assign subject label
-            if(~in_ctrl & p_best<0.05)
-                sbj_labs = [sbj_labs; sign(median(traj_a(:, ...
-                                                         id_best)))];
+            max_neg_ctrl_err = neg_ctrl_err(find(neg_ctrl_err==max(neg_ctrl_err)));
+            max_pos_ctrl_err = pos_ctrl_err(find(pos_ctrl_err==max(pos_ctrl_err)));
+
+            in_ctrl = 1;
+            if(max_neg_ctrl_err <0 & max_pos_ctrl_err <0)
+                %% in control over range
+                %% do nothing
+                sbj_labs = [sbj_labs,0];
             else
-                sbj_labs = [sbj_labs; 0];
+
+                if(max_neg_ctrl_err > max_pos_ctrl_err)
+                    %% negative error label
+                    sbj_labs = [sbj_labs,-1];
+                else
+                    %% positive error label
+                    sbj_labs = [sbj_labs,1];
+                end
             end
+%                 
+
+%             in_ctrl = 1; % set by default to true (search for loss)
+%             
+%             %% Determine if subject lost control (TICKET, remove
+%             %% hardcode)
+%             for j=3:6
+%                 
+%                 p = signrank(traj_v(:,j));
+%                 if(p<0.05);
+%                     in_ctrl = 0;
+%                 end
+%             end
+% 
+%             %% Determine point of max loss of control (TICKET,
+%             %% remove hardcode))
+%             if(~in_ctrl)
+%                 p_best = 1.0;
+%                 id_best = -1;
+%                 for j=3:6
+%                     p = signrank(traj_v(:,j));
+%                     if(p<p_best)
+%                         p_best = p;
+%                         id_best = j;
+%                     end
+%                 end
+%             end
+% 
+%             %% Assign subject label
+%             if(~in_ctrl & p_best<0.05)
+%                 sbj_labs = [sbj_labs; sign(median(traj_v(:, ...
+%                                                          id_best)))];
+%             else
+%                 sbj_labs = [sbj_labs; 0];
+%             end
             
-            %% Assign median subject trajectory
-            mu_traj_a = [mu_traj_a;median(traj_a)];
+            %% Assign median subject trajectory for visualization
+            mu_traj_v = [mu_traj_v;median(traj_v)];
 
         else
-            disp(['  -Could not find a_dcmp for: ',subj_study,'_', ...
+            disp(['  -Could not find v_dcmp for: ',subj_study,'_', ...
                   name],proj.path.logfile);
         end
 
@@ -108,35 +145,35 @@ logger(['  Neg out: ',num2str(numel(find(sbj_labs==-1))),'/',num2str(numel(sig_s
 %% structures and save out
 for i=1:numel(sig_subjs)
     sig_subjs{i}.in_ctrl = sbj_labs(i);
-    sig_subjs{i}.mu_traj_a = mu_traj_a(i,:);
+    sig_subjs{i}.mu_traj_v = mu_traj_v(i,:);
 end
-save([proj.path.analysis.er_skill,'a_sig_subjs.mat'],'sig_subjs');
+save([proj.path.analysis.vr_skill,'v_sig_subjs.mat'],'sig_subjs');
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
 ctrl_ids = find(sbj_labs==0);
-plot(mu_traj_a(ctrl_ids,:)','Color', proj.param.plot.dark_grey, ...
+plot(mu_traj_v(ctrl_ids,:)','Color', proj.param.plot.dark_grey, ...
      'LineWidth',2);
 hold on;
 
 pos_ids = find(sbj_labs==1);
-plot(mu_traj_a(pos_ids,:)','r-','LineWidth',2);
+plot(mu_traj_v(pos_ids,:)','r-','LineWidth',2);
 hold on;
 
 neg_ids = find(sbj_labs==-1);
-plot(mu_traj_a(neg_ids,:)','b-','LineWidth',2);
+plot(mu_traj_v(neg_ids,:)','b-','LineWidth',2);
 hold on;
 
 %% ----------------------------------------
 %% overlay VR goal
-vseq = linspace(0,size(mu_traj_a,2));
+vseq = linspace(0,size(mu_traj_v,2));
 plot(vseq,0*vseq,'k:','LineWidth',2)
 hold on;
 
 %% ----------------------------------------
 %% Set y limits
-hi_rng = max(max(mu_traj_a))+0.1;
-lo_rng = min(min(mu_traj_a))-0.2;
+hi_rng = max(max(mu_traj_v))+0.1;
+lo_rng = min(min(mu_traj_v))-0.25;
 
 %% ----------------------------------------
 %% fill in sections of trajectories
@@ -152,7 +189,7 @@ set(h,'facealpha',.1);
 
 %% ----------------------------------------
 %% format figure
-xlim([0,size(mu_traj_a,2)]);
+xlim([0,size(mu_traj_v,2)]);
 ylim([lo_rng,hi_rng]);
 hold off;
 fig = gcf;
@@ -174,8 +211,8 @@ text(0.22,0.075,'\itgoal','FontSize', ...
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'ER_a_dyna_sbj_labels.png' -r300  
-eval(['! mv ',proj.path.code,'ER_a_dyna_sbj_labels.png ', ...
+export_fig 'VR_v_dyna_sbj_labels.png' -r300  
+eval(['! mv ',proj.path.code,'VR_v_dyna_sbj_labels.png ', ...
       proj.path.fig]);
 
 %% ****************************************

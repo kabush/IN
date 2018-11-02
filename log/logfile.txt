@@ -1,223 +1,44 @@
 *************************************************
-Analyzing ER Skill                               
+ Organize VR skills for Cog-Behav analysis       
 *************************************************
-CTM_001
-CTM_003
-  -Could not find/load prds for: CTM_003
-CTM_004
-CTM_007
-CTM_008
-CTM_009
-CTM_010
-CTM_012
-CTM_013
-CTM_014
-CTM_018
-CTM_021
-CTM_022
-CTM_023
-CTM_026
-CTM_028
-CTM_024
-CTM_029
-CTM_030
-CTM_031
-CTM_033
-  -Could not find/load prds for: CTM_033
-CTM_034
-CTM_035
-  -Could not find/load prds for: CTM_035
-CTM_036
-CTM_039
-CTM_040
-  -Could not find/load prds for: CTM_040
-CTM_042
-CTM_043
-CTM_044
-CTM_045
-CTM_046
-CTM_047
-CTM_050
-CTM_051
-CTM_055
-CTM_056
-CTM_057
-  -Could not find/load prds for: CTM_057
-CTM_058
-CTM_060
-  -Could not find/load prds for: CTM_060
-CTM_061
-CTM_062
-INCA_003
-INCA_006
-INCA_007
-INCA_010
-INCA_012
-INCA_013
-INCA_014
-INCA_016
-INCA_017
-INCA_018
-INCA_020
-  -Could not find/load prds for: INCA_020
-INCA_021
-INCA_019
-INCA_023
-INCA_024
-INCA_031
-INCA_033
-INCA_035
-INCA_037
-CTM:007:i=281
-CTM:008:i=281
-----------------------------------------
-Statistical Summary
-  -Group effect: 0.34223, p=1.5514e-25
-  -Percent sign. subjs. (p<0.05): 60.3774*************************************************
-Plotting "Feel" dynamics                         
-*************************************************
-CTM_009
-CTM_014
-CTM_021
-CTM_022
-CTM_026
-CTM_028
-CTM_029
-CTM_031
-CTM_036
-CTM_039
-CTM_042
-CTM_045
-CTM_046
-CTM_047
-CTM_050
-CTM_056
-CTM_058
-INCA_003
-INCA_007
-INCA_010
-INCA_013
-INCA_014
-INCA_016
-INCA_017
-INCA_018
-INCA_021
-INCA_019
-INCA_024
-INCA_031
-INCA_033
-INCA_035
-INCA_037
-CTM:009:i=281
-*************************************************
-Analyzing ER Skill                               
-*************************************************
-CTM_001
-CTM_003
-  -Could not find/load prds for: CTM_003
-CTM_004
-CTM_007
-CTM_008
-CTM_009
-CTM_010
-CTM_012
-CTM_013
-CTM_014
-CTM_018
-CTM_021
-CTM_022
-CTM_023
-CTM_026
-CTM_028
-CTM_024
-CTM_029
-CTM_030
-CTM_031
-CTM_033
-  -Could not find/load prds for: CTM_033
-CTM_034
-CTM_035
-  -Could not find/load prds for: CTM_035
-CTM_036
-CTM_039
-CTM_040
-  -Could not find/load prds for: CTM_040
-CTM_042
-CTM_043
-CTM_044
-CTM_045
-CTM_046
-CTM_047
-CTM_050
-CTM_051
-CTM_055
-CTM_056
-CTM_057
-  -Could not find/load prds for: CTM_057
-CTM_058
-CTM_060
-  -Could not find/load prds for: CTM_060
-CTM_061
-CTM_062
-INCA_003
-INCA_006
-INCA_007
-INCA_010
-INCA_012
-INCA_013
-INCA_014
-INCA_016
-INCA_017
-INCA_018
-INCA_020
-  -Could not find/load prds for: INCA_020
-INCA_021
-INCA_019
-INCA_023
-INCA_024
-INCA_031
-INCA_033
-INCA_035
-INCA_037
-CTM:010:i=281
-----------------------------------------
-Statistical Summary
-  -Group effect: 0.29173, p=1.0555e-13
-  -Percent sign. subjs. (p<0.05): 54.2373*************************************************
-Plotting "Feel" dynamics                         
-*************************************************
-CTM_001
-CTM_007
-CTM_014
-CTM_021
-CTM_026
-CTM_028
-CTM_024
-CTM_030
-CTM_031
-CTM_034
-CTM_036
-CTM_042
-CTM_044
-CTM_056
-CTM_058
-CTM_061
-INCA_003
-INCA_007
-INCA_010
-INCA_014
-INCA_021
-INCA_019
-INCA_024
-INCA_031
-INCA_033
-INCA_037
-INCA_019
-INCA_024
-INCA_031
-INCA_033
-INCA_035
-INCA_037
-CTM:012:i=281
-CTM:013:i=281
-CTM:014:i=281
+CTM:026:i=576
+CTM:028:i=576
+CTM:024:i=576
+CTM:029:i=576
+CTM:030:i=576
+CTM:031:i=576
+CTM:033:i=576
+CTM:034:i=576
+CTM:035:i=576
+CTM:036:i=576
+CTM:039:i=576
+CTM:040:i=576
+CTM:042:i=576
+CTM:043:i=576
+CTM:044:i=576
+CTM:045:i=576
+CTM:046:i=576
+CTM:047:i=576
+CTM:050:i=576
+CTM:051:i=576
+CTM:055:i=576
+CTM:056:i=576
+CTM:057:i=576
+CTM:058:i=576
+CTM:060:i=576
+  -Haufe Error
+CTM:061:i=576
+CTM:062:i=576
+INCA:003:i=576
+INCA:006:i=576
+INCA:007:i=576
+INCA:010:i=576
+INCA:012:i=576
+INCA:013:i=576
+INCA:014:i=576
+INCA:016:i=576
+INCA:017:i=576
+INCA:018:i=576
+INCA:020:i=576
+INCA:021:i=576
+INCA:019:i=576

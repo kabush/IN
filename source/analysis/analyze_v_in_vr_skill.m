@@ -21,10 +21,10 @@ logger(['*************************************************'], ...
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.analysis.er_skill]);
-    eval(['! rm -rf ',proj.path.analysis.er_skill]);
-    disp(['Creating ',proj.path.analysis.er_skill]);
-    eval(['! mkdir ',proj.path.analysis.er_skill]);
+    disp(['Removing ',proj.path.analysis.vr_skill]);
+    eval(['! rm -rf ',proj.path.analysis.vr_skill]);
+    disp(['Creating ',proj.path.analysis.vr_skill]);
+    eval(['! mkdir ',proj.path.analysis.vr_skill]);
 end
 
 %% ----------------------------------------
@@ -66,22 +66,20 @@ for i = 1:numel(subjs)
             [~,ids] = sort(raw_stim');
             stim = raw_stim(ids,:);
             feel = mean(prds.v_dcmp.feel(ids,:),2);
-            feel_traj = prds.v_dcmp.feel(ids,:);
 
             %% remove extreme outliers (TICKET hardcoded outliers)
             stim_keep_ids = find(abs(stim)<=3);
             stim_feel_ids = find(abs(feel)<=3);
             cmb_keep_ids = intersect(stim_keep_ids,stim_feel_ids);
-            disp(['                  ', ...
-                  num2str(numel(cmb_keep_ids))]);
+            disp(['                  ', num2str(numel(cmb_keep_ids))]);
             stim_clean = stim(cmb_keep_ids);
             feel_clean = feel(cmb_keep_ids);
-            feel_traj_clean = feel_traj(cmb_keep_ids);
+            traj_clean = prds.v_dcmp.h(cmb_keep_ids,:)-prds.v_dcmp.h(cmb_keep_ids,1);
 
             %% build data for group GLMM
-            predictors = [predictors;double(stim)];
-            measures = [measures;double(feel)];
-            subjects = [subjects;repmat(i,numel(feel),1)];
+            predictors = [predictors;double(stim_clean)];
+            measures = [measures;double(feel_clean)];
+            subjects = [subjects;repmat(i,numel(feel_clean),1)];
             
             %% scatter plot specific points        
             scatter(stim_clean,feel_clean,10,'MarkerFaceColor', ...
@@ -96,7 +94,7 @@ for i = 1:numel(subjs)
             
             subj.stim = stim_clean;
             subj.feel = feel_clean;
-            subj.feel_traj = feel_traj_clean;
+            subj.traj = traj_clean;
 
             [b stat] = robustfit(stim_clean,feel_clean);
             subj.b1 = b(2); % slope
@@ -128,8 +126,8 @@ end
 
 %% ----------------------------------------
 %% save out subject groups
-save([proj.path.analysis.er_skill,'v_sig_subjs.mat'],'sig_subjs');
-save([proj.path.analysis.er_skill,'v_non_subjs.mat'],'non_subjs');
+save([proj.path.analysis.vr_skill,'v_sig_subjs.mat'],'sig_subjs');
+save([proj.path.analysis.vr_skill,'v_non_subjs.mat'],'non_subjs');
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
@@ -169,10 +167,21 @@ mdl = fitlme(tbl,['measures ~ 1 + predictors + (1|subjects) + ' ...
                   '(predictors-1|subjects)']);
 [~,~,FE] = fixedEffects(mdl);
 
+
+
 %% ----------------------------------------
 %% overlay the group VR skill plot
 y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
 plot(vseq,y_hat,'r-','LineWidth',3);
+
+%% ----------------------------------------
+%% compute effect size
+SS_res=sum((mdl.residuals).^2);
+SS_tot=sum((measures-mean(measures)).^2);
+Rsqr = 1-(SS_res/SS_tot);
+Fsqr = Rsqr/(1-Rsqr);
+logger(['Rsqr=',num2str(Rsqr)],proj.path.logfile);
+logger(['Fsqr=',num2str(Fsqr)],proj.path.logfile);
 
 %% ----------------------------------------
 %% indicate goal
@@ -195,8 +204,8 @@ ylabel('Mean Valence(modulate)');
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'ER_v_skill_summary.png' -r300  
-eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ', ...
+export_fig 'VR_v_skill_summary.png' -r300  
+eval(['! mv ',proj.path.code,'VR_v_skill_summary.png ', ...
       proj.path.fig]);
 
 %% ****************************************

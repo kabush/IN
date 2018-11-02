@@ -106,7 +106,7 @@ proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_
 proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
 
 %% Analysis path
-proj.path.analysis.er_skill = [proj.path.data,proj.path.analysis.name,'er_skill/'];
+proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 
 %% ----------------------------------------
