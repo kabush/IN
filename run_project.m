@@ -86,9 +86,9 @@ init_project;
 % %% STEP 8: Stimulus adjusted performance (see Frontiers 2018 paper)
 % % TBD
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
-% analyze_ex_scr; % (draft code, convert to GLMM)
+%% ------------------------------------------------------------ 
+%% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
+analyze_ex_scr; % (draft code, convert to GLMM)
 % 
 % %% ------------------------------------------------------------ 
 % %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
@@ -109,7 +109,7 @@ init_project;
 % calc_fmri_in_beta;
 % 
 % %% Physio data
-% - calc_scr_in_beta (TBD);
+% %- calc_scr_in_beta (TBD);
 % 
 % %% ------------------------------------------------------------ 
 % %% STEP 14: Compute IN Cognitive Dynamics
@@ -117,6 +117,7 @@ init_project;
 % 
 %% ------------------------------------------------------------ 
 %% STEP 15: Analysis IN Cognitive Dynamics
+%% TICKET: Current code is clunky, repeating scripts separately for V and A.
 analyze_v_in_vr_dynamics;
 analyze_a_in_vr_dynamics;
 
@@ -131,10 +132,8 @@ analyze_a_in_vr_skill;
 analyze_a_in_vr_labels;
 analyze_a_in_vr_extr_subjs;
 
-summarize_vr;
-% 
-% % - predict labels from cog-behave measures
-% 
+summarize_vr; 
+
 % %% ------------------------------------------------------------ 
 % %% STEP 17: Conduct MVPA for Cognitive Dynamics
 % % TBD
