@@ -194,8 +194,8 @@ ylabel('Mean Arousal(modulate)');
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'ER_a_skill_summary.png' -r300  
-eval(['! mv ',proj.path.code,'ER_a_skill_summary.png ', ...
+export_fig 'VR_a_skill_summary.png' -r300  
+eval(['! mv ',proj.path.code,'VR_a_skill_summary.png ', ...
       proj.path.fig]);
 
 %% ****************************************
