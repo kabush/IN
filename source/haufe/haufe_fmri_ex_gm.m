@@ -294,7 +294,7 @@ for i = 1:Nloop
         % Save out: mean encoding of permstrap sign. (p<0.001) group gray-matter voxels
         if(numel(sig_ids_001_v)>0)
              mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_001_v,1),gm_nii,sig_ids_001_v);
-             save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_0011.nii']);
+             save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_001.nii']);
         end
 
 
