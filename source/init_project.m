@@ -36,6 +36,7 @@ proj.flag.clean_build = 1;
 
 %% Raw data
 proj.path.raw_data = '/raw/bush/';
+proj.path.raw_cog = [proj.path.raw_data,'cogbehav/'];
 proj.path.raw_physio = 'physio';
 proj.path.raw_logs = 'logfiles';
 proj.path.raw_tabs = 'tabs';

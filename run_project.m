@@ -86,9 +86,9 @@ init_project;
 % %% STEP 8: Stimulus adjusted performance (see Frontiers 2018 paper)
 % % TBD
 % 
-%% ------------------------------------------------------------ 
-%% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
-analyze_ex_scr; % (draft code, convert to GLMM)
+% %% ------------------------------------------------------------ 
+% %% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
+% analyze_ex_scr; % (draft code, convert to GLMM)
 % 
 % %% ------------------------------------------------------------ 
 % %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
@@ -115,36 +115,38 @@ analyze_ex_scr; % (draft code, convert to GLMM)
 % %% STEP 14: Compute IN VR Cognitive Dynamics
 % dynamics_fmri_in_gm;
 % 
-%% ------------------------------------------------------------ 
-%% STEP 15: Analyze IN VR Cognitive Dynamics
-%% These scripts used GLMM to determine the significance affect
-%% dynamics significantly contribute to predicting future affect
-%% 
-%% TICKET: Current code is clunky, repeating scripts separately for
-%% V and A.
-analyze_v_in_vr_dynamics;
-analyze_a_in_vr_dynamics;
-
-%% ------------------------------------------------------------ 
-%% STEP 16: Analyze IN VR Control Performance
-%% These scripts determine whether VR succeeded groupwise and which
-%% specific subjects significantly conducted VR.  Then, for the 
-%% significant subjects only, mean control trajectores were
-%% analyzed to understand potential control biases.  Subjects are
-%% labeled if they (on average) lose control in either a positive
-%% or negative affect, where the goal is zero deviation from the
-%% affect induced by the cue image.  Analysis is performed
-%% separately for valence and arousal, respectively. 
-%%
-%% TICKET: Current code is clunky, repeating scripts separately for V and A.
-analyze_v_in_vr_skill;
-analyze_v_in_vr_labels;
-analyze_v_in_vr_extr_subjs;
-analyze_a_in_vr_skill;
-analyze_a_in_vr_labels;
-analyze_a_in_vr_extr_subjs;
-summarize_vr; 
-
+% %% ------------------------------------------------------------ 
+% %% STEP 15: Analyze IN VR Cognitive Dynamics
+% %% These scripts used GLMM to determine the significance affect
+% %% dynamics significantly contribute to predicting future affect
+% %% 
+% %% TICKET: Current code is clunky, repeating scripts separately for
+% %% V and A.
+% analyze_v_in_vr_dynamics;
+% analyze_a_in_vr_dynamics;
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 16: Analyze IN VR Control Performance
+% %% These scripts determine whether VR succeeded groupwise and which
+% %% specific subjects significantly conducted VR.  Then, for the 
+% %% significant subjects only, mean control trajectores were
+% %% analyzed to understand potential control biases.  Subjects are
+% %% labeled if they (on average) lose control in either a positive
+% %% or negative affect, where the goal is zero deviation from the
+% %% affect induced by the cue image.  Analysis is performed
+% %% separately for valence and arousal, respectively. 
+% %%
+% %% TICKET: Current code is clunky, repeating scripts separately for V and A.
+% analyze_v_in_vr_skill;
+% analyze_v_in_vr_labels;
+% analyze_v_in_vr_extr_subjs;
+% 
+% analyze_a_in_vr_skill;
+% analyze_a_in_vr_labels;
+% analyze_a_in_vr_extr_subjs;
+% 
+% summarize_vr; % -> this information combined with redcap cogbehav data
+% 
 % %% ------------------------------------------------------------ 
 % %% STEP 17: Conduct MVPA for Cognitive Dynamics
 % % TBD

@@ -35,9 +35,10 @@ for i=1:numel(v_sig_subjs)
 end
 
 for i=1:numel(v_non_subjs)
-    subj = v_sig_subjs{i};
+    subj = v_non_subjs{i};
     fprintf(fid,'%6s %6s %6s %6s\n',subj.study,subj.name,num2str(0),'n/a');
 end
+fclose(fid);
 
 %% ----------------------------------------
 %% load analysis structures (AROUSAL)
@@ -57,9 +58,9 @@ for i=1:numel(a_sig_subjs)
 end
 
 for i=1:numel(a_non_subjs)
-    subj = a_sig_subjs{i};
+    subj = a_non_subjs{i};
     fprintf(fid,'%6s %6s %6s %6s\n',subj.study,subj.name,num2str(0),'n/a');
 end
-
+fclose(fid);
 
 
