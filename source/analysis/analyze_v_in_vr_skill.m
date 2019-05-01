@@ -229,6 +229,9 @@ ns = num2str(n_sig);
 nt = num2str(n_tot);
 ssp = num2str(100*(n_sig/n_tot));
 
+n_tot
+n_sig
+
 logger(['----------------------------------------'], ...
        proj.path.logfile);
 logger(['Statistical Summary'],proj.path.logfile);

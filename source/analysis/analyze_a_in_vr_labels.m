@@ -175,15 +175,29 @@ hold on;
 hi_rng = max(max(mu_traj_a))+0.1;
 lo_rng = min(min(mu_traj_a))-0.25;
 
+% %% ----------------------------------------
+% %% fill in sections of trajectories
+% h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+%          'none');
+% set(h,'facealpha',.3);
+% h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+%          'none');
+% set(h,'facealpha',.2);
+% h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+%          'none');
+% set(h,'facealpha',.1);
+
 %% ----------------------------------------
-%% fill in sections of trajectories
-h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+%% fill in sections of trajectories ***TICKET*** changed color
+%% for CNS poster
+cspec = [0.15,0.45,1.0];
+h = fill([0,1,1,0],[lo_rng,lo_rng,hi_rng,hi_rng],cspec,'edgecolor', ...
          'none');
 set(h,'facealpha',.3);
-h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+h = fill([1,2,2,1],[lo_rng,lo_rng,hi_rng,hi_rng],cspec,'edgecolor', ...
          'none');
 set(h,'facealpha',.2);
-h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],'b','edgecolor', ...
+h = fill([6,7,7,6],[lo_rng,lo_rng,hi_rng,hi_rng],cspec,'edgecolor', ...
          'none');
 set(h,'facealpha',.1);
 
@@ -196,7 +210,7 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 xlabel('Volitional Recall (volume)');
-ylabel('Valence(modulate)-Valence(cue)');
+ylabel('Arousal(modulate)-Arousal(cue)');
 text(0.22,lo_rng+0.1,'cue','FontSize', ...
      proj.param.plot.axisLabelFontSize);
 text(1.15,lo_rng+0.1,'prep','FontSize', ...

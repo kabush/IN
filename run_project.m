@@ -137,12 +137,12 @@ init_project;
 % %% separately for valence and arousal, respectively. 
 % %%
 %% TICKET: Current code is clunky, repeating scripts separately for V and A.
-analyze_v_in_vr_skill;
-% analyze_v_in_vr_labels;
+% analyze_v_in_vr_skill;
+analyze_v_in_vr_labels;
 % analyze_v_in_vr_extr_subjs;
 % 
-analyze_a_in_vr_skill;
-% analyze_a_in_vr_labels;
+% analyze_a_in_vr_skill;
+analyze_a_in_vr_labels;
 % analyze_a_in_vr_extr_subjs;
 
 % summarize_vr; % -> this information combined with redcap cogbehav data

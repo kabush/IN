@@ -215,6 +215,10 @@ gep = num2str(FE.pValue(2));
 % single subject results
 n_sig = numel(sig_subjs);
 n_tot = numel(sig_subjs)+numel(non_subjs);
+
+n_tot
+n_sig
+
 ns = num2str(n_sig);
 nt = num2str(n_tot);
 ssp = num2str(100*(n_sig/n_tot));
