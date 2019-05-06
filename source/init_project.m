@@ -27,6 +27,10 @@ addpath(genpath(proj.path.tools.scralyze));
 proj.path.tools.export_fig = '/home/kabush/lib/export_fig/';
 addpath(genpath(proj.path.tools.export_fig));
 
+proj.path.tools.nifti = '/home/kabush/lib/nifti/';
+addpath(genpath(proj.path.tools.nifti));
+
+
 %% ----------------------------------------
 %% Project Flag Definitions
 proj.flag.clean_build = 1;
@@ -107,6 +111,7 @@ proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_
 proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
 
 %% Analysis path
+proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 

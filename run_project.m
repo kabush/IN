@@ -61,17 +61,21 @@ init_project;
 % %% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
 %  
 % %% Classification of Affect Scores
-% mvpa_fmri_ex_gs_cls % intra-subj Gram-Schmidt MVPA classification
-%                     % performs performance estimation using LOOCV
-%                     % basis for stimulus refitting (see below)
+% mvpa_fmri_ex_gs_cls;  % intra-subj Gram-Schmidt MVPA classification
+%                       % performs performance estimation using LOOCV
+%                       % basis for stimulus refitting (see below)
 % 
-% mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
-%                     % performs performance estimation using LOOCV
-%                     % also constructs and saves single model for
-%                     % application to IN formats
+% mvpa_fmri_ex_gm_cls; % intra-subj whole-brain GM MVPA classifications
+%                      % performs performance estimation using LOOCV
+%                      % also constructs and saves single model for
+%                      % application to IN formats
 % 
-% mvpa_fmri_ex_gm_mdl % intra-subj whole-brain GM MVPA models
+% mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
+
+%% Data-driven analysis of Classification
+analyze_mvpa_fmri_ex_gs_cls_refit;
+
 % % ----------------------------------------
 % % TICKET  Modify the above mvpa codes to save
 % % out the basis function for project to low-dim
@@ -136,13 +140,14 @@ init_project;
 % %% affect induced by the cue image.  Analysis is performed
 % %% separately for valence and arousal, respectively. 
 % %%
-%% TICKET: Current code is clunky, repeating scripts separately for V and A.
+% 
+% %% TICKET: Current code is clunky, repeating scripts separately for V and A.
 % analyze_v_in_vr_skill;
-analyze_v_in_vr_labels;
+% analyze_v_in_vr_labels;
 % analyze_v_in_vr_extr_subjs;
 % 
 % analyze_a_in_vr_skill;
-analyze_a_in_vr_labels;
+% analyze_a_in_vr_labels;
 % analyze_a_in_vr_extr_subjs;
 
 % summarize_vr; % -> this information combined with redcap cogbehav data
