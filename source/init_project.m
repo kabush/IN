@@ -90,10 +90,16 @@ proj.path.betas.fmri_in_beta = [proj.path.data,proj.path.betas.name,'fmri_in_bet
 
 %% SCR paths (all)
 proj.path.physio.scr_clean = [proj.path.data,proj.path.physio.name,'scr_clean/'];
-proj.path.betas.scr_beta = [proj.path.data,proj.path.betas.name,'scr_beta/']; %ex and in put in
-                                                                              %the same directory
-%% EMG/HRV paths (all)
-%TBD
+proj.path.betas.scr_ex_beta = [proj.path.data,proj.path.betas.name,'scr_ex_beta/'];
+proj.path.betas.scr_in_beta = [proj.path.data,proj.path.betas.name,'scr_in_beta/'];
+
+%% HRV paths (all)
+% this is in development under project http://github.com/kabush/HR
+
+%% EMG paths (all)
+% this is a prototype analysis (for pilot data)
+proj.path.physio.emg_clean = [proj.path.data,proj.path.physio.name,'emg_clean/'];
+proj.path.betas.emg_in_beta = [proj.path.data,proj.path.betas.name,'emg_in_beta/'];
 
 %% Target paths (all)
 proj.path.trg.ex = [proj.path.data,proj.path.trg.name,'target_ex/'];
@@ -210,6 +216,10 @@ proj.param.physio.scr.filt_high = 0.0159; %halfway between .05 and
                                           %(Staib 2015)
 proj.param.physio.scr.filt_low = 5;
 proj.param.physio.scr.filt_type = 2; 
+
+%% EMG analysis parameters
+proj.param.physio.emg.filt_low = 500.0; %% reference???
+proj.param.physio.emg.filt_high = 10.0; %% reference???
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';

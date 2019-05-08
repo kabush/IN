@@ -14,7 +14,7 @@ load('proj.mat');
 %% Initialize log section
 logger(['*************************************************'], ...
        proj.path.logfile);
-logger(['Analyzing SCR responses to EX stimuli            '], ...
+logger(['Analyzing SCR responses to IN stimuli            '], ...
        proj.path.logfile);
 logger(['*************************************************'], ...
        proj.path.logfile);
@@ -30,17 +30,17 @@ dark_grey = [.6,.6,.6];
 %% load subjs
 subjs = load_subjs(proj);
 
-%% ----------------------------------------
-%% Load labels;
-v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
-a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
-label_id = load([proj.path.trg.ex,'stim_ids.txt']);
-v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
-a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
-
-%% Adjust for extrinsic presentations
-v_score = v_score(find(label_id==proj.param.trg.ex_id));
-a_score = a_score(find(label_id==proj.param.trg.ex_id));
+% %% ----------------------------------------
+% %% Load labels;
+% v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
+% a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
+% label_id = load([proj.path.trg.ex,'stim_ids.txt']);
+% v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
+% a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
+% 
+% %% Adjust for extrinsic presentations
+% v_score = v_score(find(label_id==proj.param.trg.ex_id));
+% a_score = a_score(find(label_id==proj.param.trg.ex_id));
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
@@ -59,43 +59,28 @@ for i = 1:numel(subjs)
     logger([subj_study,'_',name],proj.path.logfile);
 
     try
-        load([proj.path.betas.scr_ex_beta,subj_study,'_',name,'_ex_betas.mat']);
+        load([proj.path.betas.scr_in_beta,subj_study,'_',name,'_in_betas.mat']);
+        load([proj.path.betas.scr_in_beta,subj_study,'_',name,'_feel_betas.mat']);
     catch
-        logger('    Could not find scr beta file for processing.', ...
-               proj.path.logfile);
+        logger('    Could not find scr beta file for processing.',proj.path.logfile);
     end
 
-    scr_betas = [ex_betas.id1,ex_betas.id2];
-    scr_a_score = a_score;
+    scr_in_betas = [in_betas.id1,in_betas.id2];
+    scr_feel_betas = [feel_betas.id1,feel_betas.id2];
+    
+    Nfact= numel(scr_feel_betas)/numel(scr_in_betas);
+    mu_scr_feel_betas = mean(reshape(scr_feel_betas,Nfact, ...
+                                numel(scr_in_betas))',2);
 
-    %% ----------------------------------------
-    %% Control for missing Identify runs
-    if(isempty(ex_betas.id1))
-        scr_a_score = a_score(46:90);
-    end
+    if(~isempty(scr_in_betas))
 
-    if(isempty(ex_betas.id2))
-        scr_a_score = a_score(1:45);
-    end
-
-    %% ****************************************
-    %% Remove hardcoding of the indices covered
-    %% by runs 1 and 2 of the extrinsic stimuli
-    %%
-    %% TICKET
-    %% ****************************************
-
-    if(~isempty(scr_betas))
-
-        measures = [measures;scr_a_score];
-        predictors = [predictors;scr_betas'];
-        subjects = [subjects;repmat(i,numel(scr_betas),1)];
+        measures = [measures;mu_scr_feel_betas];
+        predictors = [predictors;scr_in_betas'];
+        subjects = [subjects;repmat(i,numel(scr_in_betas),1)];
 
     end
 
 end
-
-
 
 %% ----------------------------------------
 %% Group GLMM fit
@@ -154,10 +139,10 @@ hold on;
 
 %% ----------------------------------------
 %% format figure
-ymin = 1;
-ymax = 9;
-xmin = -3;
-xmax = 3;
+ymin = -2; %-2.88;
+ymax = 2; %3.63;
+xmin = -2; %-3.24;
+xmax = 3; %3.61;
 
 %% ----------------------------------------
 %% overlay the group VR skill plot
@@ -173,10 +158,10 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('SCR Beta Coefficients');
-ylabel('Normative Arousal Scores');
+xlabel('VR(cue) SCR responses');
+ylabel('VR(modulate) SCR responses');
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'EX_scr_summary.png' -r300  
-eval(['! mv ',proj.path.code,'EX_scr_summary.png ',proj.path.fig]);
+export_fig 'IN_scr_summary.png' -r300  
+eval(['! mv ',proj.path.code,'IN_scr_summary.png ',proj.path.fig]);

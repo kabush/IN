@@ -36,8 +36,9 @@ init_project;
 % 
 % %% Physio data
 % preprocess_scr; 
-% % - preprocess_hrv (TBD); 
-% % - preprocess_emg (TBD);
+% preprocess_emg; % (pilot)
+% % - preprocess_hr (TBD); 
+%
 %  
 % %% Cognitive data
 % % - preprocess_cog (TBD);
@@ -72,10 +73,10 @@ init_project;
 % 
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
-
-%% Data-driven analysis of Classification
-analyze_mvpa_fmri_ex_gs_cls_refit;
-
+% 
+% %% Data-driven analysis of Classification
+% analyze_mvpa_fmri_ex_gs_cls_refit;
+% 
 % % ----------------------------------------
 % % TICKET  Modify the above mvpa codes to save
 % % out the basis function for project to low-dim
@@ -113,8 +114,14 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % calc_fmri_in_beta;
 % 
 % %% Physio data
-% %- calc_scr_in_beta (TBD);
-% 
+% calc_scr_in_beta; % (pilot)
+%%%% calc_emg_in_beta; % (pilot)
+
+
+% %% ------------------------------------------------------------ 
+% %% STEP ???: Analyze IN SCR Response (pilot)
+analyze_in_scr; %
+
 % %% ------------------------------------------------------------ 
 % %% STEP 14: Compute IN VR Cognitive Dynamics
 % dynamics_fmri_in_gm;
@@ -149,7 +156,7 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % analyze_a_in_vr_skill;
 % analyze_a_in_vr_labels;
 % analyze_a_in_vr_extr_subjs;
-
+%
 % summarize_vr; % -> this information combined with redcap cogbehav data
 % 
 % %% ------------------------------------------------------------ 

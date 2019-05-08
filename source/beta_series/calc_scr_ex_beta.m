@@ -13,10 +13,10 @@ load('proj.mat');
 
 %% Set-up Directory Structure for SCR
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.betas.scr_beta]);
-    eval(['! rm -rf ',proj.path.betas.scr_beta]);
-    disp(['Creating ',proj.path.betas.scr_beta]);
-    eval(['! mkdir ',proj.path.betas.scr_beta]);
+    disp(['Removing ',proj.path.betas.scr_ex_beta]);
+    eval(['! rm -rf ',proj.path.betas.scr_ex_beta]);
+    disp(['Creating ',proj.path.betas.scr_ex_beta]);
+    eval(['! mkdir ',proj.path.betas.scr_ex_beta]);
 end
 
 %% Load designs
@@ -138,7 +138,7 @@ for i=1:numel(subjs)
 
     %% ----------------------------------------
     %% SAVE Individual Betas
-    save([proj.path.betas.scr_beta,subj_study,'_',name,'_ex_betas.mat'],'ex_betas');
+    save([proj.path.betas.scr_ex_beta,subj_study,'_',name,'_ex_betas.mat'],'ex_betas');
 
     % debug
     if(~isempty(ex_betas.id1) & ~isempty(ex_betas.id2))
@@ -148,17 +148,17 @@ for i=1:numel(subjs)
 
 end
 
-% debug
-load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/stim_a_scores.txt']);
-load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/' ...
-      'stim_ids.txt']);
-ex_ids = find(stim_ids==1);
-grp_b = [];
-for i=1:size(grp_betas,1)
-    [b stat] = robustfit(grp_betas(i,:),stim_a_scores(ex_ids));
-    grp_b = [grp_b,b(2)];
-end
-
-[h p ci stat] = ttest(grp_b);
-p 
-ci
+%% % debug
+%% load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/stim_a_scores.txt']);
+%% load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/' ...
+%%       'stim_ids.txt']);
+%% ex_ids = find(stim_ids==1);
+%% grp_b = [];
+%% for i=1:size(grp_betas,1)
+%%     [b stat] = robustfit(grp_betas(i,:),stim_a_scores(ex_ids));
+%%     grp_b = [grp_b,b(2)];
+%% end
+%% 
+%% [h p ci stat] = ttest(grp_b);
+%% p 
+%% ci
