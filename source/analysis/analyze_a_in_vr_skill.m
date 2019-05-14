@@ -35,6 +35,8 @@ subjects = [];
 sig_cnt = 1;
 non_cnt = 1;
 
+b_all = []; %% for power estimate
+
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -94,6 +96,8 @@ for i = 1:numel(subjs)
             subj.b0 = b(1); % intercept
             subj.p1 = stat.p(2); %slope
             subj.p0 = stat.p(1); %intercept
+
+            b_all = [b_all,b(2)]; %% for power estimate
  
             %% sort subjects by significance
              if(subj.p1<0.05)

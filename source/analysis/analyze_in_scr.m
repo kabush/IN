@@ -19,28 +19,9 @@ logger(['Analyzing SCR responses to IN stimuli            '], ...
 logger(['*************************************************'], ...
        proj.path.logfile);
 
-%% plot parameters
-axisLabelFontSize = 18;
-circleSize = 10;
-white = [1,1,1];
-light_grey = [.8,.8,.8];
-dark_grey = [.6,.6,.6];
-
 %% ----------------------------------------
 %% load subjs
 subjs = load_subjs(proj);
-
-% %% ----------------------------------------
-% %% Load labels;
-% v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
-% a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
-% label_id = load([proj.path.trg.ex,'stim_ids.txt']);
-% v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
-% a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
-% 
-% %% Adjust for extrinsic presentations
-% v_score = v_score(find(label_id==proj.param.trg.ex_id));
-% a_score = a_score(find(label_id==proj.param.trg.ex_id));
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
@@ -132,9 +113,9 @@ set(gcf,'color','w');
 
 %% ----------------------------------------
 %% plot all the datapoints
-scatter(predictors,measures,10,'MarkerFaceColor', ...
+scatter(predictors,measures,60,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
+        proj.param.plot.dark_grey);
 hold on;
 
 %% ----------------------------------------
@@ -148,7 +129,7 @@ xmax = 3; %3.61;
 %% overlay the group VR skill plot
 vseq = linspace(xmin,xmax);
 y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
-plot(vseq,y_hat,'r-','LineWidth',3);
+plot(vseq,y_hat,'k-','LineWidth',6);
 
 xlim([xmin,xmax]);
 ylim([ymin,ymax]);
@@ -158,8 +139,8 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('VR(cue) SCR responses');
-ylabel('VR(modulate) SCR responses');
+% xlabel('VR(cue) SCR responses');
+% ylabel('VR(modulate) SCR responses');
 
 %% ----------------------------------------
 %% explot hi-resolution figure

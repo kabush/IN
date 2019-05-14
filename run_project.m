@@ -115,12 +115,12 @@ init_project;
 % 
 % %% Physio data
 % calc_scr_in_beta; % (pilot)
-%%%% calc_emg_in_beta; % (pilot)
-
+% calc_emg_in_beta; % (pilot)
 
 % %% ------------------------------------------------------------ 
 % %% STEP ???: Analyze IN SCR Response (pilot)
-analyze_in_scr; %
+% analyze_in_scr;
+% analyze_in_emg;
 
 % %% ------------------------------------------------------------ 
 % %% STEP 14: Compute IN VR Cognitive Dynamics
@@ -149,7 +149,8 @@ analyze_in_scr; %
 % %%
 % 
 % %% TICKET: Current code is clunky, repeating scripts separately for V and A.
-% analyze_v_in_vr_skill;
+analyze_v_in_vr_skill;
+% analyze_v_in_vr_skill_sex_diffs; % (pilot)
 % analyze_v_in_vr_labels;
 % analyze_v_in_vr_extr_subjs;
 % 
@@ -169,7 +170,7 @@ analyze_in_scr; %
 % 
 % %% EX Hyperplanes (global permutation test)
 % haufe_fmri_ex_gm;
-% 
+
 % %% IN Dynamics (global permutation test)
 % TBD
 

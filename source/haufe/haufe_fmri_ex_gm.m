@@ -217,11 +217,30 @@ for i = 1:Nloop
     ahf_sum = sum(qlty_haufe_v_mask,2);
     row_ids_v = find(ahf_sum>(qlty_n/2));
     grp_haufe_v(row_ids_v,i) = mean(qlty_haufe_v_wts(row_ids_v,:),2);
+
+    %% T-score version
+    if(i==1)
+        grp_haufe_v_tstat = 0*grp_haufe_v(:,1);
+        for k=1:numel(row_ids_v)
+            [h p ci stat] = ttest(qlty_haufe_v_wts(row_ids_v(k),:));
+            grp_haufe_v_tstat(row_ids_v(k),1)=stat.tstat;
+        end
+    end
+
     
     %% Group arousal Haufe
     ahf_sum = sum(qlty_haufe_a_mask,2);
     row_ids_a = find(ahf_sum>(qlty_n/2));
     grp_haufe_a(row_ids_a,i) = mean(qlty_haufe_a_wts(row_ids_a,:),2);
+    
+    %% T-score version
+    if(i==1)
+        grp_haufe_a_tstat = 0*grp_haufe_a(:,1);
+        for k=1:numel(row_ids_v)
+            [h p ci stat] = ttest(qlty_haufe_a_wts(row_ids_a(k),:));
+            grp_haufe_a_tstat(row_ids_a(k),1)=stat.tstat;
+        end
+    end
 
     %% ----------------------------------------
     %% Do permutation test given samples available
@@ -270,31 +289,54 @@ for i = 1:Nloop
         % ----------------------------------------
         % Save out: mean encoding of group gray-matter voxels
         if(numel(row_ids_v)>0)
-            mu_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(row_ids_v,1),gm_nii,row_ids_v);
+
+            % mu_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(row_ids_v,1),gm_nii,row_ids_v);
+            % save_nii(mu_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_haufe_v_N=',num2str(Nperm),'.nii']);
+
+            mu_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(row_ids_v,1),gm_nii,row_ids_v);
             save_nii(mu_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_haufe_v_N=',num2str(Nperm),'.nii']);
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.05) group
         % gray-matter voxels
         if(numel(sig_ids_05_v)>0)
-            mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_05_v,1),gm_nii,sig_ids_05_v);
+
+            % mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_05_v,1),gm_nii,sig_ids_05_v);
+            % save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_05.nii']);
+
+            mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(sig_ids_05_v,1),gm_nii,sig_ids_05_v);
             save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_05.nii']);
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.01) group
         % gray-matter voxels
         if(numel(sig_ids_01_v)>0)
-            mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_01_v,1),gm_nii,sig_ids_01_v);
-            save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_01.nii']);
+
+            % mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_01_v,1),gm_nii,sig_ids_01_v);
+            % save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_01.nii']);
+
+            mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(sig_ids_01_v,1),gm_nii,sig_ids_01_v);
+            save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_05.nii']);
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.001) group gray-matter voxels
         if(numel(sig_ids_001_v)>0)
-             mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_001_v,1),gm_nii,sig_ids_001_v);
+            
+            % mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v(sig_ids_001_v,1),gm_nii,sig_ids_001_v);
+            %  save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_001.nii']);
+
+             mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(sig_ids_001_v,1),gm_nii,sig_ids_001_v);
              save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_001.nii']);
+
+
+
+
         end
 
 
@@ -332,31 +374,52 @@ for i = 1:Nloop
         % ----------------------------------------
         % Save out: mean encoding of group gray-matter voxels
         if(numel(row_ids_a)>0)
-            mu_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(row_ids_a,1),gm_nii,row_ids_a);
+
+            % mu_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(row_ids_a,1),gm_nii,row_ids_a);
+            % save_nii(mu_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_haufe_a_N=',num2str(Nperm),'.nii']);
+
+            mu_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a_tstat(row_ids_a,1),gm_nii,row_ids_a);
             save_nii(mu_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_haufe_a_N=',num2str(Nperm),'.nii']);
+
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.05) group
         % gray-matter voxels
         if(numel(sig_ids_05_a)>0)
-            mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_05_a,1),gm_nii,sig_ids_05_a);
+
+            % mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_05_a,1),gm_nii,sig_ids_05_a);
+            % save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_05.nii']);
+
+            mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a_tstat(sig_ids_05_a,1),gm_nii,sig_ids_05_a);
             save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_05.nii']);
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.01) group
         % gray-matter voxels
         if(numel(sig_ids_01_a)>0)
-            mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_01_a,1),gm_nii,sig_ids_01_a);
+
+            % mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_01_a,1),gm_nii,sig_ids_01_a);
+            % save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_01.nii']);
+
+            mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a_tstat(sig_ids_01_a,1),gm_nii,sig_ids_01_a);
             save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_01.nii']);
+
         end
 
         % ----------------------------------------
         % Save out: mean encoding of permstrap sign. (p<0.001) group gray-matter voxels
         if(numel(sig_ids_001_a)>0)
-             mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_001_a,1),gm_nii,sig_ids_001_a);
-             save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_001.nii']);
+
+            % mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a(sig_ids_001_a,1),gm_nii,sig_ids_001_a);
+            % save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_001.nii']);
+
+            mu_perm_a_haufe_nii = build_nii_from_gm_mask(grp_haufe_a_tstat(sig_ids_001_a,1),gm_nii,sig_ids_001_a);
+            save_nii(mu_perm_a_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_a_N=',num2str(Nperm),'_001.nii']);
+
         end
 
     end

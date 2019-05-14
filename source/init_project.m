@@ -226,7 +226,7 @@ proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; % should be >= 30
 
 %% Haufe parameters
-proj.param.haufe.npermute = 1000;
+proj.param.haufe.npermute = 200;
 proj.param.haufe.chunk = 10;
 
 %% Plotting parameters

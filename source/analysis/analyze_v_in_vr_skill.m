@@ -43,6 +43,8 @@ subjects = [];
 sig_cnt = 1;
 non_cnt = 1;
 
+b_all = []; %% for power
+
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -84,7 +86,7 @@ for i = 1:numel(subjs)
             %% scatter plot specific points        
             scatter(stim_clean,feel_clean,10,'MarkerFaceColor', ...
                     proj.param.plot.white,'MarkerEdgeColor', ...
-                    proj.param.plot.very_light_grey);
+                    proj.param.plot.light_grey);
             hold on;
             
             %% build individual subject structures
@@ -97,6 +99,8 @@ for i = 1:numel(subjs)
             subj.traj = traj_clean;
 
             [b stat] = robustfit(stim_clean,feel_clean);
+            b_all = [b_all,b(2)]; %% for power
+
             subj.b1 = b(2); % slope
             subj.b0 = b(1); % intercept
             subj.p1 = stat.p(2); %slope
@@ -185,8 +189,8 @@ logger(['Fsqr=',num2str(Fsqr)],proj.path.logfile);
 
 %% ----------------------------------------
 %% indicate goal
-text(1.9,1.8,'\itgoal','FontSize', ...
-     proj.param.plot.axisLabelFontSize-4);
+text(1.8,1.7,'\itgoal','FontSize', ...
+     proj.param.plot.axisLabelFontSize-3);
 
 
 %% ----------------------------------------
@@ -199,8 +203,8 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('Valence(cue)');
-ylabel('Mean Valence(modulate)');
+% xlabel('Valence(cue)');
+% ylabel('Mean Valence(modulate)');
 
 %% ----------------------------------------
 %% explot hi-resolution figure

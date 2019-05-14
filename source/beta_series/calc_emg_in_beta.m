@@ -38,18 +38,6 @@ for i=1:numel(run2_in_stim_times)
     run2_feel_stim_times = [run2_feel_stim_times,proj.param.trg.feel_times+run2_in_stim_times(i)];
 end
 
-% 
-% %% build design(s)
-% [prime_in_1 other_in_1] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id1,run1_in_stim_times);
-% [prime_in_2 other_in_2] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id2,run2_in_stim_times);
-% [prime_feel_1 other_feel_1] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id1,run1_feel_stim_times);
-% [prime_feel_2 other_feel_2] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id2,run2_feel_stim_times);
-% 
-% %% ----------------------------------------
-% %% TICKET
-% %% Should rewrite this whole system in terms of tasks and runs
-% %% to make it more flexible and general
-% 
 %% load subjs
 subjs = load_subjs(proj);
 
@@ -57,9 +45,8 @@ logger(['************************************************'],proj.path.logfile);
 logger(['Calculating EMG beta-series of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
 logger(['************************************************'],proj.path.logfile);
 
-grp_betas = [];
 
-for i=1:numel(subjs)
+for i=1:22 % numel(subjs) % only CTM has EMG recordings that are valid
     
     %% extract subject info
     subj_study = subjs{i}.study;
@@ -68,80 +55,93 @@ for i=1:numel(subjs)
     %% debug
     logger([subj_study,':',name],proj.path.logfile);
 
-    %% Initialize scr beta structure
+    %% Initialize emg beta structure
     in_betas = struct();
     feel_betas = struct();
+    in_betas.zygo.id1 = [];
+    feel_betas.zygo.id1 = [];
+    in_betas.corr.id1 = [];
+    feel_betas.corr.id1 = [];
 
-%     %% ----------------------------------------
-%     %% LSS of scr signal (Mumford, 2012) - Identify 1
-%     in_betas.id1 = [];
-%     feel_betas.id1 = [];
-%     try
-% 
-%         path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
-%         load(path);
-% 
-%         for j=1:size(prime_in_1)
-%             prime = prime_in_1(j,:);
-%             other = other_in_1(j,:);
-%             mdl_in_1 = regstats(scr,[prime_in_1(j,:)',other_in_1(j,:)']);
-%             in_betas.id1 = [in_betas.id1,mdl_in_1.beta(2)'];
-%         end
-% 
-%         %%Normalize
-%         in_betas.id1 = zscore(in_betas.id1);
-% 
-%         for j=1:size(prime_feel_1)
-%             prime = prime_feel_1(j,:);
-%             other = other_feel_1(j,:);
-%             mdl_feel_1 = regstats(scr,[prime_feel_1(j,:)',other_feel_1(j,:)']);
-%             feel_betas.id1 = [feel_betas.id1,mdl_feel_1.beta(2)'];
-%         end
-% 
-%         %%Normalize
-%         feel_betas.id1 = zscore(feel_betas.id1);
-% 
-%     catch
-%         logger(['  -LSS Error: SCR of Identify run 1: ',path],proj.path.logfile);
-%     end
-% 
-%     %% ----------------------------------------
-%     %% LSS of scr signal (Mumford, 2012) - Identify 1
-%     in_betas.id2 = [];
-%     feel_betas.id2 = [];
-%     try
-% 
-%         path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
-%         load(path);
-% 
-%         for j=1:size(prime_in_2)
-%             prime = prime_in_2(j,:);
-%             other = other_in_2(j,:);
-%             mdl_in_1 = regstats(scr,[prime_in_2(j,:)',other_in_2(j,:)']);
-%             in_betas.id1 = [in_betas.id2,mdl_in_2.beta(2)'];
-%         end
-% 
-%         %%Normalize
-%         in_betas.id2 = zscore(in_betas.id2);
-% 
-% 
-%         for j=1:size(prime_feel_2)
-%             prime = prime_feel_2(j,:);
-%             other = other_feel_2(j,:);
-%             mdl_feel_2 = regstats(scr,[prime_feel_2(j,:)',other_feel_2(j,:)']);
-%             feel_betas.id2 = [feel_betas.id2,mdl_feel_2.beta(2)'];
-%         end
-% 
-%         %%Normalize
-%         feel_betas.id2 = zscore(feel_betas.id2);
-% 
-%     catch
-%         logger(['  -LSS Error: SCR of Identify run 1: ',path],proj.path.logfile);
-%     end
-% 
-%     %% ----------------------------------------
-%     %% SAVE Individual Betas
-%     save([proj.path.betas.scr_in_beta,subj_study,'_',name,'_in_betas.mat'],'in_betas');
-%     save([proj.path.betas.scr_in_beta,subj_study,'_',name,'_feel_betas.mat'],'feel_betas');
+    try
+
+        path = [proj.path.physio.emg_clean,subj_study,'_',name,'_Identify_run_1_zygo.mat'];
+        load(path);
+
+        path = [proj.path.physio.emg_clean,subj_study,'_',name,'_Identify_run_1_corr.mat'];
+        load(path);
+
+        for j = 1:numel(run1_in_stim_times)
+            start_time = run1_in_stim_times(j);
+            start_id = start_time*proj.param.physio.hz_emg;
+            stim_samples = proj.param.mri.TR*proj.param.physio.hz_emg;
+            end_id = start_id+stim_samples-1;
+            in_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
+            in_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
+            in_betas.zygo.id1 = [in_betas.zygo.id1;sum(in_beta_zygo)];
+            in_betas.corr.id1 = [in_betas.corr.id1;sum(in_beta_corr)];
+        end
+        
+        for j = 1:numel(run1_feel_stim_times)
+            start_time = run1_feel_stim_times(j);
+            start_id = start_time*proj.param.physio.hz_emg;
+            stim_samples = proj.param.mri.TR*proj.param.physio.hz_emg;
+            end_id = start_id+stim_samples-1;
+            feel_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
+            feel_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
+            feel_betas.zygo.id1 = [feel_betas.zygo.id1;sum(feel_beta_zygo)];
+            feel_betas.corr.id1 = [feel_betas.corr.id1;sum(feel_beta_corr)];
+        end
+        
+ 
+    catch
+        logger(['  -Error: EMG of Identify run 1: ',path],proj.path.logfile);
+    end
+
+    %% additional emg beta structure
+    in_betas.zygo.id2 = [];
+    feel_betas.zygo.id2 = [];
+    in_betas.corr.id2 = [];
+    feel_betas.corr.id2 = [];
+
+    try
+
+        path = [proj.path.physio.emg_clean,subj_study,'_',name,'_Identify_run_2_zygo.mat'];
+        load(path);
+
+        path = [proj.path.physio.emg_clean,subj_study,'_',name,'_Identify_run_2_corr.mat'];
+        load(path);
+
+        for j = 1:numel(run2_in_stim_times)
+            start_time = run2_in_stim_times(j);
+            start_id = start_time*proj.param.physio.hz_emg;
+            stim_samples = proj.param.mri.TR*proj.param.physio.hz_emg;
+            end_id = start_id+stim_samples-1;
+            in_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
+            in_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
+            in_betas.zygo.id2 = [in_betas.zygo.id2;sum(in_beta_zygo)];
+            in_betas.corr.id2 = [in_betas.corr.id2;sum(in_beta_corr)];
+        end
+        
+        for j = 1:numel(run2_feel_stim_times)
+            start_time = run2_feel_stim_times(j);
+            start_id = start_time*proj.param.physio.hz_emg;
+            stim_samples = proj.param.mri.TR*proj.param.physio.hz_emg;
+            end_id = start_id+stim_samples-1;
+            feel_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
+            feel_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
+            feel_betas.zygo.id2 = [feel_betas.zygo.id2;sum(feel_beta_zygo)];
+            feel_betas.corr.id2 = [feel_betas.corr.id2;sum(feel_beta_corr)];
+        end
+        
+ 
+    catch
+        logger(['  -Error: EMG of Identify run 2: ',path],proj.path.logfile);
+    end
+
+    %% ----------------------------------------
+    %% SAVE Individual Betas
+    save([proj.path.betas.emg_in_beta,subj_study,'_',name,'_in_betas.mat'],'in_betas');
+    save([proj.path.betas.emg_in_beta,subj_study,'_',name,'_feel_betas.mat'],'feel_betas');
 
 end

@@ -46,8 +46,6 @@ for i=1:numel(subjs)
                    subj_study,'_',name,'_Identify_run_1.mat'];
         load(in_path);
    
-        size(data)
-     
         % subselect component from BIOPAC
         chan_zygo = proj.param.physio.chan_emg_zygo;
         chan_corr = proj.param.physio.chan_emg_corr;
@@ -65,8 +63,8 @@ for i=1:numel(subjs)
         
         %save emg
         out_path = [proj.path.physio.emg_clean,subj_study,'_',name];
-        save([out_path,'_run_1_corr.mat'],'rect_corr');
-        save([out_path,'_run_1_zygo.mat'],'rect_zygo');
+        save([out_path,'_Identify_run_1_corr.mat'],'rect_corr');
+        save([out_path,'_Identify_run_1_zygo.mat'],'rect_zygo');
         
         %% ----------------------------------------
         %% Process Identify Run 2
@@ -95,8 +93,8 @@ for i=1:numel(subjs)
         
         %save emg
         out_path = [proj.path.physio.emg_clean,subj_study,'_',name];
-        save([out_path,'_run_2_corr.mat'],'rect_corr');
-        save([out_path,'_run_2_zygo.mat'],'rect_zygo');
+        save([out_path,'_Identify_run_2_corr.mat'],'rect_corr');
+        save([out_path,'_Identify_run_2_zygo.mat'],'rect_zygo');
         
     catch
         disp('   EMG data may be unavailable');

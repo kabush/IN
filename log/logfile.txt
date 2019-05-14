@@ -1,8 +1,9 @@
 *************************************************
-Analyzing SCR responses to IN stimuli            
+Analyzing ER Skill                               
 *************************************************
 CTM_001
 CTM_003
+  -Could not find/load prds for: CTM_003
 CTM_004
 CTM_007
 CTM_008
@@ -19,6 +20,7 @@ CTM_024
 CTM_028
 CTM_030
 CTM_033
+  -Could not find/load prds for: CTM_033
 CTM_034
 CTM_036
 CTM_043
@@ -33,6 +35,7 @@ INCA_016
 INCA_017
 INCA_018
 INCA_020
+  -Could not find/load prds for: INCA_020
 INCA_021
 INCA_019
 INCA_023
@@ -41,5 +44,9 @@ INCA_031
 INCA_033
 INCA_035
 INCA_037
-  Rsqr=0.12008
-  Fsqr=0.13647
+Rsqr=0.19215
+Fsqr=0.23785
+----------------------------------------
+Statistical Summary
+  -Group effect: 0.37684, p=1.3552e-42
+  -Percent sign. subjs. (p<0.05): 54.0541
