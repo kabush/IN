@@ -45,10 +45,10 @@ data for the project using best practices (and document literature of
 each step).
 
 2) Construct beta-series (Rissman, 2004) features for each data type
-where relevant (fMRI,SCR,facial EMG,HRV, etc).
+where relevant (fMRI,SCR,facial EMG,HR, etc).
 
 3) Predict cognitive (i.e., emotion) and physiological (i.e., SCR,
-EMG, and HRV betas) via fMRI-derived whole-brain beta features to
+EMG, and HR betas) via fMRI-derived whole-brain beta features to
 identify the "plant" of the control system. For the purposes of this
 project, we define the plant as the functional neuranatomical
 activations encoding the valence and arousal dimensions of affect
@@ -157,7 +157,7 @@ ANFI (Version AFNI_18.2.06)
 
 FSL (5.0.9)
 
-python (2.7) # HRV analysis only (for now)
+python (2.7) # HR analysis only (for now)
     - numpy	
     - scipy
     - matplotlib

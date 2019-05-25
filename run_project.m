@@ -74,9 +74,9 @@ init_project;
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
 % 
-% %% Data-driven analysis of Classification
-% analyze_mvpa_fmri_ex_gs_cls_refit;
-% 
+%% Data-driven analysis of Classification
+analyze_mvpa_fmri_ex_gs_cls_refit;
+ 
 % % ----------------------------------------
 % % TICKET  Modify the above mvpa codes to save
 % % out the basis function for project to low-dim
@@ -149,7 +149,7 @@ init_project;
 % %%
 % 
 % %% TICKET: Current code is clunky, repeating scripts separately for V and A.
-analyze_v_in_vr_skill;
+% analyze_v_in_vr_skill;
 % analyze_v_in_vr_skill_sex_diffs; % (pilot)
 % analyze_v_in_vr_labels;
 % analyze_v_in_vr_extr_subjs;
