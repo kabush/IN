@@ -73,42 +73,38 @@ init_project;
 % 
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
-% 
-%% Data-driven analysis of Classification
-analyze_mvpa_fmri_ex_gs_cls_refit;
- 
-% % ----------------------------------------
-% % TICKET  Modify the above mvpa codes to save
-% % out the basis function for project to low-dim
-% % space.  Will use the inverse to project Haufe-transformed
-% % hyperplanes back into GM space for viewing.
-% 
+% %% STEP 7: Data-driven Analysis of Classification (see Frontiers 2018 paper)
+% analyze_mvpa_fmri_ex_gs_cls_refit;
+%  
 % %% ------------------------------------------------------------ 
-% %% STEP 7: compare GS vs GM features (Frontiers 2018 paper)
+% %% STEP 8: compare GS vs GM features (Frontiers 2018 paper)
 % % TBD
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 8: Stimulus adjusted performance (see Frontiers 2018 paper)
+% %% STEP 9: Stimulus adjusted performance (see Frontiers 2018 paper)
 % % TBD
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 9: Analyze EX SCR Response (see SciReports 2018 paper)
+% %% STEP 10: Analyze EX SCR Response (see SciReports 2018 paper)
 % analyze_ex_scr; % (draft code, convert to GLMM)
+% mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
+% %% STEP 11: V vs A hyperplane cosine sim (see SciReports 2018 paper)
 % % TBD
 % 
-% %% ------------------------------------------------------------
-% %% STEP 11: Conduct MVPA for Secondary Measures
-% % mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
-% 
 % %% ------------------------------------------------------------ 
-% %% STEP 12: Format project design for IN afni-based beta-series
+% %% STEP 12: Hyperplane encoding analysis (see SciReports 2018 paper)
+%
+% %% EX Hyperplanes (global permutation test)
+% haufe_fmri_ex_gm;
+%
+% %% ------------------------------------------------------------ 
+% %% STEP 13: Format project design for IN afni-based beta-series
 % format_in_3dlss;
 % 
 % %% ------------------------------------------------------------
-% %% STEP 13: Calcuate Intrinsic (IN) Stimuli Beta-Series
+% %% STEP 14: Calcuate Intrinsic (IN) Stimuli Beta-Series
 % 
 % %% fMRI data
 % calc_fmri_in_beta;
@@ -116,6 +112,37 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % %% Physio data
 % calc_scr_in_beta; % (pilot)
 % calc_emg_in_beta; % (pilot)
+% 
+% %% ------------------------------------------------------------ 
+% %% STEP 15: Compute IN VR Cognitive Dynamics
+dynamics_fmri_in_gm;
+
+%% ------------------------------------------------------------ 
+%% STEP 16: Critically test ACC function (AIM 1)
+
+% Format Ray, 2013 ACC ICA (accICA) component to align with beta-sers
+reshape_acc_ica;
+
+% Compute cognitive control models (CCM) of ACC function (cmACC)
+cog_ctrl_mdl_fmri_in_gm;  % based on dynamics
+
+% Predict ccmACC from accICA masked beta-series
+% TBD
+
+% Compare prediction performance
+% TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
+% Skill via single subj significance?)
+
+
+% %% ------------------------------------------------------------ 
+% %% ------------------------------------------------------------ 
+% %%  Steps below are in-progress analysis (pilot data/posters)
+% %% ------------------------------------------------------------ 
+% %% ------------------------------------------------------------ 
+
+%% ***TICKET*** path to dynamics have changes from data/in_ctrl to
+%% data/in_dyn ... will likely break analysis code below.
+
 
 % %% ------------------------------------------------------------ 
 % %% STEP ???: Analyze IN SCR Response (pilot)
@@ -123,11 +150,7 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % analyze_in_emg;
 
 % %% ------------------------------------------------------------ 
-% %% STEP 14: Compute IN VR Cognitive Dynamics
-% dynamics_fmri_in_gm;
-% 
-% %% ------------------------------------------------------------ 
-% %% STEP 15: Analyze IN VR Cognitive Dynamics
+% %% Analyze IN VR Cognitive Dynamics
 % %% These scripts used GLMM to determine the significance affect
 % %% dynamics significantly contribute to predicting future affect
 % %% 
@@ -137,7 +160,7 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % analyze_a_in_vr_dynamics;
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 16: Analyze IN VR Control Performance
+% %% Analyze IN VR Control Performance
 % %% These scripts determine whether VR succeeded groupwise and which
 % %% specific subjects significantly conducted VR.  Then, for the 
 % %% significant subjects only, mean control trajectores were
@@ -146,7 +169,6 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % %% or negative affect, where the goal is zero deviation from the
 % %% affect induced by the cue image.  Analysis is performed
 % %% separately for valence and arousal, respectively. 
-% %%
 % 
 % %% TICKET: Current code is clunky, repeating scripts separately for V and A.
 % analyze_v_in_vr_skill;
@@ -161,15 +183,9 @@ analyze_mvpa_fmri_ex_gs_cls_refit;
 % summarize_vr; % -> this information combined with redcap cogbehav data
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 17: Conduct MVPA for Cognitive Dynamics
+% %% Conduct MVPA for Cognitive Dynamics
 % % TBD
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 18: Hyperplane analysis (see SciReports 2018 paper)
-% %% (Last position b/c it's slow ... lots of resampling)
-% 
-% %% EX Hyperplanes (global permutation test)
-% haufe_fmri_ex_gm;
 
 % %% IN Dynamics (global permutation test)
 % TBD

@@ -44,6 +44,7 @@ proj.path.raw_cog = [proj.path.raw_data,'cogbehav/'];
 proj.path.raw_physio = 'physio';
 proj.path.raw_logs = 'logfiles';
 proj.path.raw_tabs = 'tabs';
+proj.path.atlas = '/home/kabush/atlas/';
 
 %% Workspace
 proj.path.home = '/home/kabush/workspace/';
@@ -82,30 +83,32 @@ proj.path.trg.name = 'target/';
 %% ----------------------------------------
 %% Specific Output Paths
 
-%% fMRI paths (all)
+%% MRI paths
 proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name,'mri_clean/'];
 proj.path.mri.gm_mask = [proj.path.data,proj.path.mri.name,'gm_mask/'];
+
+%% Beta-Series Paths
 proj.path.betas.fmri_ex_beta = [proj.path.data,proj.path.betas.name,'fmri_ex_beta/'];
 proj.path.betas.fmri_in_beta = [proj.path.data,proj.path.betas.name,'fmri_in_beta/'];
 
-%% SCR paths (all)
+%% SCR paths
 proj.path.physio.scr_clean = [proj.path.data,proj.path.physio.name,'scr_clean/'];
 proj.path.betas.scr_ex_beta = [proj.path.data,proj.path.betas.name,'scr_ex_beta/'];
 proj.path.betas.scr_in_beta = [proj.path.data,proj.path.betas.name,'scr_in_beta/'];
 
-%% HRV paths (all)
-% this is in development under project http://github.com/kabush/HR
+%% HR paths 
+% Under development within project http://github.com/kabush/HR
 
-%% EMG paths (all)
+%% EMG paths
 % this is a prototype analysis (for pilot data)
 proj.path.physio.emg_clean = [proj.path.data,proj.path.physio.name,'emg_clean/'];
 proj.path.betas.emg_in_beta = [proj.path.data,proj.path.betas.name,'emg_in_beta/'];
 
-%% Target paths (all)
+%% Target paths
 proj.path.trg.ex = [proj.path.data,proj.path.trg.name,'target_ex/'];
 proj.path.trg.in = [proj.path.data,proj.path.trg.name,'target_in/'];
 
-%% MVPA path
+%% MVPA paths
 proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_cls/'];
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
@@ -114,7 +117,10 @@ proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_
 proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_gm_mdl/'];
 
 %% Inrinsic (IN) control path
-proj.path.ctrl.in_ctrl = [proj.path.data,proj.path.ctrl.name,'in_ctrl/'];
+%% proj.path.ctrl.in_ctrl =  [proj.path.data,proj.path.ctrl.name,'in_ctrl/']; %% OLD
+proj.path.ctrl.in_dyn = [proj.path.data,proj.path.ctrl.name,'in_dyn/']; 
+proj.path.ctrl.in_ica = [proj.path.data,proj.path.ctrl.name,'in_ica/'];
+proj.path.ctrl.in_ccm = [proj.path.data,proj.path.ctrl.name,'in_ccm/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];

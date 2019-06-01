@@ -97,7 +97,7 @@ foreach subj (${subjs})
     cd ${rootpth}/${study}_${subj}
 
 	 #copy and rename T1
-	 cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_sT1W_3D_TFE_32chSHC_2_1.nii .
+	 cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_sT1W_3D_TFE_32chSHC_2_1.nii .
     mv ${study}_${subj}_sT1W_3D_TFE_32chSHC_2_1.nii ${study}.${subj}.anat.nii
 
     # ========================================
@@ -111,22 +111,22 @@ foreach subj (${subjs})
 
 	    #copy and rename identify epi
 	    if (${task} == 'identify') then
-		cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_Identify1_4_1.nii .
-		cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_Identify2_5_1.nii .
+		cp ${rawpth}/${study}/mri${study}_${subj}/${study}_${subj}_Identify1_4_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Identify2_5_1.nii .
 		mv ${study}_${subj}_Identify1_4_1.nii ${study}.${subj}.identify.run1.nii
 		mv ${study}_${subj}_Identify2_5_1.nii ${study}.${subj}.identify.run2.nii
 	    endif
 
 	    #copy and rename rest epi
 	    if (${task} == 'rest') then
-		cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_Rest_6_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Rest_6_1.nii .
 		mv ${study}_${subj}_Rest_6_1.nii ${study}.${subj}.rest.run1.nii
 	    endif
 
 	    #copy and rename modualte epi
 	    if (${task} == 'modulate') then
-		cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_Modulate1_7_1.nii .
-		cp ${rawpth}/${study}/${study}_${subj}/${study}_${subj}_Modulate2_8_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Modulate1_7_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Modulate2_8_1.nii .
 		mv ${study}_${subj}_Modulate1_7_1.nii ${study}.${subj}.modulate.run1.nii
 		mv ${study}_${subj}_Modulate2_8_1.nii ${study}.${subj}.modulate.run2.nii
 	    endif

@@ -19,15 +19,19 @@ logger(['*************************************************'],proj.path.logfile);
 %% ----------------------------------------
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.ctrl.in_dyn]);
-    eval(['! rm -rf ',proj.path.ctrl.in_dyn]);
-    disp(['Creating ',proj.path.ctrl.in_dyn]);
-    eval(['! mkdir ',proj.path.ctrl.in_dyn]);
+    disp(['Removing ',proj.path.ctrl.in_ctrl]);
+    eval(['! rm -rf ',proj.path.ctrl.in_ctrl]);
+    disp(['Creating ',proj.path.ctrl.in_ctrl]);
+    eval(['! mkdir ',proj.path.ctrl.in_ctrl]);
 end
 
 %% ----------------------------------------
 %% Load labels;
+v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
+a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
 label_id = load([proj.path.trg.in,'stim_ids.txt']); %note change
+v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
+a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% ----------------------------------------
 %% load subjs
@@ -70,9 +74,9 @@ for i = 1:numel(subjs)
         %% Concatenate the MASKED base image
         subj_img = base_img(in_brain,:)';
         
-        % %% Concatenate all label/subj identifiers
-        % subj_id = [repmat(id,numel(label_id),1)];
-        % subj_i = [repmat(i,numel(label_id),1)];
+        %% Concatenate all label/subj identifiers
+        subj_id = [repmat(id,numel(label_id),1)];
+        subj_i = [repmat(i,numel(label_id),1)];
         
         %% Perform quality
         qlty = check_gm_img_qlty(subj_img);
@@ -119,25 +123,25 @@ for i = 1:numel(subjs)
             %% decompose predicted trajectories (& derivs)
             
             %% valence
-            [prds.v_dcmp,prds.v_indx] = decompose_in(proj,label_id,prds.v_hd);
+            prds.v_dcmp = decompose_in(proj,label_id,prds.v_hd);
             
             %% arousal
-            [prds.a_dcmp,prds.a_indx] = decompose_in(proj,label_id,prds.a_hd);
+            prds.a_dcmp = decompose_in(proj,label_id,prds.a_hd);
             
             logger('   -success',proj.path.logfile);
             
-            % debug
-            figure(99)
-            plot(1:7,prds.v_dcmp.h(1,:));
-            hold on;
-            plot(1:7,prds.v_dcmp.err(1,:));
-            plot(2:6,prds.v_dcmp.dh(1,:));
-            plot(3:5,prds.v_dcmp.d2h(1,:));
-            hold off;              
-            drawnow
+            % % debug
+            % figure(99)
+            % plot(1:7,prds.v_dcmp.h(1,:));
+            % hold on;
+            % plot(1:7,prds.v_dcmp.err(1,:));
+            % plot(2:6,prds.v_dcmp.dh(1,:));
+            % plot(3:5,prds.v_dcmp.d2h(1,:));
+            % hold off;              
+            % drawnow
             
             %% Save out prediction structure
-            save([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat'],'prds');
+            save([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
 
         end
             
