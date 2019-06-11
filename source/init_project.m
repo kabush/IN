@@ -117,10 +117,13 @@ proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_
 proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_gm_mdl/'];
 
 %% Inrinsic (IN) control path
-%% proj.path.ctrl.in_ctrl =  [proj.path.data,proj.path.ctrl.name,'in_ctrl/']; %% OLD
-proj.path.ctrl.in_dyn = [proj.path.data,proj.path.ctrl.name,'in_dyn/']; 
+proj.path.ctrl.in_dyn = [proj.path.data,proj.path.ctrl.name,'in_dyn/']; ...
 proj.path.ctrl.in_ica = [proj.path.data,proj.path.ctrl.name,'in_ica/'];
-proj.path.ctrl.in_ccm = [proj.path.data,proj.path.ctrl.name,'in_ccm/'];
+proj.path.ctrl.in_err_mdl = [proj.path.data,proj.path.ctrl.name,'in_err_mdl/'];
+proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
+proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
+proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
+proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
@@ -181,6 +184,12 @@ proj.param.trg.cogdyn.in_id = 1;
 proj.param.trg.cogdyn.cue_id = 2;
 proj.param.trg.cogdyn.feel_id = 3;
 proj.param.trg.cogdyn.rest_id = 4;
+
+%% Cognitive dynamics numbers of stimuli (for analysis)
+proj.param.trg.cogdyn.n_stim = 1;
+proj.param.trg.cogdyn.n_cue = 1;
+proj.param.trg.cogdyn.n_feel = 4;
+proj.param.trg.cogdyn.n_rest = 1;
 
 %% Start times of feel TRs relative to IN stimulus times
 proj.param.trg.feel_times = 4:proj.param.mri.TR:10;

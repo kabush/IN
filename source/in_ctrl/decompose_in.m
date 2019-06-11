@@ -3,17 +3,21 @@ function [dcmp,indx] = decompose_in(proj,label_id,hd)
 %% ----------------------------------------
 %% Calculate dynamcs from IN
 
-%% Specialized IN idss
+%% Specialized IN ids
 in_ids = find(label_id==1);
 cue_ids = find(label_id==2);
 feel_ids = find(label_id==3);
 rest_ids = find(label_id==4);
 
 %% Length params
-Nstim = 1;
-Ncue = 1;
-Nfeel = 4;
-Nrest = 1;
+% Nstim = 1;
+% Ncue = 1;
+% Nfeel = 4;
+% Nrest = 1;
+Nstim = proj.param.trg.cogdyn.n_stim;
+Ncue = proj.param.trg.cogdyn.n_cue;
+Nfeel = proj.param.trg.cogdyn.n_feel;
+Nrest = proj.param.trg.cogdyn.n_rest;
 Ntot = Nstim+Ncue+Nfeel+Nrest;
 
 dcmp = struct();    
