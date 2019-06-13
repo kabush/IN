@@ -30,6 +30,8 @@ addpath(genpath(proj.path.tools.export_fig));
 proj.path.tools.nifti = '/home/kabush/lib/nifti/';
 addpath(genpath(proj.path.tools.nifti));
 
+proj.path.tools.approxrl = '/home/kabush/lib/approxrl/';
+addpath(genpath(proj.path.tools.approxrl));
 
 %% ----------------------------------------
 %% Project Flag Definitions

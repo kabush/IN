@@ -192,7 +192,6 @@ logger(['Fsqr=',num2str(Fsqr)],proj.path.logfile);
 text(1.8,1.7,'\itgoal','FontSize', ...
      proj.param.plot.axisLabelFontSize-3);
 
-
 %% ----------------------------------------
 %% format figure
 xlim([xmin,xmax]);

@@ -122,17 +122,18 @@ init_project;
 
 % Format Ray, 2013 70 ICA component (icaACC) to align with beta-series
 % Format Ray, 2013 20 ICA component (RL state) to align with beta-series
-reshape_ica;
+% reshape_ica;
 
-% Compute cognitive control models (CCM) of ACC function
-ccm_err_fmri_in_gm;  %% error model
-ccm_cnf_fmri_in_gm;  %% conflict model
-ccm_pel_fmri_in_gm;  %% prediction error likelihood
-ccm_pro_fmri_in_gm;  %% predicted response outcome
-ccm_evc_fmri_in_gm;  %% expected value of control (Q-value)
+% % Compute cognitive control models (CCM) of ACC function
+% ccm_err_fmri_in_gm;  %% error model
+% ccm_cnf_fmri_in_gm;  %% conflict model
+% ccm_pel_fmri_in_gm;  %% prediction error likelihood
+% ccm_pro_fmri_in_gm;  %% predicted response outcome
+% ccm_evc_fmri_in_gm;  %% expected value of control (Q-value)
+analyze_Q_in_vr;  %% ***TICKET*** temporarily here...move down
 
 % Predict CCMs from icaACC masked beta-series
-% TBD
+% *** TBD ***
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
