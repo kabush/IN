@@ -126,6 +126,7 @@ proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
 proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
 proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
 proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
+proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];

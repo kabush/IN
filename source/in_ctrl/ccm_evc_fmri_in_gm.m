@@ -62,10 +62,6 @@ for i = 1:numel(subjs)
 
     if(data_exist)
 
-        %% Initialize the prediction structure of this subject
-        mdls = struct();
-
-
         %% ----------------------------------------
         %% Extract state from beta-series
         % Load gray matter mask 
@@ -90,8 +86,8 @@ for i = 1:numel(subjs)
         for j=1:Nica
 
             ica_nii = load_nii([proj.path.ctrl.in_ica, ...
-                                'orient_thresh_zstatd20_', ...
-                                num2str(j),'.nii.gz']);
+                                'sng_orient_thresh_zstatd20_', ...
+                                num2str(j),'_3x3x3.nii.gz']);
             ica = double(ica_nii.img);
             brain_size=size(ica);
             ica = reshape(ica,brain_size(1)*brain_size(2)*brain_size(3),1);
@@ -150,7 +146,7 @@ for i = 1:numel(subjs)
         Xp = all_states(sp_indx_1d,:)';
         R = rewards_1d;
         T = terminals_1d;
-        U = adj_actions_1d;
+        U = dsc_actions_1d;
 
         % load into struct
         samples = varstostruct('N','X','U','Xp','R','T');
@@ -179,57 +175,18 @@ for i = 1:numel(subjs)
         %% temporary analysis
         load([cfg.datafile,'.mat']);
 
-        Q_traj = [];
-        Q_rand = [];
-        Q_best = [];
-        Q_worst = [];
+        mdls = struct();
+        
+        mdls.v_dcmp.evc = [];
         for j=1:N
-
-            Q_traj = [Q_traj;Qp(j,find(cfg.U==Us(j)))];
-            Q_rand = [Q_rand;Qp(j,randsample(1:3,1))];
-
-            Qbst = find(Qp(j,:)==max(Qp(j,:)));
-            Qwst = find(Qp(j,:)==min(Qp(j,:)));
-
-            if(numel(Qbst)>1)
-                Qbst = 1; 
-            end
-
-            if(numel(Qwst)>1)
-                Qwst = 1; 
-            end
-
-            Q_best = [Q_best;Qp(j,Qbst)]; 
-            Q_worst = [Q_worst;Qp(j,Qwst)];
+            mdls.v_dcmp.evc = [mdls.v_dcmp.evc;Qp(j,find(cfg.U==Us(j)))];
         end
+        mdls.v_dcmp.evc = reshape(mdls.v_dcmp.evc,size(s_indx,2),size(s_indx,1))';
+        mdls.v_indx.evc = reshape(s_indx,size(s_indx,2),size(s_indx,1))';
 
-        Q_traj = reshape(Q_traj,4,30)';
-        Q_rand = reshape(Q_rand,4,30)';
-        Q_best = reshape(Q_best,4,30)';
-        Q_worst = reshape(Q_worst,4,30)';
-
-        all_Q_traj = [all_Q_traj;mean(Q_traj)];
-        all_Q_rand = [all_Q_rand;mean(Q_rand)];
-        all_Q_best = [all_Q_best;mean(Q_best)];
-        all_Q_worst = [all_Q_worst;mean(Q_worst)];
-
-        %% ----------------------------------------
-        %% Local analysis of Qvalues.  Split off
-        %% into separate script: ***TICKET***
-        figure(1)
-        set(gcf,'color','w');
-        plot(mean(all_Q_traj),'-r','LineWidth',2);
-        hold on;
-        plot(mean(all_Q_best),':b');
-        plot(mean(all_Q_rand),'-b','LineWidth',2);
-        plot(mean(all_Q_worst),':b');
-        hold off;
-        ylim([-4.5,-1]);
-        drawnow;
+        % save out model structure
+        save([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
 
     end
-
-    export_fig 'VR_Qvalues.png' -r300
-    eval(['! mv ',proj.path.code,'VR_Qvalues.png ',proj.path.fig]);
     
 end

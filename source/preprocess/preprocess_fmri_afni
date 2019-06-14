@@ -183,7 +183,6 @@ foreach subj (${subjs})
 		-niter 300
 
 	    #skull strip twice to ensure accuracy of skull removal
-
 	    rm ${study}.${subj}.anat.sksp1+orig*
 	    3dSkullStrip -input ${study}.${subj}.anat.sksp+orig \
 		-prefix ${study}.${subj}.anat.sksp1 \

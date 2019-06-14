@@ -1,11 +1,9 @@
-*******************************************
- Reshape Ray 2013 ACC ICA to match our data
-*******************************************
 *************************************************
-Analyzing VR Q values                             
+Computing IN Cog Control EVC Models                  
 *************************************************
 CTM_001
 CTM_003
+   -predictions do not exist
 CTM_004
 CTM_007
 CTM_008
@@ -22,6 +20,7 @@ CTM_024
 CTM_028
 CTM_030
 CTM_033
+   -predictions do not exist
 CTM_034
 CTM_036
 CTM_043
@@ -36,6 +35,7 @@ INCA_016
 INCA_017
 INCA_018
 INCA_020
+   -predictions do not exist
 INCA_021
 INCA_019
 INCA_023
@@ -44,5 +44,3 @@ INCA_031
 INCA_033
 INCA_035
 INCA_037
-----------------------------------------
-Statistical Summary: traj != rand

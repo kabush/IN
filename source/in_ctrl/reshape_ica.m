@@ -37,8 +37,26 @@ eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
 eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd70_17.nii.gz ' ...
       '-input ',proj.path.code,'tmp/thresh_zstatd70_17.nii.gz ']);
 
+%% find ica values greater than threshold to achieve largest single
+%% ROI (>5.6734)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd70_17.nii.gz ' ...
+                    '-expr  ''ispositive(a-5.6734)'' -prefix ' ...
+                    ,proj.path.code,'tmp/frc_orient_thresh_zstatd70_17.nii.gz']);
+
+%% change from 1x1x1 to 3x3x3 voxel sizes
+eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+      '-input ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_17.nii.gz ' ...
+      '-prefix ',proj.path.code,'tmp/' ...
+      'frc_orient_thresh_zstatd70_17_3x3x3.nii.gz -clip .2']);
+
+%% create mask 
+eval(['! 3dcalc -a ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_17_3x3x3.nii.gz ' ...
+      '-expr  ''bool(a)'' -prefix ' ...
+      ,proj.path.code,'tmp/sng_orient_thresh_zstatd70_17_3x3x3.nii.gz']);
+
+
 %% move to permanent storage
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd70_17.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd70_17_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/TT_icbm452_orig.nii ',proj.path.ctrl.in_ica]);
 
 %% clean-up
@@ -53,31 +71,40 @@ eval(['! cp ',proj.path.atlas,'ray2013/ica20/maps/*.gz ',proj.path.code,'tmp/'])
 
 %% rotate the ICA to match the rotation of our fMRI data
 
-% emotion/interoception
-eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd20_1.nii.gz ' ...
-      '-input ',proj.path.code,'tmp/thresh_zstat1.nii.gz ']);
+%% ----------------------------------------
+%% EMOTION/INTEROCEPTION REGIONS
+%%
+for i=1:5
 
-eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd20_2.nii.gz ' ...
-      '-input ',proj.path.code,'tmp/thresh_zstat2.nii.gz ']);
+    %% orient ICA to RAI like the rest of the data
+    eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/' ...
+                        'orient_thresh_zstatd20_',num2str(i),'.nii.gz ' ...
+                        '-input ',proj.path.code,'tmp/thresh_zstat',num2str(i),'.nii.gz ']);
+    
+    %% change from 1x1x1 to 3x3x3 voxel sizes
+    eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+          '-input ',proj.path.code,'tmp/orient_thresh_zstatd20_',num2str(i),'.nii.gz ' ...
+          '-prefix ',proj.path.code,'tmp/' ...
+          'orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz -clip .2']);
 
-eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd20_3.nii.gz ' ...
-      '-input ',proj.path.code,'tmp/thresh_zstat3.nii.gz ']);
+    %% create mask
+    eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
+          '-expr  ''bool(a)'' -prefix ' ...
+          ,proj.path.code,'tmp/sng_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
 
-eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd20_4.nii.gz ' ...
-      '-input ',proj.path.code,'tmp/thresh_zstat4.nii.gz ']);
+end
 
-eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd20_5.nii.gz ' ...
-      '-input ',proj.path.code,'tmp/thresh_zstat5.nii.gz ']);
-
-% higher cognition
-% ICAs: 13,14,15,16,17,18
+%% ----------------------------------------
+%% HIGHER COGNITION REGIONS
+%%
+% TBD ICAs: 13,14,15,16,17,18
 
 %% move to permanent storage
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd20_1.nii.gz ',proj.path.ctrl.in_ica]);
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd20_2.nii.gz ',proj.path.ctrl.in_ica]);
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd20_3.nii.gz ',proj.path.ctrl.in_ica]);
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd20_4.nii.gz ',proj.path.ctrl.in_ica]);
-eval(['! mv ',proj.path.code,'tmp/orient_thresh_zstatd20_5.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_1_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_2_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_3_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_4_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_5_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 
 %% clean-up
 eval(['! rm ',proj.path.code,'tmp/*']);

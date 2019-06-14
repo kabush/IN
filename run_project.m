@@ -130,10 +130,10 @@ init_project;
 % ccm_pel_fmri_in_gm;  %% prediction error likelihood
 % ccm_pro_fmri_in_gm;  %% predicted response outcome
 % ccm_evc_fmri_in_gm;  %% expected value of control (Q-value)
-analyze_Q_in_vr;  %% ***TICKET*** temporarily here...move down
+% analyze_Q_in_vr;  %% ***TICKET*** temporarily here...move down
 
 % Predict CCMs from icaACC masked beta-series
-% *** TBD ***
+est_ccm_icaACC_activation;
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
