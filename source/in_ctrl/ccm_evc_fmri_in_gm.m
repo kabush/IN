@@ -80,14 +80,19 @@ for i = 1:numel(subjs)
         base_img = vec_img_2d_nii(base_nii);
         base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4))';
         
-        % Load ICA masks comprising the state space (and grab activations)
-        Nica = 5;
+        % Load ICA masks comprising the state space (and grab
+        % activations)
+        ica_seq = [1,2,3,5];
+        Nica = numel(ica_seq);;
         all_states = zeros(size(base_img,1),Nica);
+        
         for j=1:Nica
 
+            ica_n= ica_seq(j);
+            
             ica_nii = load_nii([proj.path.ctrl.in_ica, ...
                                 'sng_orient_thresh_zstatd20_', ...
-                                num2str(j),'_3x3x3.nii.gz']);
+                                num2str(ica_n),'_3x3x3.nii.gz']);
             ica = double(ica_nii.img);
             brain_size=size(ica);
             ica = reshape(ica,brain_size(1)*brain_size(2)*brain_size(3),1);
@@ -100,7 +105,7 @@ for i = 1:numel(subjs)
             disp(['  after: ', ...
                   num2str(numel(unique(in_brain_this_ica)))]);
 
-            all_states(:,j) = mean(base_img(:,in_brain_this_ica),2);
+            all_states(:,ica_n) = mean(base_img(:,in_brain_this_ica),2);
 
         end
 
@@ -182,7 +187,7 @@ for i = 1:numel(subjs)
             mdls.v_dcmp.evc = [mdls.v_dcmp.evc;Qp(j,find(cfg.U==Us(j)))];
         end
         mdls.v_dcmp.evc = reshape(mdls.v_dcmp.evc,size(s_indx,2),size(s_indx,1))';
-        mdls.v_indx.evc = reshape(s_indx,size(s_indx,2),size(s_indx,1))';
+        mdls.v_indx.evc = s_indx;
 
         % save out model structure
         save([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
