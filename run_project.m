@@ -129,11 +129,12 @@ init_project;
 % ccm_cnf_fmri_in_gm;  %% conflict model
 % ccm_pel_fmri_in_gm;  %% prediction error likelihood
 % ccm_pro_fmri_in_gm;  %% predicted response outcome
-% ccm_evc_fmri_in_gm;  %% expected value of control (Q-value)
-% analyze_Q_in_vr;  %% ***TICKET*** temporarily here...move down
+% ccm_evc_fmri_in_gm;    %% expected value of control (Q-value) valence
+% analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
 
 % Predict CCMs from icaACC masked beta-series
-est_ccm_icaACC_activation;
+% est_ccm_icaACC_activation_v;
+est_ccm_icaACC_activation_a;
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR

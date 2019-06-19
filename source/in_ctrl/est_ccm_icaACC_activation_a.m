@@ -32,6 +32,8 @@ subjs = load_subjs(proj);
 %% Storage for analysis
 all_b_err = [];
 all_b_evc = [];
+all_b_pel = [];
+all_b_pro = [];
 all_b_cnf = [];
 
 %% ----------------------------------------
@@ -97,60 +99,63 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% Load computational models
 
-        %error
+        %Error
         load([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat']);
-        err_idx_1d = reshape(mdls.v_indx.err',1,prod(size(mdls.v_indx.err)));
-        err_v_1d = reshape(mdls.v_dcmp.err',1,prod(size(mdls.v_dcmp.err)));
-%         figure(1)
-%         scatter(base_acc(err_idx_1d),err_v_1d);
-%         hold on;
-        [b stat] = robustfit(base_acc(err_idx_1d),err_v_1d);
+        err_idx_1d = reshape(mdls.a_indx.err',1,prod(size(mdls.a_indx.err)));
+        err_a_1d = reshape(mdls.a_dcmp.err',1,prod(size(mdls.a_dcmp.err)));
+        figure(1)
+        scatter(base_acc(err_idx_1d),err_a_1d);
+        hold on;
+        [b stat] = robustfit(base_acc(err_idx_1d),err_a_1d);
         all_b_err = [all_b_err,b(2)];
-%         plot(sort(base_acc(err_idx_1d)),sort(base_acc(err_idx_1d))*b(2)+b(1));
-%         disp(['p=',num2str(stat.p(2))]);
-% 
+        plot(sort(base_acc(err_idx_1d)),sort(base_acc(err_idx_1d))*b(2)+b(1));
+        disp(['p=',num2str(stat.p(2))]);
+        
         %conflict
         load([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat']);
-        cnf_idx_1d = reshape(mdls.v_indx.cnf',1,prod(size(mdls.v_indx.cnf)));
-        cnf_v_1d = reshape(mdls.v_dcmp.cnf',1,prod(size(mdls.v_dcmp.cnf)));
-%         figure(2)
-%         scatter(base_acc(cnf_idx_1d),cnf_v_1d);
-%         hold on;
-        [b stat] = robustfit(base_acc(cnf_idx_1d),cnf_v_1d);
+        cnf_idx_1d = reshape(mdls.a_indx.cnf',1,prod(size(mdls.a_indx.cnf)));
+        cnf_a_1d = reshape(mdls.a_dcmp.cnf',1,prod(size(mdls.a_dcmp.cnf)));
+        figure(2)
+        scatter(base_acc(cnf_idx_1d),cnf_a_1d);
+        hold on;
+        [b stat] = robustfit(base_acc(cnf_idx_1d),cnf_a_1d);
         all_b_cnf = [all_b_cnf,b(2)];
-%         plot(sort(base_acc(cnf_idx_1d)),sort(base_acc(cnf_idx_1d))*b(2)+b(1));
-%         disp(['p=',num2str(stat.p(2))]);
-% 
-%         %pel
-%         load([proj.path.ctrl.in_pel_mdl,subj_study,'_',name,'_mdls.mat']);
-%         pel_idx_1d = reshape(mdls.v_indx.pel',1,prod(size(mdls.v_indx.pel)));
-%         pel_v_1d = reshape(mdls.v_dcmp.pel',1,prod(size(mdls.v_dcmp.pel)));
-%         figure(3)
-%         scatter(base_acc(pel_idx_1d),pel_v_1d);
-%         hold on;
-%         [b stat] = robustfit(base_acc(pel_idx_1d),pel_v_1d);
-%         plot(sort(base_acc(pel_idx_1d)),sort(base_acc(pel_idx_1d))*b(2)+b(1));
-%         disp(['p=',num2str(stat.p(2))]);
-% 
-%         %pro
-         load([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat']);
-         pro_idx_1d = reshape(mdls.v_indx.pro',1,prod(size(mdls.v_indx.pro)));
-%         pro_v_1d = reshape(mdls.v_dcmp.pro',1,prod(size(mdls.v_dcmp.pro)));
-%         figure(4)
-%         scatter(base_acc(pro_idx_1d),pro_v_1d);
-%         hold on;
-%         [b stat] = robustfit(base_acc(pro_idx_1d),pro_v_1d);
-%         plot(sort(base_acc(pro_idx_1d)),sort(base_acc(pro_idx_1d))*b(2)+b(1));
-%         disp(['p=',num2str(stat.p(2))]);
+        plot(sort(base_acc(cnf_idx_1d)),sort(base_acc(cnf_idx_1d))*b(2)+b(1));
+        disp(['p=',num2str(stat.p(2))]);
+        
+        %pel
+        load([proj.path.ctrl.in_pel_mdl,subj_study,'_',name,'_mdls.mat']);
+        pel_idx_1d = reshape(mdls.a_indx.pel',1,prod(size(mdls.a_indx.pel)));
+        pel_a_1d = reshape(mdls.a_dcmp.pel',1,prod(size(mdls.a_dcmp.pel)));
+        figure(3)
+        scatter(base_acc(pel_idx_1d),pel_a_1d);
+        hold on;
+        [b stat] = robustfit(base_acc(pel_idx_1d),pel_a_1d);
+        all_b_pel = [all_b_pel,b(2)];
+
+        plot(sort(base_acc(pel_idx_1d)),sort(base_acc(pel_idx_1d))*b(2)+b(1));
+        disp(['p=',num2str(stat.p(2))]);
+        
+        %pro
+        load([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat']);
+        pro_idx_1d = reshape(mdls.a_indx.pro',1,prod(size(mdls.a_indx.pro)));
+        pro_a_1d = reshape(mdls.a_dcmp.pro',1,prod(size(mdls.a_dcmp.pro)));
+        figure(4)
+        scatter(base_acc(pro_idx_1d),pro_a_1d);
+        hold on;
+        [b stat] = robustfit(base_acc(pro_idx_1d),pro_a_1d);
+        all_b_pro = [all_b_pro,b(2)];
+        plot(sort(base_acc(pro_idx_1d)),sort(base_acc(pro_idx_1d))*b(2)+b(1));
+        disp(['p=',num2str(stat.p(2))]);
 
         %evc
         load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat']);
-        evc_idx_1d = reshape(mdls.v_indx.evc',1,prod(size(mdls.v_indx.evc)));
-        evc_v_1d = reshape(mdls.v_dcmp.evc',1,prod(size(mdls.v_dcmp.evc)));
+        evc_idx_1d = reshape(mdls.a_indx.evc',1,prod(size(mdls.a_indx.evc)));
+        evc_a_1d = reshape(mdls.a_dcmp.evc',1,prod(size(mdls.a_dcmp.evc)));
         figure(5)
-        scatter(base_acc(evc_idx_1d),evc_v_1d);
+        scatter(base_acc(evc_idx_1d),evc_a_1d);
         hold on;
-        [b stat] = robustfit(base_acc(evc_idx_1d),evc_v_1d);
+        [b stat] = robustfit(base_acc(evc_idx_1d),evc_a_1d);
         all_b_evc = [all_b_evc,b(2)];
 
         plot(sort(base_acc(evc_idx_1d)),sort(base_acc(evc_idx_1d))*b(2)+b(1));

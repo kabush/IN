@@ -35,6 +35,8 @@ all_Q_rand = [];
 all_Q_best = []
 all_Q_worst = [];
 
+all_act_a = [];
+
 %% ----------------------------------------
 %% Transform beta-series into affect series {v,a}
 for i = 1:numel(subjs)
@@ -112,13 +114,19 @@ for i = 1:numel(subjs)
         % standard score each dimension separately
         all_states = zscore(all_states);
 
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% EVC of VALENCE
+
         %% ----------------------------------------
         %% Build tuples for RL
         s_indx = prds.v_indx.h(:,3:(end-1));
         sp_indx = prds.v_indx.h(:,4:end);
-        terminals = zeros(size(s_indx));terminals(:,end) = 1;
         actions = (prds.v_dcmp.h(:,4:end)-prds.v_dcmp.h(:,3:(end-1)));
         errors = (prds.v_dcmp.err(:,4:end));
+        terminals = zeros(size(s_indx));terminals(:,end) = 1;
         
         %% reshape to 1D
         s_indx_1d = reshape(s_indx',1,prod(size(s_indx)));
@@ -163,7 +171,7 @@ for i = 1:numel(subjs)
         cfg.gamma = .98; % discount factor
         cfg.U = unique(U); %[-1 1];
         cfg.datadir = [proj.path.code,'tmp'];
-        cfg.datafile = [proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result'];
+        cfg.datafile = [proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_v'];
         cfg.maxiter = 1000;
         cfg.regmethod = 'extratrees';
         cfg.singlereg = 1;
@@ -188,6 +196,81 @@ for i = 1:numel(subjs)
         end
         mdls.v_dcmp.evc = reshape(mdls.v_dcmp.evc,size(s_indx,2),size(s_indx,1))';
         mdls.v_indx.evc = s_indx;
+
+        % % save out model structure
+        % save([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
+
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% ------------------------------------------------------------
+        %% EVC of AROUSAL
+
+        %% ----------------------------------------
+        %% Build tuples for RL
+        s_indx = prds.a_indx.h(:,3:(end-1));
+        sp_indx = prds.a_indx.h(:,4:end);
+        actions = (prds.a_dcmp.h(:,4:end)-prds.a_dcmp.h(:,3:(end-1)));
+        errors = (prds.a_dcmp.err(:,4:end));
+        terminals = zeros(size(s_indx));terminals(:,end) = 1;
+        
+        %% reshape to 1D
+        s_indx_1d = reshape(s_indx',1,prod(size(s_indx)));
+        sp_indx_1d = reshape(sp_indx',1,prod(size(sp_indx)));
+        terminals_1d = reshape(terminals',1,prod(size(terminals)));
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET
+        errors_1d = zscore(reshape(errors',1,prod(size(errors)))); %TICKET
+
+        % assign a discrete action space %% ***TICKET*** partitions chosen to
+        % break actions into evenly split thirds (May change for AROUSAL)
+        dsc_actions_1d = 0*actions_1d;
+        dsc_actions_1d(find(actions_1d>.33))=1;        
+        dsc_actions_1d(find(actions_1d<-.33))=-1;
+
+        %% build reward function
+        rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*abs(errors_1d);
+
+        %% ----------------------------------------
+        %% format data for writing out structure
+        %%   N   // number of tuples
+        %%   X   // state
+        %%   U   // action
+        %%   Xp  // next state
+        %%   R   // reward (at Xp)
+        %%   T   // Xp terminal state (1) or continuing (0)?
+        N = numel(s_indx_1d);
+        X = all_states(s_indx_1d,:)';
+        Xp = all_states(sp_indx_1d,:)';
+        R = rewards_1d;
+        T = terminals_1d;
+        U = dsc_actions_1d;
+
+        all_act_a = [all_act_a,actions_1d];
+
+        % load into struct
+        samples = varstostruct('N','X','U','Xp','R','T');
+
+        %% ----------------------------------------
+        %% configure fitted Q-iteration
+        cfg.U = unique(U); %[-1 1];
+        cfg.datafile = [proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_a'];
+        cfg.trees_k = size(X,1)+1;
+        cfg.samples = samples;
+
+        %% ----------------------------------------
+        %% configure fitted Q-iteration
+        fittedqi(cfg);
+
+        %% ----------------------------------------
+        %% temporary analysis
+        load([cfg.datafile,'.mat']);
+
+        mdls.a_dcmp.evc = [];
+        for j=1:N
+            mdls.a_dcmp.evc = [mdls.a_dcmp.evc;Qp(j,find(cfg.U==Us(j)))];
+        end
+        mdls.a_dcmp.evc = reshape(mdls.a_dcmp.evc,size(s_indx,2),size(s_indx,1))';
+        mdls.a_indx.evc = s_indx;
 
         % save out model structure
         save([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');

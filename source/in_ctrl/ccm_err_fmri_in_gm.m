@@ -61,8 +61,14 @@ for i = 1:numel(subjs)
 
         %% ----------------------------------------
         %% Model Error
+        
+        %valence
         mdls.v_dcmp.err = prds.v_dcmp.err(:,3:(end-1));
         mdls.v_indx.err = prds.v_indx.err(:,3:(end-1)); 
+
+        %arousal
+        mdls.a_dcmp.err = prds.a_dcmp.err(:,3:(end-1));
+        mdls.a_indx.err = prds.a_indx.err(:,3:(end-1)); 
 
         % save out model structure
         save([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');

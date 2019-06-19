@@ -61,8 +61,14 @@ for i = 1:numel(subjs)
 
         %% ----------------------------------------
         %% Model Conflict
+
+        % valence
         mdls.v_dcmp.cnf = 1-abs(tanh(prds.v_dcmp.h(:,3:(end-1))));
         mdls.v_indx.cnf = prds.v_indx.h(:,3:(end-1));
+
+        % arousal
+        mdls.a_dcmp.cnf = 1-abs(tanh(prds.a_dcmp.h(:,3:(end-1))));
+        mdls.a_indx.cnf = prds.a_indx.h(:,3:(end-1));
 
         % save out model structure
         save([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
