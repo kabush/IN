@@ -140,8 +140,8 @@ for i = 1:numel(subjs)
         acc = base_acc(indx,1);
 
         % true predictors
-        err = reshape(abs(err_mdls.a_dcmp.err'),1, ...
-                      prod(size(err_mdls.a_dcmp.err)))'; %
+        err = reshape(abs(err_mdls.a_dcmp.err'),1,prod(size(err_mdls.a_dcmp.err)))'; %
+
                                                          % *** TICKET ***
         cnf = reshape(cnf_mdls.a_dcmp.cnf',1,prod(size(cnf_mdls.a_dcmp.cnf)))';
         pel = reshape(pel_mdls.a_dcmp.pel',1,prod(size(pel_mdls.a_dcmp.pel)))';
@@ -213,20 +213,12 @@ SS_res=sum((mdl.residuals).^2);
 SS_tot=sum((measures-mean(measures)).^2);
 Rsqr = 1-(SS_res/SS_tot);
 Fsqr = Rsqr/(1-Rsqr);
+logger(['Overall model fit'],proj.path.logfile);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
 
 disp(' ');
 
-figure(1)
-set(gcf,'color','w');
-
-%% ----------------------------------------
-%% plot all the datapoints
-scatter(evcs,measures,10,'MarkerFaceColor', ...
-        proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
-hold on;
 
 %% ----------------------------------------
 %% format figure
@@ -234,12 +226,43 @@ ymin = -3;
 ymax = 3;
 xmin = -3;
 xmax = 3; 
+vseq = linspace(xmin,xmax);
+
 
 %% ----------------------------------------
-%% overlay the group VR skill plot
-vseq = linspace(xmin,xmax);
-y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
-plot(vseq,y_hat,'r-','LineWidth',3);
+%% plot all the datapoints
+
+%plot err
+figure(1)
+set(gcf,'color','w');
+scatter(errs,measures,10,'MarkerFaceColor', ...
+        proj.param.plot.white,'MarkerEdgeColor', ...
+        proj.param.plot.very_light_grey);
+hold on;
+y_hat_err = FE.Estimate(1) + FE.Estimate(2)*vseq;
+plot(vseq,y_hat_err,'r-','LineWidth',3);
+
+xlim([xmin,xmax]);
+ylim([ymin,ymax]);
+
+hold off;
+fig = gcf;
+ax = fig.CurrentAxes;
+ax.FontSize = proj.param.plot.axisLabelFontSize;
+
+xlabel('Estimated Error');
+ylabel('ACC activation');
+
+
+%plot evc
+figure(2)
+set(gcf,'color','w');
+scatter(evcs,measures,10,'MarkerFaceColor', ...
+        proj.param.plot.white,'MarkerEdgeColor', ...
+        proj.param.plot.very_light_grey);
+hold on;
+y_hat_evc = FE.Estimate(1) + FE.Estimate(6)*vseq;
+plot(vseq,y_hat_evc,'r-','LineWidth',3);
 
 xlim([xmin,xmax]);
 ylim([ymin,ymax]);
@@ -252,7 +275,9 @@ ax.FontSize = proj.param.plot.axisLabelFontSize;
 xlabel('Estimated Q-Value');
 ylabel('ACC activation');
 
-%% ----------------------------------------
-%% explot hi-resolution figure
-export_fig 'R01_outcome_summary.png' -r300  
-eval(['! mv ',proj.path.code,'R01_outcome_summary.png ',proj.path.fig]);
+
+
+% %% ----------------------------------------
+% %% explot hi-resolution figure
+% export_fig 'R01_outcome_summary_a.png' -r300  
+% eval(['! mv ',proj.path.code,'R01_outcome_summary_a.png ',proj.path.fig]);

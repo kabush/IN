@@ -44,5 +44,6 @@ INCA_031
 INCA_033
 INCA_035
 INCA_037
+Overall model fit
   Rsqr=0.15403
   Fsqr=0.18208
