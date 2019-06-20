@@ -133,8 +133,8 @@ init_project;
 % analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
 
 % Predict CCMs from icaACC masked beta-series
-% est_ccm_icaACC_activation_v;
-est_ccm_icaACC_activation_a;
+analyze_ccm_icaACC_v;
+%analyze_ccm_icaACC_a;
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
