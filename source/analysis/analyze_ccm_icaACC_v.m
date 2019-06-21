@@ -198,6 +198,7 @@ disp(' ');
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
+[~,~,RE] = randomEffects(mdl);
 
 for i =2:numel(FE.pValue)
     if(FE.pValue(i)<0.05)
