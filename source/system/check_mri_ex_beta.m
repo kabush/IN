@@ -47,7 +47,8 @@ if(proj.process.beta_mri_ex_id)
            
             base_mu = mean(base_img);
             if(numel(find(isnan(base_mu))))
-                disp([subj_study,'_',name,': ',num2str(numel(find(isnan(base_mu))))]);
+                disp([subj_study,'_',name,': ', ...
+                      num2str(numel(find(isnan(base_mu)))),' volume(s) NAN']);
             else
                 subj.beta.mri_ex_id.nan_ok = 1;
             end

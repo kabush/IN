@@ -133,6 +133,8 @@ if(proj.process.emg)
         % combine runs
         if(subj.emg.id1.ok & subj.emg.id2.ok)
             subj.emg.ok = 1;
+        else
+            disp([subj_study,'_',name]);
         end
 
         % assign master flag

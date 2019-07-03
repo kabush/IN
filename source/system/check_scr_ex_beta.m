@@ -47,24 +47,32 @@ if(proj.process.beta_scr_ex_id)
             %% check existence: id 1
             if(numel(ex_betas.id1)>0)
                 subj.beta.scr_ex_id1.exist = 1;
+            else
+                disp([subj_study,'_',name]);
             end
 
             %% check values
             if(subj.beta.scr_ex_id1.exist)
                 if(numel(find(isnan(ex_betas.id1)))==0)
                     subj.beta.scr_ex_id1.nan_ok = 1;
+                else
+                    disp([subj_study,'_',name]);
                 end
             end
 
             %% check existence: id 2
             if(numel(ex_betas.id2)>0)
                 subj.beta.scr_ex_id2.exist = 1;
+            else
+                disp([subj_study,'_',name]);
             end
 
             %% check values
             if(subj.beta.scr_ex_id2.exist)
                 if(numel(find(isnan(ex_betas.id2)))==0)
                     subj.beta.scr_ex_id2.nan_ok = 1;
+                else
+                    disp([subj_study,'_',name]);
                 end
             end
 

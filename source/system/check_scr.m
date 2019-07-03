@@ -50,6 +50,8 @@ if(proj.process.mri)
         % check that all fmri components are available (4 pieces)
         if(subj.scr.id1.ok+subj.scr.id2.ok==2);
             subj.scr.ok = 1;
+        else
+            disp([subj_study,'_',name]);
         end
         
         % assign master flag to false

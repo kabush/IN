@@ -11,9 +11,9 @@
 %% Load in path data
 load('proj.mat');
 
-logger(' ----------------------------------------');
+logger('----------------------------------------');
 logger(' Summarize Project Data');
-logger(' ----------------------------------------');
+logger('----------------------------------------');
 
 %% Create the subjects to be analyzed (possible multiple studies)
 subjs = proj.process.subjs; %load_subjs(proj);

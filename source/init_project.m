@@ -302,6 +302,7 @@ proj.check.mvpa_ex_gs_cls = 0;
 proj.check.mvpa_ex_gm_cls = 0;
 proj.check.mvpa_ex_gm_mdl = 0;
 
+subjs = load_subjs(proj);
 for i=1:numel(subjs)
 
     % Create quality control structure
