@@ -95,10 +95,15 @@ final_gm_mask.img(ind2sub(brain_size,ids)) = 1;
 % orient=[4 5 3];
 % final_gm_mask=rri_orient(final_gm_mask,orient);%silently swear at jimmy shen
 
-%%Test of number of GM voxels  (30K-50K)
+%% Test of number of GM voxels  (30K-50K)
 gm_vec = vec_img_2d_nii(final_gm_mask);
 logger(['Num. GM voxels: ',num2str(sum(gm_vec)),', should be 30K-50K.'],proj.path.logfile);
 
 %% Save out grey-matter
 save_untouch_nii(final_gm_mask,[proj.path.mri.gm_mask,'/group_gm_mask.nii']);
 
+%% Indicate compeltion of this process
+proj.process.mask = 1;
+
+%% Write out amended project params
+save('proj.mat');

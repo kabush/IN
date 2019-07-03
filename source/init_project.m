@@ -73,6 +73,7 @@ eval(['! rm ',proj.path.logfile]); % clear at initialization
 
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)
+proj.path.system.name = 'system/';
 proj.path.analysis.name = 'analysis/';
 proj.path.betas.name = 'beta_series/';
 proj.path.ctrl.name = 'ctrl/';
@@ -84,6 +85,9 @@ proj.path.trg.name = 'target/';
 
 %% ----------------------------------------
 %% Specific Output Paths
+
+%% System paths
+proj.path.sys.subjects = [proj.path.data,proj.path.system.name,'subjects/'];
 
 %% MRI paths
 proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name,'mri_clean/'];
@@ -151,6 +155,9 @@ proj.param.mri.slices = 37;
 proj.param.mri.slice_pattern = 'seq+z';
 proj.param.mri.do_anat = 'yes';
 proj.param.mri.do_epi = 'yes';
+proj.param.mri.FD_thresh = 0.5;
+proj.param.mri.FD_bad_frac = 0.5;
+
 proj.param.mri.tasks = 'identify'; %rest modulate 
 proj.param.mri.scans = 'run1 run2';
 proj.param.mri.rest_scans = 'run1';
@@ -241,7 +248,7 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
-proj.param.mvpa.n_resamp = 30; % should be >= 30
+proj.param.mvpa.n_resamp = 1; % should be >= 30
 
 %% Haufe parameters
 proj.param.haufe.npermute = 200;
@@ -255,6 +262,62 @@ proj.param.plot.very_light_grey = [.9,.9,.9];
 proj.param.plot.light_grey = [.8,.8,.8];
 proj.param.plot.dark_grey = [.6,.6,.6];
 proj.param.plot.axis_nudge = 0.1;
+
+%% ----------------------------------------
+%% Processing progress and quality control
+
+% Processing flags
+proj.process = struct();
+
+proj.process.mri = 0;
+proj.process.mask = 0;
+proj.process.scr = 0;
+proj.process.hr = 0;
+proj.process.emg = 0;
+
+proj.process.beta_mri_ex_id = 0;
+proj.process.beta_scr_ex_id = 0;
+proj.process.beta_hr_ex_id = 0;
+proj.process.beta_emg_ex_id = 0;
+
+proj.process.mvpa_ex_gs_cls = 0;
+proj.process.mvpa_ex_gm_cls = 0;
+proj.process.mvpa_ex_gm_mdl = 0;
+
+% Quality review flags
+proj.check = struct();
+
+proj.check.mri = 0;
+proj.check.mask = 0;
+proj.check.scr = 0;
+proj.check.hr = 0;
+proj.check.emg = 0;
+
+proj.check.beta_mri_ex_id = 0;
+proj.check.beta_scr_ex_id = 0;
+proj.check.beta_hr_ex_id = 0;
+proj.check.beta_emg_ex_id = 0;
+
+proj.check.mvpa_ex_gs_cls = 0;
+proj.check.mvpa_ex_gm_cls = 0;
+proj.check.mvpa_ex_gm_mdl = 0;
+
+for i=1:numel(subjs)
+
+    % Create quality control structure
+    subj = struct();
+
+    % Assign subject details
+    subj.study = subjs{i}.study;
+    subj.name = subjs{i}.name;
+    
+    % Set master flag
+    subj.ok = 1;
+
+    % Assign subject to project process
+    proj.process.subjs{i} = subj;
+
+end
 
 %% ----------------------------------------
 %% Write out initialized project structure

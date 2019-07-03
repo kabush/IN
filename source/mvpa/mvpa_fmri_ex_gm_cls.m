@@ -84,7 +84,7 @@ for i = 1:numel(subjs)
         ex_v_label = v_label(ex_id,1);
         ex_a_label = a_label(ex_id,1);
         
-        %% Peform quality check of generated features
+        %% Peform quality check of generated features (for nans)
         qlty = check_gm_img_qlty(ex_img);
         
         if(qlty.ok)

@@ -148,6 +148,12 @@ for i=1:numel(subjs)
 
 end
 
+%%Indicate completion of this process
+proj.process.beta_scr_ex_id = 1;
+
+%% Write out amended project params
+save('proj.mat');
+
 %% % debug
 %% load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/stim_a_scores.txt']);
 %% load(['/home/kabush/workspace/data/CTM/analysis/univ_lss_trgs/' ...

@@ -25,41 +25,56 @@ init_project;
 % %% ------------------------------------------------------------
 % %% STEP 2: Clear and reconstruct the project data folder
 % clean_project;
-% 
+
 % %% ------------------------------------------------------------
 % %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 % 
 % %% fMRI data
 % preprocess_fmri;
 % preprocess_mask;
-% % - preprocess_fd (TBD);
 % 
 % %% Physio data
 % preprocess_scr; 
 % preprocess_emg; % (pilot)
 % % - preprocess_hr (TBD); 
 %
-%  
 % %% Cognitive data
 % % - preprocess_cog (TBD);
 % 
+
+%% ------------------------------------------------------------
+%% STEP 4: Run quality check (system) on preprocessing outcomes
+tmp_flag_set; %%% ***TICKET***
+check_mri;
+check_scr;
+% check_hr;
+check_emg;  %% ***TICKET*** fix this to remove all zeroes as 'ok'
+ 
 % %% ------------------------------------------------------------
-% %% STEP 4: Format Extrinsic Stimuli Design
+% %% STEP 5: Format Extrinsic Stimuli Design
 % format_ex_3dlss; 
 % 
 % %% ------------------------------------------------------------
-% %% STEP 5: Calculate Extrinsic (EX) Stimuli Beta-Series
+% %% STEP 6: Calculate Extrinsic (EX) Stimuli Beta-Series
 % 
 % %% fMRI data
 % calc_fmri_ex_beta;
 % 
 % %% Physio data
 % calc_scr_ex_beta;
-% % - calc_hrv_ex_beta (TBD);
+% % - calc_hr_ex_beta (TBD);
 % % - calc_emg_ex_beta (TBD);
-% 
+
+%% ------------------------------------------------------------
+%% STEP 7: Run quality check (system) on ex_beta series
+check_mri_ex_beta;
+check_scr_ex_beta;
+% check_hr_ex_beta;
+% check_emg_ex_beta;
+project_summary;   %% master summary of 
+
 % %% ------------------------------------------------------------
-% %% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
+% %% STEP 8: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
 %  
 % %% Classification of Affect Scores
 % mvpa_fmri_ex_gs_cls;  % intra-subj Gram-Schmidt MVPA classification
@@ -69,13 +84,19 @@ init_project;
 % mvpa_fmri_ex_gm_cls; % intra-subj whole-brain GM MVPA classifications
 %                      % performs performance estimation using LOOCV
 %                      % also constructs and saves single model for
-%                      % application to IN formats
-% 
+%                      % application to IN formats% 
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
-% %% STEP 7: Data-driven Analysis of Classification (see Frontiers 2018 paper)
+% %% STEP 9: Data-driven Analysis of Classification (see Frontiers 2018 paper)
 % analyze_mvpa_fmri_ex_gs_cls_refit;
-%  
+% 
+% %% ------------------------------------------------------------
+% %% STEP 10: Run quality check (system) on mpva
+% check_mvpa_ex_gs_cls;
+% check_mvpa_ex_gm_cls;
+% check_mvpa_ex_gm_mdl;
+
+
 % %% ------------------------------------------------------------ 
 % %% STEP 8: compare GS vs GM features (Frontiers 2018 paper)
 % % TBD
@@ -133,7 +154,7 @@ init_project;
 % analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
 
 % Predict CCMs from icaACC masked beta-series
-analyze_ccm_icaACC_v;
+% analyze_ccm_icaACC_v;
 %analyze_ccm_icaACC_a;
 
 % Compare prediction performance

@@ -138,6 +138,9 @@ arousal).
         /preprocess
             # preprocessing scripts for
 	    # all data types
+ 	/system
+	    # quality control checks to determine
+	    # missing data, nans, etc.
     /subj_lists
         # stores text files listing the included
 	# subjects for each study being used in

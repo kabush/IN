@@ -21,7 +21,10 @@ end
 
 %% Create the subjects to be analyzed (possible multiple studies)
 subjs = load_subjs(proj);
-disp(['Processing EMG of ',num2str(numel(subjs)),' subjects']);
+
+logger(['****************************************'],proj.path.logfile);
+logger(['Processing EMG of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
+logger(['****************************************'],proj.path.logfile);
 
 %% ----------------------------------------
 %% Compute EMGs over each subject individually
@@ -58,7 +61,7 @@ for i=1:numel(subjs)
         rect_zygo = abs(emg_zygo);
         
         %process corr
-        emg_corr = emg_preproc(proj,Ntrs,data_corr);
+        Emg_corr = emg_preproc(proj,Ntrs,data_corr);
         rect_corr = abs(emg_corr);
         
         %save emg
@@ -101,3 +104,9 @@ for i=1:numel(subjs)
     end
     
 end
+
+%%Indicate completion of this process
+proj.process.emg = 1;
+
+%% Write out amended project params
+save('proj.mat');

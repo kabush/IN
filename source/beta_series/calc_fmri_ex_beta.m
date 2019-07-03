@@ -86,5 +86,11 @@ for i=1:numel(subjs)
     %% ----------------------------------------
     %% Clean-up
     eval(['! rm ',proj.path.code,'tmp/*']);
-    
+
 end
+
+%%Indicate completion of this process
+proj.process.beta_mri_ex_id = 1;
+
+%% Write out amended project params
+save('proj.mat');

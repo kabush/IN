@@ -91,3 +91,9 @@ for i=1:numel(subjs)
     end
 
 end
+
+%%Indicate completion of this process
+proj.process.scr = 1;
+
+%% Write out amended project params
+save('proj.mat');

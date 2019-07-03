@@ -63,3 +63,9 @@ for i=1:numel(subjs)
     eval(['! rm ',proj.path.code,'tmp/*']);
 
 end
+
+%%Indicate completion of this process
+proj.process.mri = 1;
+
+%% Write out amended project params
+save('proj.mat');

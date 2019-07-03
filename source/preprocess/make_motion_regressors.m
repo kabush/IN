@@ -46,7 +46,7 @@ motion_pre_t_square=motion_pre_t.*motion_pre_t;
 
 %creating censor file
 censor=ones(size(FD));
-bad=find(FD>=.5);
+bad=find(FD>=proj.param.mri.FD_thresh);
 censor(bad)=0;
 
 %bad TRs and the next TR are also bad

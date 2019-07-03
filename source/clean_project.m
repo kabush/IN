@@ -13,6 +13,7 @@
 load('proj.mat');
 
 if(proj.flag.clean_build)
+
     %% Set-up base data pathway
     disp(['Removing ',proj.path.data]);
     eval(['! rm -rf ',proj.path.data]);
@@ -22,6 +23,7 @@ if(proj.flag.clean_build)
     eval(['! mkdir ',proj.path.data]);
 
     %% Create all top-level directories
+    eval(['! mkdir ',proj.path.data,proj.path.system.name]);
     eval(['! mkdir ',proj.path.data,proj.path.analysis.name]);
     eval(['! mkdir ',proj.path.data,proj.path.betas.name]);
     eval(['! mkdir ',proj.path.data,proj.path.ctrl.name]);
