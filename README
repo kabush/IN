@@ -62,17 +62,10 @@ emotion processing.
 these quantities in two conditions.  The base condition, termed
 Intrinsic Neuromodulation (IN), uses volition recall and
 re-experiencing of affective images (drawn from the International
-Affective Picture Set, see Lang et al., 2008)
-
-5) Identify functional neuranatomical descriptions of affect
-processing (including neural predictors of physiological signals), as
-well as the neural drivers of affective control, currently defined as
-the 1st and 2nd derivatives of the affective quantities (valence and
-arousal).
-
-**************
-*** TICKET ***
-**************
+Affective Picture Set, see Lang et al., 2008).  The treatment
+condition, termed Guided Intrinsice Neuromodulation (GIN), uses
+real-time fMRI-guidance of the subjects affective brain state to
+achieve explicit affective goals.
 
 # ----------------------------------------
 # ----------------------------------------
@@ -80,9 +73,8 @@ arousal).
 # ----------------------------------------
 # ----------------------------------------
 
-**************
-*** TICKET ***
-**************
+To be released at the conclusion of the publication of research
+objective 3 findings (anticipated to be January 2021).
 
 # ----------------------------------------
 # ----------------------------------------
@@ -165,7 +157,6 @@ python (2.7) # HR analysis only (for now)
     - scipy
     - matplotlib
     - pandas
-
 
 # ----------------------------------------
 # ----------------------------------------
