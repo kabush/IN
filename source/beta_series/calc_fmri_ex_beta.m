@@ -21,7 +21,7 @@ end
 
 %% ----------------------------------------
 %% load subjs
-subjs = load_subjs(proj);
+subjs = proj.process.subjs; 
 
 logger(['************************************************'],proj.path.logfile);
 logger(['Calculating fMRI beta-series (EX) of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);

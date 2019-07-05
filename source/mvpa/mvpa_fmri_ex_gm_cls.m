@@ -34,7 +34,7 @@ a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% ----------------------------------------
 %% load subjs
-subjs = load_subjs(proj);
+subjs = proj.process.subjs; 
 
 %% ----------------------------------------
 %% allocate storage
@@ -143,6 +143,12 @@ for i = 1:numel(subjs)
     end
 
 end
+
+% Indicate completion of this process
+proj.process.mvpa_ex_gm_cls = 1;
+
+% Write out amended project params
+save('proj.mat');
 
 % log summary results
 [h p ci stat] = ttest(all_v_cls_acc);

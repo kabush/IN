@@ -111,7 +111,7 @@ foreach subj (${subjs})
 
 	    #copy and rename identify epi
 	    if (${task} == 'identify') then
-		cp ${rawpth}/${study}/mri${study}_${subj}/${study}_${subj}_Identify1_4_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Identify1_4_1.nii .
 		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Identify2_5_1.nii .
 		mv ${study}_${subj}_Identify1_4_1.nii ${study}.${subj}.identify.run1.nii
 		mv ${study}_${subj}_Identify2_5_1.nii ${study}.${subj}.identify.run2.nii

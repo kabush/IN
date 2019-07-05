@@ -34,7 +34,7 @@ a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% ----------------------------------------
 %% load subjs
-subjs = load_subjs(proj);
+subjs = proj.process.subjs; 
 
 %% ----------------------------------------
 %% iterate over study subjects
@@ -141,3 +141,9 @@ for i = 1:numel(subjs)
     end
 
 end
+
+% Indicate completion of this process
+proj.process.mvpa_ex_gm_mdl = 1;
+
+% Write out amended project params
+save('proj.mat');

@@ -302,6 +302,7 @@ proj.check.mvpa_ex_gs_cls = 0;
 proj.check.mvpa_ex_gm_cls = 0;
 proj.check.mvpa_ex_gm_mdl = 0;
 
+% Create quality control data structures
 subjs = load_subjs(proj);
 for i=1:numel(subjs)
 
@@ -311,6 +312,7 @@ for i=1:numel(subjs)
     % Assign subject details
     subj.study = subjs{i}.study;
     subj.name = subjs{i}.name;
+    subj.id = subjs{i}.id;
     
     % Set master flag
     subj.ok = 1;

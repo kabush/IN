@@ -36,8 +36,6 @@ end
 %% load subjs
 subjs = load_subjs(proj);
 
-
-
 all_raw_acc_v = [];
 all_raw_acc_a = [];
 
@@ -53,8 +51,9 @@ for i = 1:numel(subjs)
     % Load classification performance
     load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
     
-    all_raw_acc_v = [all_raw_acc_v;mean(prds.v_cls_acc)];
-    all_raw_acc_a = [all_raw_acc_a;mean(prds.a_cls_acc)];
+    % Take column means (explicit 1 to handle nrows=1 case)
+    all_raw_acc_v = [all_raw_acc_v;mean(prds.v_cls_acc,1)];
+    all_raw_acc_a = [all_raw_acc_a;mean(prds.a_cls_acc,1)];
 
 end
 

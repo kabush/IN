@@ -8,25 +8,29 @@
 %%========================================
 %%========================================
 
-%% ------------------------------------------------------------
+tic
+
+%% ----------------------------------------
 %% Clean up matlab environment
 matlab_reset;
 
-tic
-
-%% ------------------------------------------------------------
+%% ----------------------------------------
 %% Link all source code
 addpath(genpath('./source/'));
 
-%% ------------------------------------------------------------
+%% ============================================================
+%% PHASE 0: Project Initialization and Preprocessing 
+%% ============================================================
+
+%% ----------------------------------------
 %% STEP 1: Initialize the projects directories and parameters.
 init_project;
 
-% %% ------------------------------------------------------------
+% %%  ----------------------------------------
 % %% STEP 2: Clear and reconstruct the project data folder
 % clean_project;
-
-% %% ------------------------------------------------------------
+% 
+% %%  ----------------------------------------
 % %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 % 
 % %% fMRI data
@@ -37,25 +41,29 @@ init_project;
 % preprocess_scr; 
 % preprocess_emg; % (pilot)
 % % - preprocess_hr (TBD); 
-%
+% 
 % %% Cognitive data
 % % - preprocess_cog (TBD);
 % 
+% %%  ----------------------------------------
+% %% STEP 4: Run quality check (system) on preprocessing outcomes
+% % tmp_flag_set; %%% ***TICKET***
+% check_mri;
+% check_scr;
+% % check_hr;
+% check_emg;  %% ***TICKET*** fix this to remove all zeroes as 'ok'
+%  
 
-%% ------------------------------------------------------------
-%% STEP 4: Run quality check (system) on preprocessing outcomes
-tmp_flag_set; %%% ***TICKET***
-check_mri;
-check_scr;
-% check_hr;
-check_emg;  %% ***TICKET*** fix this to remove all zeroes as 'ok'
- 
-% %% ------------------------------------------------------------
-% %% STEP 5: Format Extrinsic Stimuli Design
+%% ============================================================
+%% PHASE 1: Modeling Affective Brain States
+%% ============================================================
+
+% %% ----------------------------------------
+% %% STEP 1: Format Extrinsic Stimuli Design
 % format_ex_3dlss; 
 % 
-% %% ------------------------------------------------------------
-% %% STEP 6: Calculate Extrinsic (EX) Stimuli Beta-Series
+% %% ----------------------------------------
+% %% STEP 2: Calculate Extrinsic (EX) Stimuli Beta-Series
 % 
 % %% fMRI data
 % calc_fmri_ex_beta;
@@ -64,17 +72,17 @@ check_emg;  %% ***TICKET*** fix this to remove all zeroes as 'ok'
 % calc_scr_ex_beta;
 % % - calc_hr_ex_beta (TBD);
 % % - calc_emg_ex_beta (TBD);
-
-%% ------------------------------------------------------------
-%% STEP 7: Run quality check (system) on ex_beta series
-check_mri_ex_beta;
-check_scr_ex_beta;
-% check_hr_ex_beta;
-% check_emg_ex_beta;
-project_summary;   %% master summary of 
-
-% %% ------------------------------------------------------------
-% %% STEP 8: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
+% 
+% %% ----------------------------------------
+% %% STEP 3: Run quality check (system) on ex_beta series
+% check_mri_ex_beta;
+% check_scr_ex_beta;
+% % - check_hr_ex_beta (TBD);
+% % - check_emg_ex_beta (TBD);
+% project_summary;   %% master summary of 
+% 
+% %% ----------------------------------------
+% %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
 %  
 % %% Classification of Affect Scores
 % mvpa_fmri_ex_gs_cls;  % intra-subj Gram-Schmidt MVPA classification
@@ -87,45 +95,50 @@ project_summary;   %% master summary of
 %                      % application to IN formats% 
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models
 % 
-% %% STEP 9: Data-driven Analysis of Classification (see Frontiers 2018 paper)
+% %% STEP 5: Data-driven Analysis of Classification (see Frontiers 2018 paper)
 % analyze_mvpa_fmri_ex_gs_cls_refit;
 % 
-% %% ------------------------------------------------------------
-% %% STEP 10: Run quality check (system) on mpva
+% %% ----------------------------------------
+% %% STEP 6: Run quality check (system) on mpva
 % check_mvpa_ex_gs_cls;
 % check_mvpa_ex_gm_cls;
 % check_mvpa_ex_gm_mdl;
-
-
-% %% ------------------------------------------------------------ 
-% %% STEP 8: compare GS vs GM features (Frontiers 2018 paper)
+% 
+% %% ----------------------------------------
+% %% STEP 7: compare GS vs GM features (Frontiers 2018 paper)
 % % TBD
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 9: Stimulus adjusted performance (see Frontiers 2018 paper)
-% % TBD
+% %% ----------------------------------------
+% %% STEP 8: Analyze EX Physiology Response (compare to brain state)
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 10: Analyze EX SCR Response (see SciReports 2018 paper)
+% % Analyze SCR (see SciReports 2018 paper)
 % analyze_ex_scr; % (draft code, convert to GLMM)
-% mvpa_fmri_ex_rgr_scr % (***unworking DRAFT***)
+% mvpa_fmri_ex_rgr_scr; % (***unworking DRAFT***)
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 11: V vs A hyperplane cosine sim (see SciReports 2018 paper)
-% % TBD
+% % Analyze HR deceleration (see Kayla et al., 2019, in submission)
+% analyze_ex_hr; (TBD)
+% mvpa_fmri_ex_hr (TBD)
+
+% %%  ----------------------------------------
+% %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 12: Hyperplane encoding analysis (see SciReports 2018 paper)
-%
-% %% EX Hyperplanes (global permutation test)
+% % Encodings of Haufe-transformed hyperplanes (global permutation test)
 % haufe_fmri_ex_gm;
-%
-% %% ------------------------------------------------------------ 
-% %% STEP 13: Format project design for IN afni-based beta-series
+% 
+% %%  ----------------------------------------
+% %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
+% % TBD
+
+%% ============================================================
+%% PHASE 2: Modeling Intrinsic Neuromodulation of Affect
+%% ============================================================
+% 
+% %%  ----------------------------------------
+% %% STEP 1: Format project design for IN afni-based beta-series
 % format_in_3dlss;
 % 
-% %% ------------------------------------------------------------
-% %% STEP 14: Calcuate Intrinsic (IN) Stimuli Beta-Series
+% %%  ----------------------------------------
+% %% STEP 2: Calcuate Intrinsic (IN) Stimuli Beta-Series
 % 
 % %% fMRI data
 % calc_fmri_in_beta;
@@ -133,16 +146,25 @@ project_summary;   %% master summary of
 % %% Physio data
 % calc_scr_in_beta; % (pilot)
 % calc_emg_in_beta; % (pilot)
+% calc_hr_in_beta (TBD);
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP 15: Compute IN VR Cognitive Dynamics
+% %%  ----------------------------------------
+% %% STEP 3: Run quality check (system) on beta-series
+% % (TBD)
+%
+% %%  ----------------------------------------
+% %% STEP 4: Compute Intrinsic Neuromodulation Dynamics
 % dynamics_fmri_in_gm;
-
-%% ------------------------------------------------------------ 
-%% STEP 16: Critically test ACC function (AIM 1)
-
-% Format Ray, 2013 70 ICA component (icaACC) to align with beta-series
-% Format Ray, 2013 20 ICA component (RL state) to align with beta-series
+%
+% %%  ----------------------------------------
+% %% STEP 5: Run quality check (system) on dynamics
+% % (TBD)
+% 
+% %%  ----------------------------------------
+% %% STEP 6: Critically test ACC function (AIM 1)
+% 
+% format Ray, 2013 70 ICA component (icaACC) to align with beta-series
+% format Ray, 2013 20 ICA component (RL state) to align with beta-series
 % reshape_ica;
 
 % % Compute cognitive control models (CCM) of ACC function
@@ -160,6 +182,14 @@ project_summary;   %% master summary of
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
 % Skill via single subj significance?)
+
+
+
+
+
+
+
+
 
 % %% ------------------------------------------------------------ 
 % %% ------------------------------------------------------------ 

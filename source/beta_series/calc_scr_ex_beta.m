@@ -60,7 +60,7 @@ end
 %% to make it more flexible and general
 
 %% load subjs
-subjs = load_subjs(proj);
+subjs = proj.process.subjs; 
 
 logger(['************************************************'],proj.path.logfile);
 logger(['Calculating SCR beta-series of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
