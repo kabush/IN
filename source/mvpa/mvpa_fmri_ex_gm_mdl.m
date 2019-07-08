@@ -74,10 +74,20 @@ for i = 1:numel(subjs)
         
         %% Subselect extrinsic data
         ex_id = find(label_id==proj.param.trg.ex_id);
-        ex_img = all_img(ex_id,:);
-        ex_subj_id = subj_id(ex_id,1);
-        ex_v_label = v_label(ex_id,1);
-        ex_a_label = a_label(ex_id,1);
+
+        %% ----------------------------------------
+        %% Sub-select non-NAN betas
+        if(~proj.process.subjs{i}.beta.mri_ex_id.nan_ok)
+            nan_ids = proj.process.subjs{i}.beta.mri_ex_id.nan_ids;
+            ex_id_good = setdiff(ex_id,nan_ids);
+        else
+            ex_id_good = ex_id;
+        end
+
+        ex_img = subj_img(ex_id_good,:);
+        ex_subj_id = subj_id(ex_id_good,1);
+        ex_v_label = v_label(ex_id_good,1);
+        ex_a_label = a_label(ex_id_good,1);
         
         %% Peform quality check of generated features
         qlty = check_gm_img_qlty(ex_img);

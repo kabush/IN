@@ -1,256 +1,6 @@
-*************************************************
-Intra-subject LOOCV MVPA of Gram-Schmidt Features
-*************************************************
-CTM:001
-  v acc: 0.47778
-  a acc: 0.63333
-CTM:003
-  v acc: 0.61111
-  a acc: 0.66667
-CTM:004
-  v acc: 0.62222
-  a acc: 0.6
-CTM:007
-  v acc: 0.5
-  a acc: 0.55556
-CTM:008
-  v acc: 0.56667
-  a acc: 0.65556
-CTM:009
-  v acc: 0.52222
-  a acc: 0.54444
-CTM:010
-  v acc: 0.42222
-  a acc: 0.57778
-CTM:012
-  v acc: 0.55556
-  a acc: 0.47778
-CTM:013
-  v acc: 0.54444
-  a acc: 0.53333
-CTM:014
-  v acc: 0.53333
-  a acc: 0.54444
-CTM:018
-  v acc: 0.4
-  a acc: 0.45556
-CTM:021
-  v acc: 0.7
-  a acc: 0.56667
-CTM:022
-  v acc: 0.51111
-  a acc: 0.51111
-CTM:023
-  v acc: 0.52222
-  a acc: 0.53333
-CTM:024
-  v acc: 0.52222
-  a acc: 0.6
-CTM:028
-  v acc: 0.58889
-  a acc: 0.68889
-CTM:030
-  v acc: 0.6
-  a acc: 0.6
-CTM:033
-  v acc: 0.51111
-  a acc: 0.55556
-CTM:034
-  v acc: 0.71111
-  a acc: 0.63333
-CTM:036
-  v acc: 0.52222
-  a acc: 0.63333
-CTM:043
-  v acc: 0.53333
-  a acc: 0.57778
-CTM:044
-  v acc: 0.55556
-  a acc: 0.52222
-INCA:006
-  v acc: 0.54444
-  a acc: 0.57778
-INCA:007
-  v acc: 0.57778
-  a acc: 0.63333
-INCA:010
-  v acc: 0.6
-  a acc: 0.65556
-INCA:012
-  v acc: 0.43333
-  a acc: 0.55556
-INCA:013
-  v acc: 0.56667
-  a acc: 0.6
-INCA:014
-  v acc: 0.63333
-  a acc: 0.62222
-INCA:016
-  v acc: 0.6
-  a acc: 0.63333
-INCA:017
-  v acc: 0.55556
-  a acc: 0.57778
-INCA:018
-  v acc: 0.55556
-  a acc: 0.63333
-INCA:020
-  v acc: 0.48889
-  a acc: 0.67778
-INCA:021
-  v acc: 0.62222
-  a acc: 0.62222
-INCA:019
-  v acc: 0.48889
-  a acc: 0.58889
-INCA:023
-  v acc: 0.6
-  a acc: 0.63333
-INCA:024
-  v acc: 0.51111
-  a acc: 0.56667
-INCA:031
-  v acc: 0.63333
-  a acc: 0.64444
-INCA:033
-  v acc: 0.45556
-  a acc: 0.61111
-INCA:035
-  v acc: 0.63333
-  a acc: 0.62222
-INCA:037
-  v acc: 0.61111
-  a acc: 0.56667
-grp v acc ci=[0.53162,0.5756], p=2.7429e-37
-grp a acc ci=[0.57526,0.60918], p=9.0078e-43
-************************************************
-Intra-subject LOOCV MVPA of Gray Matter Features
-************************************************
-CTM:001
-  v acc: 0.47778
-  a acc: 0.62222
-CTM:003
-  v acc: 0.63333
-  a acc: 0.65556
-CTM:004
-  v acc: 0.61111
-  a acc: 0.64444
-CTM:007
-  v acc: 0.44444
-  a acc: 0.66667
-CTM:008
-  v acc: 0.54444
-  a acc: 0.67778
-CTM:009
-  v acc: 0.52222
-  a acc: 0.54444
-CTM:010
-  v acc: 0.37778
-  a acc: 0.54444
-CTM:012
-  v acc: 0.51111
-  a acc: 0.55556
-CTM:013
-  v acc: 0.48889
-  a acc: 0.57778
-CTM:014
-  v acc: 0.52222
-  a acc: 0.57778
-CTM:018
-  v acc: 0.48889
-  a acc: 0.56667
-CTM:021
-  v acc: 0.66667
-  a acc: 0.6
-CTM:022
-  v acc: 0.53333
-  a acc: 0.54444
-CTM:023
-  v acc: 0.53333
-  a acc: 0.52222
-CTM:024
-  v acc: 0.56667
-  a acc: 0.63333
-CTM:028
-  v acc: 0.58889
-  a acc: 0.64444
-CTM:030
-  v acc: 0.55556
-  a acc: 0.55556
-CTM:033
-  v acc: 0.46667
-  a acc: 0.53333
-CTM:034
-  v acc: 0.62222
-  a acc: 0.6
-CTM:036
-  v acc: 0.57778
-  a acc: 0.64444
-CTM:043
-  v acc: 0.58889
-  a acc: 0.61111
-CTM:044
-  v acc: 0.65556
-  a acc: 0.53333
-INCA:006
-  v acc: 0.56667
-  a acc: 0.57778
-INCA:007
-  v acc: 0.48889
-  a acc: 0.66667
-INCA:010
-  v acc: 0.58889
-  a acc: 0.57778
-INCA:012
-  v acc: 0.44444
-  a acc: 0.64444
-INCA:013
-  v acc: 0.66667
-  a acc: 0.65556
-INCA:014
-  v acc: 0.55556
-  a acc: 0.57778
-INCA:016
-  v acc: 0.58889
-  a acc: 0.6
-INCA:017
-  v acc: 0.55556
-  a acc: 0.56667
-INCA:018
-  v acc: 0.6
-  a acc: 0.65556
-INCA:020
-  v acc: 0.5
-  a acc: 0.67778
-INCA:021
-  v acc: 0.57778
-  a acc: 0.6
-INCA:019
-  v acc: 0.48889
-  a acc: 0.63333
-INCA:023
-  v acc: 0.63333
-  a acc: 0.68889
-INCA:024
-  v acc: 0.53333
-  a acc: 0.66667
-INCA:031
-  v acc: 0.64444
-  a acc: 0.67778
-INCA:033
-  v acc: 0.56667
-  a acc: 0.58889
-INCA:035
-  v acc: 0.56667
-  a acc: 0.65556
-INCA:037
-  v acc: 0.55556
-  a acc: 0.53333
-  grp v acc ci=[0.53159,0.57341], p=4.2304e-38
-g  rp a acc ci=[0.5915,0.6235], p=3.5258e-44
-************************************************
-Intra-subject LOOCV MVPA of Gray Matter Models  
-************************************************
+************************************
+Prepocessing fMRI of 67 subjects
+************************************
 CTM:001
 CTM:003
 CTM:004
@@ -265,32 +15,37 @@ CTM:018
 CTM:021
 CTM:022
 CTM:023
-CTM:024
+CTM:026
 CTM:028
+CTM:024
+CTM:029
 CTM:030
+CTM:031
 CTM:033
 CTM:034
+CTM:035
 CTM:036
+CTM:039
+CTM:040
+CTM:042
 CTM:043
 CTM:044
-INCA:006
-INCA:007
-INCA:010
-INCA:012
-INCA:013
-INCA:014
-INCA:016
-INCA:017
-INCA:018
-INCA:020
-INCA:021
-INCA:019
-INCA:023
-INCA:024
-INCA:031
-INCA:033
-INCA:035
-INCA:037
-********************************************
- Analyzing GS Classification (Refit)        
-********************************************
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:060
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:066
+CTM:067
+CTM:068
+CTM:070
+CTM:071

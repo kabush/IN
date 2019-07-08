@@ -35,9 +35,11 @@ if(proj.process.beta_scr_ex_id)
         subj.beta.scr_ex_id1.ok = 0; %usable
         subj.beta.scr_ex_id1.exist = 0; %exist
         subj.beta.scr_ex_id1.nan_ok = 0; %exist
+        subj.beta.scr_ex_id1.nan_ids = [];
         subj.beta.scr_ex_id2.ok = 0; %usable
         subj.beta.scr_ex_id2.exist = 0; %exist
         subj.beta.scr_ex_id2.nan_ok = 0; %exist
+        subj.beta.scr_ex_id2.nan_ids = [];
 
         % check for existence of Identify 1 beta-series
         path = [proj.path.betas.scr_ex_beta,subj_study,'_',name,'_ex_betas.mat'];
@@ -48,7 +50,7 @@ if(proj.process.beta_scr_ex_id)
             if(numel(ex_betas.id1)>0)
                 subj.beta.scr_ex_id1.exist = 1;
             else
-                disp([subj_study,'_',name]);
+                disp([subj_study,'_',name,': ID 1 ~exist']);
             end
 
             %% check values
@@ -56,7 +58,8 @@ if(proj.process.beta_scr_ex_id)
                 if(numel(find(isnan(ex_betas.id1)))==0)
                     subj.beta.scr_ex_id1.nan_ok = 1;
                 else
-                    disp([subj_study,'_',name]);
+                    disp([subj_study,'_',name,': ID 1 nan']);
+                    subj.beta.scr_ex_id1.nan_ids = find(isnan(ex_betas.id1));
                 end
             end
 
@@ -64,7 +67,7 @@ if(proj.process.beta_scr_ex_id)
             if(numel(ex_betas.id2)>0)
                 subj.beta.scr_ex_id2.exist = 1;
             else
-                disp([subj_study,'_',name]);
+                disp([subj_study,'_',name,': ID 2 ~exist']);
             end
 
             %% check values
@@ -72,7 +75,8 @@ if(proj.process.beta_scr_ex_id)
                 if(numel(find(isnan(ex_betas.id2)))==0)
                     subj.beta.scr_ex_id2.nan_ok = 1;
                 else
-                    disp([subj_study,'_',name]);
+                    disp([subj_study,'_',name,': ID 2 nan']);
+                    subj.beta.scr_ex_id2.nan_ids = find(isnan(ex_betas.id2));
                 end
             end
 

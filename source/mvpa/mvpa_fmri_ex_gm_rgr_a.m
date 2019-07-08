@@ -12,38 +12,34 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'], ...
-       proj.path.logfile);
-logger(['Analyzing SCR responses to EX stimuli            '], ...
-       proj.path.logfile);
-logger(['*************************************************'], ...
-       proj.path.logfile);
+logger(['************************************************'],proj.path.logfile);
+logger(['Intra-subject LOOCV MVPA RGR GM Features -> Arousal'],proj.path.logfile);
+logger(['************************************************'],proj.path.logfile);
 
-%% plot parameters
-axisLabelFontSize = 18;
-circleSize = 10;
-white = [1,1,1];
-light_grey = [.8,.8,.8];
-dark_grey = [.6,.6,.6];
-
-%% ----------------------------------------
-%% load subjs
-subjs = load_subjs(proj);
+%% Set-up Directory Structure for fMRI betas
+if(proj.flag.clean_build)
+    disp(['Removing ',proj.path.mvpa.fmri_ex_gm_rgr_a]);
+    eval(['! rm -rf ',proj.path.mvpa.fmri_ex_gm_rgr_a]);
+    disp(['Creating ',proj.path.mvpa.fmri_ex_gm_rgr_a]);
+    eval(['! mkdir ',proj.path.mvpa.fmri_ex_gm_rgr_a]);
+end
 
 %% ----------------------------------------
 %% Load labels;
-v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
-a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
 label_id = load([proj.path.trg.ex,'stim_ids.txt']);
-v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
 a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% Adjust for extrinsic presentations
-v_score = v_score(find(label_id==proj.param.trg.ex_id));
 a_score = a_score(find(label_id==proj.param.trg.ex_id));
+a_score = zscore(a_score);
 
 %% ----------------------------------------
-%% scatter the underlying stim and feel
+%% load subjs
+subjs = proj.process.subjs;
+
+%% ----------------------------------------
+%% iterate over study subjects
+
 measures = [];
 predictors = [];
 subjects = [];
@@ -55,46 +51,55 @@ for i = 1:numel(subjs)
     name = subjs{i}.name;
     id = subjs{i}.id;
 
-    % debug
-    logger([subj_study,'_',name],proj.path.logfile);
+    %% debug
+    logger([subj_study,':',name],proj.path.logfile);
 
     try
-        load([proj.path.betas.scr_ex_beta,subj_study,'_',name,'_ex_betas.mat']);
+
+        %% Load gray matter mask 
+        gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
+        mask = double(gm_nii.img);
+        brain_size=size(mask);
+        mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
+        in_brain=find(mask==1);  
+        
+        %% Load beta-series
+        base_nii = load_nii([proj.path.betas.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
+        brain_size = size(base_nii.img);
+        
+        %% Vectorize the base image
+        base_img = vec_img_2d_nii(base_nii);
+        base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
+        
+        %% Concatenate the MASKED base image
+        all_img = base_img(in_brain,:)';
+        
+        %% Subselect extrinsic data
+        ex_id = find(label_id==proj.param.trg.ex_id);
+        ex_img = all_img(ex_id,:);
+        
+        %% Peform quality check of generated features
+        qlty = check_gm_img_qlty(ex_img);
+        
+        if(qlty.ok)
+            
+            %% ----------------------------------------
+            %% Train ARO
+            
+            %% Fit model
+            [out,trg,mdl,stats] = regress_intra_loocv(ex_img,a_score,proj.param.mvpa.kernel);
+
+            measures = [measures;trg];
+            predictors = [predictors;out];
+            subjects = [subjects;repmat(i,numel(out),1)];
+            
+        end
+        
     catch
-        logger('    Could not find scr beta file for processing.', ...
-               proj.path.logfile);
-    end
-
-    scr_betas = [ex_betas.id1,ex_betas.id2];
-    scr_a_score = a_score;
-
-    %% ----------------------------------------
-    %% Control for missing Identify runs
-    if(isempty(ex_betas.id1))
-        scr_a_score = a_score(46:90);
-    end
-
-    if(isempty(ex_betas.id2))
-        scr_a_score = a_score(1:45);
-    end
-
-    %% ****************************************
-    %% Remove hardcoding of the indices covered
-    %% by runs 1 and 2 of the extrinsic stimuli
-    %%
-    %% TICKET
-    %% ****************************************
-
-    if(~isempty(scr_betas))
-
-        measures = [measures;scr_a_score];
-        predictors = [predictors;scr_betas'];
-        subjects = [subjects;repmat(i,numel(scr_betas),1)];
-
+        disp(['   MVPA Error: possible missing beta series']);
     end
 
 end
-
 
 
 %% ----------------------------------------
@@ -119,7 +124,6 @@ if(fe_v_re.pValue<0.05);
 else
     disp('   random effects DO NOT matter');
 end
-
 
 disp(' ');
 
@@ -154,8 +158,8 @@ hold on;
 
 %% ----------------------------------------
 %% format figure
-ymin = 1;
-ymax = 9;
+ymin = -3;
+ymax = 3;
 xmin = -3;
 xmax = 3;
 
@@ -173,10 +177,10 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('SCR Beta Coefficients');
-ylabel('Normative Arousal Scores');
+xlabel('Predicted Arosual Scores');
+ylabel('Arousal Scores');
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'EX_scr_summary.png' -r300  
-eval(['! mv ',proj.path.code,'EX_scr_summary.png ',proj.path.fig]);
+export_fig 'EX_mvpa_predicted_a_summary.png' -r300  
+eval(['! mv ',proj.path.code,'EX_mvpa_predicted_a_summary.png ',proj.path.fig]);

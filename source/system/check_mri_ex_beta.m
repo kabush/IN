@@ -33,6 +33,7 @@ if(proj.process.beta_mri_ex_id)
         subj.beta.mri_ex_id.ok = 0; %usable
         subj.beta.mri_ex_id.exist = 0; %exist
         subj.beta.mri_ex_id.nan_ok = 0; %nan corruption
+        subj.beta.mri_ex_id.nan_ids = [];
         
         % check for existence of Identify beta-series
         if exist([proj.path.betas.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
@@ -47,8 +48,11 @@ if(proj.process.beta_mri_ex_id)
            
             base_mu = mean(base_img);
             if(numel(find(isnan(base_mu))))
+
                 disp([subj_study,'_',name,': ', ...
                       num2str(numel(find(isnan(base_mu)))),' volume(s) NAN']);
+                subj.beta.mri_ex_id.nan_ids = find(isnan(base_mu));
+
             else
                 subj.beta.mri_ex_id.nan_ok = 1;
             end

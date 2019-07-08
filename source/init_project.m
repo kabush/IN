@@ -119,6 +119,14 @@ proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
 
+% secondary replication of SciReports paper
+proj.path.mvpa.fmri_ex_gm_rgr_scr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_scr/'];
+proj.path.mvpa.fmri_ex_gm_rgr_a = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_a/'];
+
+% secondary replication of Psychophysiology paper
+proj.path.mvpa.fmri_ex_gm_rgr_hr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_hr/'];
+proj.path.mvpa.fmri_ex_gm_rgr_v = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_v/'];
+
 %% Haufe path
 proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_gm_mdl/'];
 
