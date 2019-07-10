@@ -47,7 +47,7 @@ preprocess_emg; % (pilot)
 
 %%  ----------------------------------------
 %% STEP 4: Run quality check (system) on preprocessing outcomes
-tmp_flag_set; %%% ***TICKET***
+%%%%%%tmp_flag_set; %%% ***TICKET***
 check_mri;
 check_scr;
 % - check_hr; (TBD)
@@ -78,8 +78,8 @@ check_mri_ex_beta;
 check_scr_ex_beta;
 % - check_hr_ex_beta (TBD);
 % - check_emg_ex_beta (TBD);
-project_summary;   %% master summary of 
-
+% - project_summary;   %% master summary of 
+% 
 %% ----------------------------------------
 %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
 
@@ -98,24 +98,24 @@ mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models (all data)
 %% STEP 5: Data-driven Analysis of Classification (see Frontiers 2018 paper)
 analyze_mvpa_fmri_ex_gs_cls_refit;
 
-%% ----------------------------------------
-%% STEP 6: Run quality check (system) on mpva
-check_mvpa_ex_gs_cls;
-check_mvpa_ex_gm_cls;
-check_mvpa_ex_gm_mdl;
-
-%% ----------------------------------------
-%% STEP 7: compare GS vs GM features (see Frontiers 2018 supplemental)
-% (TBD)
-
-%% ----------------------------------------
-%% STEP 8: Analyze EX Physiology Response (compare to brain state)
-
-% Analyze SCR (see SciReports 2018 paper)
-analyze_ex_gm_scr_a;     % predicting arousal from scr 
-mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
-mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
-
+% %% ----------------------------------------
+% %% STEP 6: Run quality check (system) on mpva
+% check_mvpa_ex_gs_cls;
+% check_mvpa_ex_gm_cls;
+% check_mvpa_ex_gm_mdl;
+% 
+% %% ----------------------------------------
+% %% STEP 7: compare GS vs GM features (see Frontiers 2018 supplemental)
+% % (TBD)
+% 
+% %% ----------------------------------------
+% %% STEP 8: Analyze EX Physiology Response (compare to brain state)
+% 
+% % Analyze SCR (see SciReports 2018 paper)
+% analyze_ex_gm_scr_a;     % predicting arousal from scr 
+% mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
+% mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
+% 
 % % Analyze HR deceleration (see Kayla et al. [2019] paper, in review)
 % analyze_ex_gm_hr_v; (TBD)
 % mvpa_fmri_ex_gm_rgr_hr; (TBD)
@@ -126,60 +126,60 @@ mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
 % 
 % % Encodings of Haufe-transformed hyperplanes
 % haufe_fmri_ex_gm; (uses global permuation test ... slow)
-
-%% ----------------------------------------
-%% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
-% (TBD)
-
-%% ============================================================
-%% PHASE 2: Modeling Intrinsic Neuromodulation of Affect
-%% ============================================================
-
-%% ----------------------------------------
-%% STEP 1: Format project design for IN afni-based beta-series
-format_in_3dlss;
-
-%% ----------------------------------------
-%% STEP 2: Calcuate Intrinsic (IN) Stimuli Beta-Series
-
-%% fMRI data
-calc_fmri_in_beta;
-
-%% Physio data
-calc_scr_in_beta; % (pilot)
-calc_emg_in_beta; % (pilot)
-% - calc_hr_in_beta (TBD);
-
-%% ----------------------------------------
-%% STEP 3: Run quality check (system) on beta-series
-% (TBD)
-
-%% ----------------------------------------
-%% STEP 4: Compute Intrinsic Neuromodulation Dynamics
-dynamics_fmri_in_gm;
-
-%% ----------------------------------------
-%% STEP 5: Run quality check (system) on dynamics
-% (TBD)
-
-%% ----------------------------------------
-%% STEP 6: Critically test ACC function (AIM 1)
-
-% format Ray, 2013 70 ICA component (icaACC) to align with beta-series
-% format Ray, 2013 20 ICA component (RL state) to align with beta-series
-reshape_ica;
-
-% Compute cognitive control models (CCM) of ACC function
-ccm_err_fmri_in_gm;  %% error model
-ccm_cnf_fmri_in_gm;  %% conflict model
-ccm_pel_fmri_in_gm;  %% prediction error likelihood
-ccm_pro_fmri_in_gm;  %% predicted response outcome
-ccm_evc_fmri_in_gm;    %% expected value of control (Q-value) valence
-analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
-
-% Predict CCMs from icaACC masked beta-series
-analyze_ccm_icaACC_v;
-analyze_ccm_icaACC_a;
+% 
+% %% ----------------------------------------
+% %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
+% % (TBD)
+% 
+% %% ============================================================
+% %% PHASE 2: Modeling Intrinsic Neuromodulation of Affect
+% %% ============================================================
+% 
+% %% ----------------------------------------
+% %% STEP 1: Format project design for IN afni-based beta-series
+% format_in_3dlss;
+% 
+% %% ----------------------------------------
+% %% STEP 2: Calcuate Intrinsic (IN) Stimuli Beta-Series
+% 
+% %% fMRI data
+% calc_fmri_in_beta;
+% 
+% %% Physio data
+% calc_scr_in_beta; % (pilot)
+% calc_emg_in_beta; % (pilot)
+% % - calc_hr_in_beta (TBD);
+% 
+% %% ----------------------------------------
+% %% STEP 3: Run quality check (system) on beta-series
+% % (TBD)
+% 
+% %% ----------------------------------------
+% %% STEP 4: Compute Intrinsic Neuromodulation Dynamics
+% dynamics_fmri_in_gm;
+% 
+% %% ----------------------------------------
+% %% STEP 5: Run quality check (system) on dynamics
+% % (TBD)
+% 
+% %% ----------------------------------------
+% %% STEP 6: Critically test ACC function (AIM 1)
+% 
+% % format Ray, 2013 70 ICA component (icaACC) to align with beta-series
+% % format Ray, 2013 20 ICA component (RL state) to align with beta-series
+% reshape_ica;
+% 
+% % Compute cognitive control models (CCM) of ACC function
+% ccm_err_fmri_in_gm;  %% error model
+% ccm_cnf_fmri_in_gm;  %% conflict model
+% ccm_pel_fmri_in_gm;  %% prediction error likelihood
+% ccm_pro_fmri_in_gm;  %% predicted response outcome
+% ccm_evc_fmri_in_gm;    %% expected value of control (Q-value) valence
+% analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
+% 
+% % Predict CCMs from icaACC masked beta-series
+% analyze_ccm_icaACC_v;
+% analyze_ccm_icaACC_a;
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR

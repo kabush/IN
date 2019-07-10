@@ -256,7 +256,7 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
-proj.param.mvpa.n_resamp = 1; % should be >= 30
+proj.param.mvpa.n_resamp = 10; % should be >= 30
 
 %% Haufe parameters
 proj.param.haufe.npermute = 200;

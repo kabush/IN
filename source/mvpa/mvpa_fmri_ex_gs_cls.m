@@ -88,6 +88,9 @@ for i = 1:numel(subjs)
         else
             ex_id_good = ex_id;
         end
+        
+        %% Log which ex_ids are used for model fitting
+        proj.process.subjs{i}.beta.mri_ex_id.good_id = ex_id_good;
 
         ex_img = subj_img(ex_id_good,:);
         ex_subj_id = subj_id(ex_id_good,1);

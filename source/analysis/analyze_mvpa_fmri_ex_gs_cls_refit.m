@@ -24,21 +24,20 @@ if(proj.flag.clean_build)
     eval(['! mkdir ',proj.path.analysis.gs_cls_refit]);
 end
 
-% %% ----------------------------------------
-% %% Load labels;
-% v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
-% a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
-% label_id = load([proj.path.trg.ex,'stim_ids.txt']);
-% v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
-% a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
+%% ----------------------------------------
+%% Load label for number of targets
+label_id = load([proj.path.trg.ex,'stim_ids.txt']);
+ex_id = find(label_id == proj.param.trg.ex_id);
+N_ex = numel(ex_id);
 
 %% ----------------------------------------
 %% load subjs
-subjs = load_subjs(proj);
+subjs = proj.process.subjs;
 
 all_raw_acc_v = [];
 all_raw_acc_a = [];
 
+good_cnt = 0;
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -48,12 +47,36 @@ for i = 1:numel(subjs)
     
     disp([subj_study,'_',name]);
     
-    % Load classification performance
-    load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
-    
-    % Take column means (explicit 1 to handle nrows=1 case)
-    all_raw_acc_v = [all_raw_acc_v;mean(prds.v_cls_acc,1)];
-    all_raw_acc_a = [all_raw_acc_a;mean(prds.a_cls_acc,1)];
+    try
+
+        % Load classification performance
+        load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
+        
+        good_ids = zeros(1,N_ex);
+        good_ids(subjs{i}.beta.mri_ex_id.good_id) = 1;
+
+        acc_v = zeros(1,N_ex)-1;
+        acc_a = zeros(1,N_ex)-1;
+
+        %disp(['Nids: ',num2str(numel(subjs{i}.beta.mri_ex_id.good_id))]);
+        for j = 1:numel(subjs{i}.beta.mri_ex_id.good_id)
+            id = subjs{i}.beta.mri_ex_id.good_id(j);
+            indx = find(ex_id==id);
+            % disp([num2str(j),', ',num2str(id),', ',num2str(indx)]);
+            acc_v(indx) = mean(prds.v_cls_acc(:,j),1);
+            acc_a(indx) = mean(prds.a_cls_acc(:,j),1);
+
+        end
+
+        % % Take column means (explicit 1 to handle nrows=1 case)
+        all_raw_acc_v = [all_raw_acc_v;acc_v];
+        all_raw_acc_a = [all_raw_acc_a;acc_a];
+
+        good_cnt = good_cnt + 1;
+        
+    catch
+        disp(' no beta series');
+    end
 
 end
 
@@ -67,7 +90,8 @@ grp_v_incorr_perf = [];
 
 all_corr_ids_v = {};
 all_incorr_ids_v = {};
-all_refit_ids_v = {};
+
+subjs = 1:good_cnt;
 
 for i=1:numel(subjs)
 
@@ -80,9 +104,10 @@ for i=1:numel(subjs)
     refit_ids_v = [];
 
     for j=1:size(all_raw_acc_v,2)
-        
+
         %% Compute fraction correct
-        img_frac = mean(all_raw_acc_v(val_ids,j));
+        acc_set = all_raw_acc_v(val_ids,j);
+        img_frac = mean(acc_set(find(acc_set>=0))); 
         
         %% ----------------------------------------
         %% Binomial test (corr/incorrect)
@@ -96,20 +121,11 @@ for i=1:numel(subjs)
             incorr_ids_v = [incorr_ids_v,j];
         end
         
-        %% ----------------------------------------
-        %% Binomial test refit
-        [phat ci] = binofit(50,100,0.05);
-        if(img_frac>ci(2))
-            refit_ids_v = [refit_ids_v,j];
-        end
-        
-        
     end
     
     %% Store all ids
     all_corr_ids_v{i} = corr_ids_v;
     all_incorr_ids_v{i} = incorr_ids_v;
-    all_refit_ids_v{i} = refit_ids_v;
     
     %% Compute adjusted subject classification performance
     grp_v_corr_perf = [grp_v_corr_perf;mean(all_raw_acc_v(i,corr_ids_v))];
@@ -129,7 +145,6 @@ grp_a_incorr_perf = [];
 
 all_corr_ids_a = {};
 all_incorr_ids_a = {};
-all_refit_ids_a = {};
 
 for i=1:numel(subjs)
 
@@ -139,12 +154,12 @@ for i=1:numel(subjs)
     %% Test group performance against prior
     corr_ids_a = [];
     incorr_ids_a = [];
-    refit_ids_a = [];
 
     for j=1:size(all_raw_acc_a,2)
-        
+
         %% Compute fraction correct
-        img_frac = mean(all_raw_acc_a(val_ids,j));
+        acc_set = all_raw_acc_a(val_ids,j);
+        img_frac = mean(acc_set(find(acc_set>=0)));
         
         %% ----------------------------------------
         %% Binomial test (corr/incorrect)
@@ -158,20 +173,11 @@ for i=1:numel(subjs)
             incorr_ids_a = [incorr_ids_a,j];
         end
         
-        %% ----------------------------------------
-        %% Binomial test refit
-        [phat ci] = binofit(50,100,0.05);
-        if(img_frac>ci(2))
-            refit_ids_a = [refit_ids_a,j];
-        end
-        
-        
     end
     
     %% Store all ids
     all_corr_ids_a{i} = corr_ids_a;
     all_incorr_ids_a{i} = incorr_ids_a;
-    all_refit_ids_a{i} = refit_ids_a;
     
     %% Compute adjusted subject classification performance
     grp_a_corr_perf = [grp_a_corr_perf;mean(all_raw_acc_a(i,corr_ids_a))];
