@@ -61,7 +61,7 @@ for i=1:numel(subjs)
         rect_zygo = abs(emg_zygo);
         
         %process corr
-        Emg_corr = emg_preproc(proj,Ntrs,data_corr);
+        emg_corr = emg_preproc(proj,Ntrs,data_corr);
         rect_corr = abs(emg_corr);
         
         %save emg

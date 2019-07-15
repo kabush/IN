@@ -53,8 +53,10 @@ proj.path.home = '/home/kabush/workspace/';
 proj.path.name = 'IN';
 proj.path.code = [proj.path.home,'code/',proj.path.name,'/'];
 proj.path.data = [proj.path.home,'data/',proj.path.name,'/'];
-proj.path.log =[proj.path.code,'log/'];
+
+proj.path.log =[proj.path.code,'log/']; 
 proj.path.fig = [proj.path.code,'fig/'];
+% proj.path.tmp = [proj.path.code,'tmp/']; %*** TICKET move to data side
 
 %% ----------------------------------------
 %% TICKET: Refactor output paths by data
@@ -178,7 +180,7 @@ proj.param.mri.rest_scans = 'run1';
 %% After the R5 upgrade we were dropping zero TRs but the
 %% first TR is processed strangely and so is skipped. To
 %% adjust for this we shift the design earlier in time by 3*TRs
-%% (TR=2s). Basic problem is that the design assumed an 18 transient period
+%% (TR=2s). Basic problem is that the design assumed an 18 s transient period
 %% at the start of the identification runs which changed to 12 s
 %% following R5 upgrades (shift was introduced to keep original
 %% design files intact (possibly bad decision in the long run)
