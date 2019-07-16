@@ -71,7 +71,7 @@ for i = 1:numel(subjs)
         base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
         
         %% Concatenate the MASKED base image
-        all_img = base_img(in_brain,:)';
+        subj_img = base_img(in_brain,:)';
         
         %% Concatenate all label/subj identifiers
         subj_id = repmat(id,numel(v_label),1);

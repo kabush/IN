@@ -45,40 +45,40 @@ init_project;
 % %% Cognitive data
 % % - preprocess_cog (TBD);
 % 
-%%  ----------------------------------------
-%% STEP 4: Run quality check (system) on preprocessing outcomes
-check_mri;
-check_scr;
-% - check_hr; (TBD)
-check_emg;
-% - check_cog (TBD)
-
-%% ============================================================
-%% PHASE 1: Modeling Affective Brain States
-%% ============================================================
-
-%% ----------------------------------------
-%% STEP 1: Format Extrinsic Stimuli Design
-format_ex_3dlss; 
-
-%% ----------------------------------------
-%% STEP 2: Calculate Extrinsic (EX) Stimuli Beta-Series
-
-%% fMRI data
-calc_fmri_ex_beta;
-
-%% Physio data
-calc_scr_ex_beta;
-% - calc_hr_ex_beta (TBD);
-% - calc_emg_ex_beta (TBD);
-
+% %%  ----------------------------------------
+% %% STEP 4: Run quality check (system) on preprocessing outcomes
+% check_mri;
+% check_scr;
+% % - check_hr; (TBD)
+% check_emg;
+% % - check_cog (TBD)
+% 
+% %% ============================================================
+% %% PHASE 1: Modeling Affective Brain States
+% %% ============================================================
+% 
+% %% ----------------------------------------
+% %% STEP 1: Format Extrinsic Stimuli Design
+% format_ex_3dlss; 
+% 
+% %% ----------------------------------------
+% %% STEP 2: Calculate Extrinsic (EX) Stimuli Beta-Series
+% 
+% %% fMRI data
+% calc_fmri_ex_beta;
+% 
+% %% Physio data
+% calc_scr_ex_beta;
+% % - calc_hr_ex_beta (TBD);
+% % - calc_emg_ex_beta (TBD);
+% 
 %% ----------------------------------------
 %% STEP 3: Run quality check (system) on ex_beta series
 check_mri_ex_beta;
 check_scr_ex_beta;
-% - check_hr_ex_beta (TBD);
-% - check_emg_ex_beta (TBD);
-% - project_summary;   %% master summary of 
+% % - check_hr_ex_beta (TBD);
+% % - check_emg_ex_beta (TBD);
+% % - project_summary;   %% master summary of 
 % 
 %% ----------------------------------------
 %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -116,10 +116,10 @@ check_mvpa_ex_gm_mdl;
 % mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
 % mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
 % 
-% % Analyze HR deceleration (see Kayla et al. [2019] paper, in review)
-% analyze_ex_gm_hr_v; (TBD)
-% mvpa_fmri_ex_gm_rgr_hr; (TBD)
-% mvpa_fmri_ex_gm_rgr_v; (TBD)
+% %% % Analyze HR deceleration (see Kayla et al. [2019] paper, in review)
+% %% analyze_ex_gm_hr_v; (TBD)
+% %% mvpa_fmri_ex_gm_rgr_hr; (TBD)
+% %% mvpa_fmri_ex_gm_rgr_v; (TBD)
 % 
 % %% ----------------------------------------
 % %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)

@@ -125,8 +125,7 @@ for i = 1:numel(subjs)
                 prds.v_cls_hd = [prds.v_cls_hd;v_tst_hd'];
                 
             end
-            
-            
+                        
             % debug
             all_v_cls_acc = [all_v_cls_acc;mean(mean(prds.v_cls_acc,1))];
             logger(['  v acc: ',num2str(mean(mean(prds.v_cls_acc,2)))],proj.path.logfile);
