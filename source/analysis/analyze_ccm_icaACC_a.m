@@ -16,14 +16,14 @@ logger(['*************************************************'],proj.path.logfile);
 logger(['Computing IN Cog Control EVC Models                  '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
-%% ----------------------------------------
-%% Set-up Directory Structure for fMRI betas
-if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.ctrl.in_acc_activ]);
-    eval(['! rm -rf ',proj.path.ctrl.in_acc_activ]);
-    disp(['Creating ',proj.path.ctrl.in_acc_activ]);
-    eval(['! mkdir ',proj.path.ctrl.in_acc_activ]);
-end
+%%%% %% ----------------------------------------
+%%%% %% Set-up Directory Structure for fMRI betas
+%%%% if(proj.flag.clean_build)
+%%%%     disp(['Removing ',proj.path.ctrl.in_acc_activ]);
+%%%%     eval(['! rm -rf ',proj.path.ctrl.in_acc_activ]);
+%%%%     disp(['Creating ',proj.path.ctrl.in_acc_activ]);
+%%%%     eval(['! mkdir ',proj.path.ctrl.in_acc_activ]);
+%%%% end
 
 %% ----------------------------------------
 %% load subjs
@@ -133,20 +133,19 @@ for i = 1:numel(subjs)
         load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat']);
         evc_mdls = mdls;
 
-        indx = reshape(err_mdls.a_indx.err',1, ...
-                       prod(size(err_mdls.a_indx.err)));
+        indx = reshape(err_mdls.a_indx',1, ...
+                       prod(size(err_mdls.a_indx)));
         
         % true measure
         acc = base_acc(indx,1);
 
         % true predictors
-        err = reshape(abs(err_mdls.a_dcmp.err'),1,prod(size(err_mdls.a_dcmp.err)))'; %
-
-                                                         % *** TICKET ***
-        cnf = reshape(cnf_mdls.a_dcmp.cnf',1,prod(size(cnf_mdls.a_dcmp.cnf)))';
-        pel = reshape(pel_mdls.a_dcmp.pel',1,prod(size(pel_mdls.a_dcmp.pel)))';
-        pro = reshape(pro_mdls.a_dcmp.pro',1,prod(size(pro_mdls.a_dcmp.pro)))';
-        evc = reshape(evc_mdls.a_dcmp.evc',1,prod(size(evc_mdls.a_dcmp.evc)))';
+        % err = reshape(abs(err_mdls.a_dcmp.err'),1,prod(size(err_mdls.a_dcmp.err)))'; %
+        err = reshape(err_mdls.a_dcmp',1,prod(size(err_mdls.a_dcmp)))'; %***TICKET***
+        cnf = reshape(cnf_mdls.a_dcmp',1,prod(size(cnf_mdls.a_dcmp)))';
+        pel = reshape(pel_mdls.a_dcmp',1,prod(size(pel_mdls.a_dcmp)))';
+        pro = reshape(pro_mdls.a_dcmp',1,prod(size(pro_mdls.a_dcmp)))';
+        evc = reshape(evc_mdls.a_dcmp',1,prod(size(evc_mdls.a_dcmp)))';
 
         % true subject id
         subject = repmat(subj_cnt,numel(indx),1);

@@ -17,7 +17,6 @@ logger([' Organize VR skills for Cog-Behav analysis       '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
 
-
 %% ----------------------------------------
 %% load analysis structures (VALENCE)
 load([proj.path.analysis.vr_skill,'v_sig_subjs.mat']);

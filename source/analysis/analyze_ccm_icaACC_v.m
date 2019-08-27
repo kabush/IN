@@ -133,20 +133,26 @@ for i = 1:numel(subjs)
         load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat']);
         evc_mdls = mdls;
 
-        indx = reshape(err_mdls.v_indx.err',1, ...
-                       prod(size(err_mdls.v_indx.err)));
+        %indices (using err as template)
+        indx = reshape(err_mdls.v_indx',1,prod(size(err_mdls.v_indx)));
         
         % true measure
         acc = base_acc(indx,1);
 
         % true predictors
-        err = reshape(abs(err_mdls.v_dcmp.err'),1,prod(size(err_mdls.v_dcmp.err)))'; %
+        err = reshape(abs(err_mdls.v_dcmp'),1,prod(size(err_mdls.v_dcmp)))'; %***TICKET***
+        %% err_v = reshape(abs(err_mdls.v_dcmp)',1,prod(size(err_mdls.v_dcmp)))'; %***TICKET***
+        %% err_a = reshape(abs(err_mdls.a_dcmp)',1,prod(size(err_mdls.a_dcmp)))'; %***TICKET***
+        %% err = err_v+err_a;
 
-                                                         % *** TICKET ***
-        cnf = reshape(cnf_mdls.v_dcmp.cnf',1,prod(size(cnf_mdls.v_dcmp.cnf)))';
-        pel = reshape(pel_mdls.v_dcmp.pel',1,prod(size(pel_mdls.v_dcmp.pel)))';
-        pro = reshape(pro_mdls.v_dcmp.pro',1,prod(size(pro_mdls.v_dcmp.pro)))';
-        evc = reshape(evc_mdls.v_dcmp.evc',1,prod(size(evc_mdls.v_dcmp.evc)))';
+        cnf = reshape(cnf_mdls.v_dcmp',1,prod(size(cnf_mdls.v_dcmp)))';
+        pel = reshape(pel_mdls.v_dcmp',1,prod(size(pel_mdls.v_dcmp)))';
+        pro = reshape(pro_mdls.v_dcmp',1,prod(size(pro_mdls.v_dcmp)))';
+        
+        evc = reshape(evc_mdls.v_dcmp',1,prod(size(evc_mdls.v_dcmp)))';
+        %% evc_v = reshape(evc_mdls.v_dcmp',1,prod(size(evc_mdls.v_dcmp)))';
+        %% evc_a = reshape(evc_mdls.a_dcmp',1,prod(size(evc_mdls.a_dcmp)))';
+        %% evc = evc_v+evc_a;
 
         % true subject id
         subject = repmat(subj_cnt,numel(indx),1);

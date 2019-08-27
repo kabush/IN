@@ -47,7 +47,7 @@ for i = 1:numel(subjs)
     try
 
         %% Load IN trajectory structures
-        load([proj.path.ctrl.in_ctrl,subj_study,'_',name, ...
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name, ...
               '_prds.mat']);
 
         if(isfield(prds,'v_dcmp'))

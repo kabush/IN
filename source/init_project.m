@@ -69,9 +69,15 @@ proj.path.subj_list = [proj.path.code,'subj_lists/'];
 %% Design path (this is a meta source file)
 proj.path.design = [proj.path.code,'design/'];
 
-%% Results logging file
-proj.path.logfile = [proj.path.log,'logfile.txt'];
-eval(['! rm ',proj.path.logfile]); % clear at initialization
+%% Logging (creates a unique time-stampted logfile)
+formatOut = 'yyyy_mm_dd_HH:MM:SS';
+t = datetime('now');
+ds = datestr(t,formatOut);
+proj.path.logfile = [proj.path.log,'logfile_',ds,'.txt'];
+
+% %% Results logging file
+% proj.path.logfile = [proj.path.log,'logfile.txt'];
+% eval(['! rm ',proj.path.logfile]); % clear at initialization
 
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)

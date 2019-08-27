@@ -89,12 +89,12 @@ for i = 1:numel(subjs)
         %% Model Prediction Error-Likelihood
         
         % valence
-        mdls.v_dcmp.pel = abs(p_c_v_all(:,3:(end-1))-p_beta_c_v(:,3:(end-1)));
-        mdls.v_indx.pel = prds.v_indx.h(:,3:(end-1));
+        mdls.v_dcmp = abs(p_c_v_all(:,3:(end-1))-p_beta_c_v(:,3:(end-1)));
+        mdls.v_indx = prds.v_indx.h(:,3:(end-1));
 
         % arousal
-        mdls.a_dcmp.pel = abs(p_c_a_all(:,3:(end-1))-p_beta_c_a(:,3:(end-1)));
-        mdls.a_indx.pel = prds.a_indx.h(:,3:(end-1));
+        mdls.a_dcmp = abs(p_c_a_all(:,3:(end-1))-p_beta_c_a(:,3:(end-1)));
+        mdls.a_indx = prds.a_indx.h(:,3:(end-1));
 
         % save out model structure
         save([proj.path.ctrl.in_pel_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');

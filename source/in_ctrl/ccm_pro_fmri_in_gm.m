@@ -88,12 +88,12 @@ for i = 1:numel(subjs)
         %% Model Predicted Response Outcome
 
         % valence
-        mdls.v_dcmp.pro = abs(p_c_v_all(:,3:(end-1))-p_beta_c_v(:,2:(end-2)));
-        mdls.v_indx.pro = prds.v_indx.h(:,3:(end-1));
+        mdls.v_dcmp = abs(p_c_v_all(:,3:(end-1))-p_beta_c_v(:,2:(end-2)));
+        mdls.v_indx = prds.v_indx.h(:,3:(end-1));
 
         % arousal
-        mdls.a_dcmp.pro = abs(p_c_a_all(:,3:(end-1))-p_beta_c_a(:,2:(end-2)));
-        mdls.a_indx.pro = prds.a_indx.h(:,3:(end-1));
+        mdls.a_dcmp = abs(p_c_a_all(:,3:(end-1))-p_beta_c_a(:,2:(end-2)));
+        mdls.a_indx = prds.a_indx.h(:,3:(end-1));
 
         % save out model structure
         save([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');

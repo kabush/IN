@@ -190,11 +190,11 @@ for i = 1:numel(subjs)
 
         mdls = struct();
         
-        mdls.v_dcmp.evc = [];
+        mdls.v_dcmp = [];
         for j=1:N
-            mdls.v_dcmp.evc = [mdls.v_dcmp.evc;Qp(j,find(cfg.U==Us(j)))];
+            mdls.v_dcmp = [mdls.v_dcmp;Qp(j,find(cfg.U==Us(j)))];
         end
-        mdls.v_dcmp.evc = reshape(mdls.v_dcmp.evc,size(s_indx,2),size(s_indx,1))';
+        mdls.v_dcmp = reshape(mdls.v_dcmp,size(s_indx,2),size(s_indx,1))';
         mdls.v_indx.evc = s_indx;
 
         % % save out model structure
@@ -265,11 +265,11 @@ for i = 1:numel(subjs)
         %% temporary analysis
         load([cfg.datafile,'.mat']);
 
-        mdls.a_dcmp.evc = [];
+        mdls.a_dcmp = [];
         for j=1:N
-            mdls.a_dcmp.evc = [mdls.a_dcmp.evc;Qp(j,find(cfg.U==Us(j)))];
+            mdls.a_dcmp = [mdls.a_dcmp;Qp(j,find(cfg.U==Us(j)))];
         end
-        mdls.a_dcmp.evc = reshape(mdls.a_dcmp.evc,size(s_indx,2),size(s_indx,1))';
+        mdls.a_dcmp = reshape(mdls.a_dcmp,size(s_indx,2),size(s_indx,1))';
         mdls.a_indx.evc = s_indx;
 
         % save out model structure
