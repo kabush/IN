@@ -12,12 +12,9 @@
 load('proj.mat');
 
 %% Initialize log section
-logger(['*************************************************'], ...
-       proj.path.logfile);
-logger(['Analyzing ER Skill                               '], ...
-       proj.path.logfile);
-logger(['*************************************************'], ...
-       proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+logger(['Analyzing ER Skill (VALENCE SEX-DIFFS)           '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)

@@ -13,7 +13,7 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['*********************************************'],proj.path.logfile);
-logger(['Analyzing ER Skill                           '],proj.path.logfile);
+logger(['Analyzing MVPA GS vs GM                      '],proj.path.logfile);
 logger(['*********************************************'],proj.path.logfile);
 
 %% ----------------------------------------

@@ -75,10 +75,6 @@ t = datetime('now');
 ds = datestr(t,formatOut);
 proj.path.logfile = [proj.path.log,'logfile_',ds,'.txt'];
 
-% %% Results logging file
-% proj.path.logfile = [proj.path.log,'logfile.txt'];
-% eval(['! rm ',proj.path.logfile]); % clear at initialization
-
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)
 proj.path.system.name = 'system/';
