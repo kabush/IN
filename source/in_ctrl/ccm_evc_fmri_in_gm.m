@@ -84,7 +84,7 @@ for i = 1:numel(subjs)
         
         % Load ICA masks comprising the state space (and grab
         % activations)
-        ica_seq = [1,2,3,5];
+        ica_seq = [1:5,13:18];
         Nica = numel(ica_seq);;
         all_states = zeros(size(base_img,1),Nica);
         
@@ -107,7 +107,7 @@ for i = 1:numel(subjs)
             disp(['  after: ', ...
                   num2str(numel(unique(in_brain_this_ica)))]);
 
-            all_states(:,ica_n) = mean(base_img(:,in_brain_this_ica),2);
+            all_states(:,j) = mean(base_img(:,in_brain_this_ica),2);
 
         end
 
@@ -144,7 +144,7 @@ for i = 1:numel(subjs)
         %% ***TICKET*** reward function parameters hardcoded here
         f_cost_act = 1.0;
         f_cost_err = 1.0;
-        rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*abs(errors_1d);
+        rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*sqrt(errors_1d.^2);
 
         %% ----------------------------------------
         %% format data for writing out structure
@@ -228,7 +228,7 @@ for i = 1:numel(subjs)
         dsc_actions_1d(find(actions_1d<-.33))=-1;
 
         %% build reward function
-        rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*abs(errors_1d);
+        rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*sqrt(errors_1d.^2);
 
         %% ----------------------------------------
         %% format data for writing out structure

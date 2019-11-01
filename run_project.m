@@ -10,9 +10,9 @@
 
 tic
 
-% %% ----------------------------------------
-% %% Clean up matlab environment
-% matlab_reset;
+%% ----------------------------------------
+%% Clean up matlab environment
+matlab_reset;
 
 %% ----------------------------------------
 %% Link all source code
@@ -22,9 +22,9 @@ addpath(genpath('./source/'));
 % %% PHASE 0: Project Initialization and Preprocessing 
 % %% ============================================================
 % 
-% %% ----------------------------------------
-% %% STEP 1: Initialize the projects directories and parameters.
-% init_project;
+%% ----------------------------------------
+%% STEP 1: Initialize the projects directories and parameters.
+init_project;
 % 
 % %%  ----------------------------------------
 % %% STEP 2: Clear and reconstruct the project data folder
@@ -78,7 +78,7 @@ addpath(genpath('./source/'));
 % check_scr_ex_beta;
 % % - check_hr_ex_beta (TBD);
 % % - check_emg_ex_beta (TBD);
-% % - project_summary;   %% master summary of 
+% % - project_summary;   %% master summary 
 % 
 % %% ----------------------------------------
 % %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -94,8 +94,8 @@ addpath(genpath('./source/'));
 % 
 % mvpa_fmri_ex_gm_mdl; % intra-subj whole-brain GM MVPA models (all data)
 % 
-%% ----------------------------------------
-%% STEP 5: Data-driven Analysis of Classification (see Frontiers 2018 paper)
+% %% ----------------------------------------
+% %% STEP 5: Data-driven Analysis of Classification (see Frontiers 2018 paper)
 % analyze_mvpa_fmri_ex_gs_cls_refit;
 % 
 % %% ----------------------------------------
@@ -121,8 +121,7 @@ addpath(genpath('./source/'));
 % %% mvpa_fmri_ex_gm_rgr_hr; (TBD)
 % %% mvpa_fmri_ex_gm_rgr_v; (TBD)
 % 
-% 
-% % %% ********* VERY SLOW BELOW **********
+% % % %% ********* VERY SLOW BELOW **********
 % % %% ----------------------------------------
 % % %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)
 % % 
@@ -166,23 +165,24 @@ addpath(genpath('./source/'));
 % %% STEP 5: Run quality check (system) on dynamics
 % % (TBD)
 % 
-% %% ----------------------------------------
-% %% STEP 6: Critically test ACC function (AIM 1)
-% 
+%% ----------------------------------------
+%% STEP 6: Critically test ACC function (AIM 1)
+
 % % format Ray, 2013 70 ICA component (icaACC) to align with beta-series
 % % format Ray, 2013 20 ICA component (RL state) to align with beta-series
 % reshape_ica;
 % 
 % % Compute cognitive control models (CCM) of ACC function
-% ccm_err_fmri_in_gm;  %% error model
-% ccm_cnf_fmri_in_gm;  %% conflict model
-% ccm_pel_fmri_in_gm;  %% prediction error likelihood
-% ccm_pro_fmri_in_gm;  %% predicted response outcome
-% ccm_evc_fmri_in_gm;    %% expected value of control (Q-value) valence
-% analyze_Q_in_vr;       %% ***TICKET*** temporarily here...move down
-% 
-% % Predict CCMs from icaACC masked beta-series
-% analyze_ccm_icaACC_v;
+% ccm_err_fmri_in_gm;  % error model
+% ccm_cnf_fmri_in_gm;  % conflict model
+% ccm_pel_fmri_in_gm;  % prediction error likelihood
+% ccm_pro_fmri_in_gm;  % predicted response outcome
+% ccm_evc_fmri_in_gm;  % expected value of control (Q-value)
+% valence
+% analyze_Q_in_vr;     % ***TICKET*** temporarily here...move down
+
+% Predict CCMs from icaACC masked beta-series
+analyze_ccm_icaACC_v;
 % analyze_ccm_icaACC_a;
 
 % Compare prediction performance

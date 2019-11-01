@@ -13,7 +13,7 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
-logger(['Computing IN Cog Control Error Models                  '],proj.path.logfile);
+logger(['Computing IN Cog Control Error Models            '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
 %% ----------------------------------------

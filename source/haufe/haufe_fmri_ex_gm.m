@@ -65,7 +65,7 @@ for i = 1:Nloop
     for j = 1:numel(subjs)
         
         %% extract subject info
-        subj_study = subjs{j}.study;
+B       subj_study = subjs{j}.study;
         name = subjs{j}.name;
         id = subjs{j}.id;
         

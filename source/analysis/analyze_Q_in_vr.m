@@ -86,36 +86,36 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% AROUSAL analysis
         load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_a.mat']);
-
+        
         Q_traj = [];
         Q_rand = [];
         Q_best = [];
         Q_worst = [];
         for j=1:size(Xs,2)
-
+        
             Q_traj = [Q_traj;Qp(j,find(cfg.U==Us(j)))];
             Q_rand = [Q_rand;Qp(j,randsample(1:3,1))];
-
+        
             Qbst = find(Qp(j,:)==max(Qp(j,:)));
             Qwst = find(Qp(j,:)==min(Qp(j,:)));
-
+        
             if(numel(Qbst)>1)
                 Qbst = 1; 
             end
-
+        
             if(numel(Qwst)>1)
                 Qwst = 1; 
             end
-
+        
             Q_best = [Q_best;Qp(j,Qbst)]; 
             Q_worst = [Q_worst;Qp(j,Qwst)];
         end
-
+        
         Q_traj = reshape(Q_traj,4,30)';
         Q_rand = reshape(Q_rand,4,30)';
         Q_best = reshape(Q_best,4,30)';
         Q_worst = reshape(Q_worst,4,30)';
-
+        
         all_a_Q_traj = [all_a_Q_traj;mean(Q_traj)];
         all_a_Q_rand = [all_a_Q_rand;mean(Q_rand)];
         all_a_Q_best = [all_a_Q_best;mean(Q_best)];
