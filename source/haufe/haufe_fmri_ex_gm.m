@@ -320,7 +320,7 @@ B       subj_study = subjs{j}.study;
             % save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_01.nii']);
 
             mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(sig_ids_01_v,1),gm_nii,sig_ids_01_v);
-            save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_05.nii']);
+            save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_01.nii']);
 
         end
 
@@ -333,8 +333,6 @@ B       subj_study = subjs{j}.study;
 
              mu_perm_v_haufe_nii = build_nii_from_gm_mask(grp_haufe_v_tstat(sig_ids_001_v,1),gm_nii,sig_ids_001_v);
              save_nii(mu_perm_v_haufe_nii,[proj.path.haufe.fmri_ex_gm_mdl,'mu_perm_haufe_v_N=',num2str(Nperm),'_001.nii']);
-
-
 
 
         end

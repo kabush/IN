@@ -73,21 +73,31 @@ eval(['! cp ',proj.path.atlas,'ray2013/ica20/maps/*.gz ',proj.path.code,'tmp/'])
 %% ----------------------------------------
 %% As per Ray et al., (2013)
 %% EMOTION/INTEROCEPTION REGIONS: ICs 1-5
+%% SENSORY/MOTOR: ICs 6-12
 %% HIGHER COGNITION: ICs 13-18
 %%
 %% We have ACC related regions in the ICAs that we want to
-%% remove. (clusterizing with NN=1, voxels=1)
-%% ICA2, cluster #14 (46 voxels)
-%% ICA4, cluster #4  (1244 voxels)
-%% ICA5, cluster #6  (137 voxels)
-ic_seq=[1:5,13:18];
-clust_seq = [-1,14,-1,4,6,-1,-1,12,-1,20,4];  %%IC=15 also removes 16
-xclust_id = 16;
+%% remove. (clusterizing with NN=1, voxels=2)
+%% ICA2,  slight intersection (subtr. removes a few voxels): SUBTR OK
+%% ICA4,  cluster #4  (1244 voxels):                         REMOVE CLUSTER
+%% ICA5,  cluster #5:                                :       SUBTR OK
+%% ICA6,  cluster #1  (cut out a big chunk of SMA???):       REMOVE CLUSTER
+%% ICA7,  slight intersection (subtr. removes a few voxels): SUBTR OK
+%% ICA13, intersection (subtr. removes dozens of voxels):    SUBTR OK
+%% ICA15, cluster #'s, 12 & 16;                              REMOVE 2xCLUSTER
+%% ICA17, cluster #20  (cut out a big chunk):                REMOVE CLUSTER
+%% ICA18, cluster #4 (cut out a big chunk of pre-sMA???):    REMOVE CLUSTER
+
+clust_rmv = [-1,-1,-1,4,-1,1,-1,-1,-1,-1,-1,-1,-1,-1,12,-1,20,4];
+clust_xtra = 15;
+clust_rmv_xtra = 16;
+
+ic_seq=1:18;
 
 for iseq=1:numel(ic_seq)
 
     i = ic_seq(iseq);
-    clust_i = clust_seq(iseq);
+    clust_rmv_i = clust_rmv(iseq);
 
     %% orient ICA to RAI like the rest of the data
     eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/' ...
@@ -100,29 +110,26 @@ for iseq=1:numel(ic_seq)
           '-prefix ',proj.path.code,'tmp/' ...
           'orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz -clip .2']);
 
-    if(i==13)
+    if(clust_rmv_i<0)
 
-        %% **** Because the overlap is just a few voxels out of
-        %% many hundreds, we subtract out the dACC voxels from this
-        %% IC rather than remove the ROI of the IC that is
-        %% intersecting dACC.  ***
+        %%Just substract ACC from mask.
 
         %% Create Full-ICA Mask
         eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
               '-expr  ''bool(a)'' -prefix ' ...
               ,proj.path.code,'tmp/full_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
-  
-        %% Subject out dACC from Mask
+        
+        %% Subtract out dACC from Mask
         eval(['! 3dcalc -a ',proj.path.code,'tmp/full_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
               '-b ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_17_3x3x3.nii.gz ' ...
               '-expr  ''a-b'' -prefix ' ...
               ,proj.path.code,'tmp/diff_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
-
+    
         %% Keep only the positive
         eval(['! 3dcalc -a ',proj.path.code,'tmp/diff_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
               '-expr  ''ispositive(a)'' -prefix ' ...
               ,proj.path.code,'tmp/sng_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
-
+    
     else
 
         %% clusterize to remove everything but the dACC
@@ -139,7 +146,7 @@ for iseq=1:numel(ic_seq)
         
         %% Create dACC(or partial dACC)-ICA  Mask
         eval(['! 3dcalc -a ',proj.path.code,'tmp/clst_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
-              '-expr  ''equals(a,',num2str(clust_i),')'' -prefix ' ...
+              '-expr  ''equals(a,',num2str(clust_rmv_i),')'' -prefix ' ...
               ,proj.path.code,'tmp/roi_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);            
 
         %% Create ICA Mask without dACC 
@@ -148,17 +155,17 @@ for iseq=1:numel(ic_seq)
               '-expr  ''a-b'' -prefix ' ...
               ,proj.path.code,'tmp/sng_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
 
-        if(i==15) 
+        if(i==clust_xtra) 
 
             %% *** Because this IC has two small ROIs within the
-            %% dACC we have to remove the 2nd ***6
+            %% dACC we have to remove the 2nd cluster 
 
             eval(['! mv ',proj.path.code,'tmp/sng_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
                  ,proj.path.code,'tmp/xsng_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);
 
             %% Create dACC(or partial dACC)-ICA  Mask
             eval(['! 3dcalc -a ',proj.path.code,'tmp/clst_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz ' ...
-                  '-expr  ''equals(a,',num2str(xclust_id),')'' -prefix ' ...
+                  '-expr  ''equals(a,',num2str(clust_rmv_xtra),')'' -prefix ' ...
                   ,proj.path.code,'tmp/xroi_orient_thresh_zstatd20_',num2str(i),'_3x3x3.nii.gz']);            
 
             %% Create ICA Mask without dACC 

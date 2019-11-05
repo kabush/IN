@@ -56,7 +56,14 @@ for i = 1:numel(subjs)
         for j=1:size(Xs,2)
 
             Q_traj = [Q_traj;Qp(j,find(cfg.U==Us(j)))];
-            Q_rand = [Q_rand;Qp(j,randsample(1:3,1))];
+
+
+            Q_lo = Qp(j,1);
+            Q_mi = Qp(j,2);
+            Q_hi = Qp(j,3);
+
+
+            Q_rand = [Q_rand;mean([Q_lo,Q_mi,Q_hi])]; %Qp(j,randsample(1:3,1))];
 
             Qbst = find(Qp(j,:)==max(Qp(j,:)));
             Qwst = find(Qp(j,:)==min(Qp(j,:)));
@@ -98,7 +105,7 @@ for i = 1:numel(subjs)
         
             Qbst = find(Qp(j,:)==max(Qp(j,:)));
             Qwst = find(Qp(j,:)==min(Qp(j,:)));
-        
+       
             if(numel(Qbst)>1)
                 Qbst = 1; 
             end
