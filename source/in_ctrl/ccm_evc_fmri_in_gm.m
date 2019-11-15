@@ -30,10 +30,75 @@ end
 subjs = load_subjs(proj);
 
 %% ----------------------------------------
-%% build action set
+%% discretize action set
 Nsbj = 0;
 act_v_all = [];
 act_a_all = [];
+for i = 1:numel(subjs)
+
+    %% extract subject info
+    subj_study = subjs{i}.study;
+    name = subjs{i}.name;
+    id = subjs{i}.id;
+
+    % log processing of subject
+    logger([subj_study,'_',name],proj.path.logfile);
+
+    data_exist = 0;
+    try
+
+        % load dynamics
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
+        
+        %% Data is present
+        data_exist = 1;
+        
+    catch
+        logger(['   -predictions do not exist'],proj.path.logfile);
+    end
+
+    if(data_exist)
+
+        %% ******* ACTIONS ********
+
+        %% valence
+        actions = (prds.v_dcmp.h(:,4:end)-prds.v_dcmp.h(:,3:(end-1)));
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET        
+        act_v_all = [act_v_all,actions_1d];
+
+        %% arousal
+        actions = (prds.a_dcmp.h(:,4:end)-prds.a_dcmp.h(:,3:(end-1)));
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET        
+        act_a_all = [act_a_all,actions_1d];
+
+        %% count subjects
+        Nsbj = Nsbj + 1;
+
+    end
+
+end
+
+%% Use group action to build 3 & 5 discrete action partitions
+% N_3size = round(numel(act_v_all)/3);
+N_5size = round(numel(act_v_all)/5);
+
+act_v_srt = sort(act_v_all);
+act_a_srt = sort(act_a_all);
+
+%% compute standard deviation
+act_v_std = std(act_v_srt);
+
+% act_3part = [act_v_srt(N_3size),act_v_srt(2*N_3size)];
+% act_5part = [act_v_srt(N_5size),act_v_srt(2*N_5size), ...
+%              act_v_srt(3*N_5size),act_v_srt(4*N_5size)];
+
+%% compute partition based on standard deviations
+act_5part = [-2*act_v_std,-act_v_std,act_v_std,2*act_v_std];
+
+%% ----------------------------------------
+%% Balance action and error scales
+dsc_act_v_all = [];
+dsc_err_v_all = [];
 
 for i = 1:numel(subjs)
 
@@ -60,67 +125,75 @@ for i = 1:numel(subjs)
 
     if(data_exist)
 
+        %% ******* ACTIONS ********
+
         %% valence
         actions = (prds.v_dcmp.h(:,4:end)-prds.v_dcmp.h(:,3:(end-1)));
-        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET        
-        act_v_all = [act_v_all,actions_1d];
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));
 
-        %% arousal
-        actions = (prds.a_dcmp.h(:,4:end)-prds.a_dcmp.h(:,3:(end-1)));
-        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET        
-        act_a_all = [act_a_all,actions_1d];
+        %% 5 discrete actions
+        dsc_actions_1d = 0*actions_1d;
+        dsc_actions_1d(find(actions_1d>act_5part(3)))=1; 
+        dsc_actions_1d(find(actions_1d>act_5part(4)))=2; 
+        dsc_actions_1d(find(actions_1d<act_5part(2)))=-1; 
+        dsc_actions_1d(find(actions_1d<act_5part(1)))=-2; 
+        dsc_act_v_all = [dsc_act_v_all,dsc_actions_1d];
 
-        %% count subjects
-        Nsbj = Nsbj + 1;
-
+        %% ******* ERRORS ********
+        errors = (prds.v_dcmp.err(:,4:end));
+        errors_1d = zscore(reshape(errors',1,prod(size(errors))));
+        dsc_err_v_all = [dsc_err_v_all,errors_1d];
+        
     end
 
 end
 
-%% Use group action to build 3 & 5 discrete action partitions
-N_3size = round(numel(act_v_all)/3);
-N_5size = round(numel(act_v_all)/5);
+% Compute group params
+grp_act_v_mean = mean(dsc_act_v_all);
+grp_act_v_std = std(dsc_act_v_all);
+grp_err_v_mean = mean(dsc_err_v_all);
+grp_err_v_std = std(dsc_err_v_all);
 
-act_v_srt = sort(act_v_all);
-act_a_srt = sort(act_a_all);
-
-act_3part = [act_v_srt(N_3size),act_v_srt(2*N_3size)];
-act_5part = [act_v_srt(N_5size),act_v_srt(2*N_5size), ...
-             act_v_srt(3*N_5size),act_v_srt(4*N_5size)];
+%% ----------------------------------------
+%% ----------------------------------------
+%% Compute Q-functions for all subjects
+%% ----------------------------------------
+%% ----------------------------------------
 
 %% Meta RL Parameter search
 action_5dscr_set = [1,0]; % otherwise 3 discrete actions
-discount_set = [0:.1:.9,.99];
-reward_frac_set = [0:.1:1]; % balance between reward/action
+discount_set = [0:.1:1];
+reward_act_set = [0:.1:1]; % balance between reward/action
 
 %% Calculate set-sizes
 Nact = numel(action_5dscr_set);
 Ndsct = numel(discount_set);
-Nfrac = numel(reward_frac_set);
+Nfrac = numel(reward_act_set);
 
 Q_traj_v_all = zeros(Nact,Ndsct,Nfrac,Nsbj,30,4);
 Q_rand_v_all = zeros(Nact,Ndsct,Nfrac,Nsbj,30,4);
 Q_best_v_all = zeros(Nact,Ndsct,Nfrac,Nsbj,30,4);
 Q_worst_v_all = zeros(Nact,Ndsct,Nfrac,Nsbj,30,4);
 
+tic
+
 %% META-LOOPS HERE
-for a=1:Nact
+for a=1:1 %Nact
 
-    for b=1:Ndsct
-
-        for c=1:Nfrac
-
+    for b=6 %:Ndsct
+        
+        for c=6 %:Nfrac
+            
             act_dscr = action_5dscr_set(a);
             gamma = discount_set(b);
-            rwrd_f = reward_frac_set(c);
+            rwrd_act_f = reward_act_set(c);
             
             %% ----------------------------------------
             %% ----------------------------------------
             %% FIT Q-function to the IN task
             %% ----------------------------------------
             %% ----------------------------------------
-            for i = 1:numel(subjs)
-                
+            for i=1:numel(subjs)
                 
                 %% extract subject info
                 subj_study = subjs{i}.study;
@@ -214,9 +287,7 @@ for a=1:Nact
                     actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET
                     errors_1d = zscore(reshape(errors',1,prod(size(errors)))); %TICKET
                     
-                    % assign a discrete action space %% ***TICKET*** partitions chosen to
-                    % break actions into evenly split thirds
-                    
+                    %% assign action to discrete space
                     if(act_dscr)
                         %% 5 discrete actions
                         dsc_actions_1d = 0*actions_1d;
@@ -230,18 +301,22 @@ for a=1:Nact
                         dsc_actions_1d(find(actions_1d>act_3part(2)))=1; 
                         dsc_actions_1d(find(actions_1d<act_5part(1)))=-1; 
                     end
-                    
-                    %% ***TICKET*** reward function parameters hardcoded here
-                    f_cost_act = rwrd_f; %1.0;
-                    f_cost_err = 1-rwrd_f; %1.0;
-                    rewards_1d = -f_cost_act*abs(dsc_actions_1d)-f_cost_err*sqrt(errors_1d.^2);
+
+                    %% Rescale actions and errors at the group level
+                    rwd_actions_1d = (dsc_actions_1d-grp_act_v_mean)/grp_act_v_std;
+                    rwd_errors_1d = (errors_1d-grp_err_v_mean)/grp_err_v_std;
+
+                    %% Compute reward
+                    f_cost_act = rwrd_act_f; 
+                    f_cost_err = 1;
+                    rewards_1d = -f_cost_act*abs(rwd_actions_1d)-f_cost_err*sqrt(rwd_errors_1d.^2);
                     
                     %% ----------------------------------------
                     %% format data for writing out structure
                     %%   N   // number of tuples
-                    %%   X   // state
-                    %%   U   // action
-                    %%   Xp  // next state
+                    %%   X   // states
+                    %%   U   // actions
+                    %%   Xp  // next states
                     %%   R   // reward (at Xp)
                     %%   T   // Xp terminal state (1) or continuing (0)?
                     N = numel(s_indx_1d);
@@ -258,16 +333,16 @@ for a=1:Nact
                     %% configure fitted Q-iteration
                     cfg = struct;
                     cfg.run = 1;  % set the run flag;
-                    cfg.gamma = gamma; %.98; % discount factor
+                    cfg.gamma = gamma; % discount factor
                     cfg.U = unique(U);
                     cfg.datadir = [proj.path.code,'tmp'];
                     cfg.datafile = [proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_v'];
                     cfg.maxiter = 1000;
                     cfg.regmethod = 'extratrees';
-                    cfg.singlereg = 1;
+                    cfg.singlereg = 0;
                     cfg.trees_ntrees = 25;
                     cfg.trees_nmin = 2;
-                    cfg.trees_k = size(X,1)+1;
+                    cfg.trees_k = size(X,2)+1;
                     cfg.samples = samples;
                     
                     %% ----------------------------------------
@@ -376,14 +451,14 @@ for a=1:Nact
                 
             end
             
-            
             %% ----------------------------------------
             %% ----------------------------------------
             %% Analyze control for sign. existence
             %% ----------------------------------------
             %% ----------------------------------------
             sbj_i = 0;
-            for i = 1: numel(subjs)
+
+            for i = 1:numel(subjs)
                 
                 %% extract subject info
                 subj_study = subjs{i}.study;
@@ -404,22 +479,20 @@ for a=1:Nact
                     Q_best = [];
                     Q_worst = [];
                     
-                    for j=1:size(Xs,2)
+                    for j=1:numel(Us)
                         
-                        Q_traj = [Q_traj;Qp(j,find(cfg.U==Us(j)))];
+                        Q_traj = [Q_traj;Qp(j,find(U==Us(j)))];
                         
                         %% Select either discrete action space
-                        Naction = 3;
-                        if(act_dscr)
-                            Naction = 5;
-                        end
-                        
+                        Naction=numel(unique(U));
+
                         %% Compute the random action as the average
                         Q_run = 0;
                         for k=1:Naction
-                            Q_run = Q_run + Qp(j,k);
+                            pu = numel(find(Us==U(k)))/numel(Us);
+                            Q_run = Q_run + pu*Qp(j,k);
                         end
-                        Q_rand = [Q_rand;Q_run/Naction];
+                        Q_rand = [Q_rand;Q_run];
                         
                         Qbst = find(Qp(j,:)==max(Qp(j,:)));
                         Qwst = find(Qp(j,:)==min(Qp(j,:)));
@@ -441,6 +514,7 @@ for a=1:Nact
                     Q_rand_v_all(a,b,c,sbj_i,:,:) = reshape(Q_rand,4,30)';
                     Q_best_v_all(a,b,c,sbj_i,:,:) = reshape(Q_best,4,30)';
                     Q_worst_v_all(a,b,c,sbj_i,:,:) = reshape(Q_worst,4,30)';
+
                     
                     %         %% ----------------------------------------
                     %         %% AROUSAL analysis
@@ -485,16 +559,34 @@ for a=1:Nact
                 end
                 
             end
-            
+
+            % %% ****************************************
+            % %% *** DEBUG ***
+            % q_traj_all = [];
+            % q_rand_all = [];
+            % for k = 1:Nsbj
+            %     q_traj_all = [q_traj_all;median(squeeze(Q_traj_v_all(a,b,c,k,:,:)))];
+            %     q_rand_all = [q_rand_all;median(squeeze(Q_rand_v_all(a,b,c,k,:,:)))];
+            % end
+            % 
+            % figure(1)
+            % plot(median(q_traj_all),'b-','LineWidth',2);
+            % hold on;
+            % plot(median(q_rand_all),'r-','LineWidth',2);
+            % hold off;
+            % drawnow;
+
             % Save VALENCE intermediate results
             save([proj.path.ctrl.in_evc_mdl,'Q_traj_v_all.mat'],'Q_traj_v_all');
             save([proj.path.ctrl.in_evc_mdl,'Q_rand_v_all.mat'],'Q_rand_v_all');
             save([proj.path.ctrl.in_evc_mdl,'Q_best_v_all.mat'],'Q_best_v_all');
             save([proj.path.ctrl.in_evc_mdl,'Q_worst_v_all.mat'],'Q_worst_v_all');
             
-            %% Remove the output of the fitted Q-iteration
-            eval(['! rm ',proj.path.ctrl.in_evc_mdl,'*_result_v.mat']);
+            % %% Remove the output of the fitted Q-iteration
+            % eval(['! rm ',proj.path.ctrl.in_evc_mdl,'*_result_v.mat']);
 
         end
-    end
+   end
 end
+
+toc

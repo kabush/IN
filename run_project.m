@@ -25,7 +25,7 @@ addpath(genpath('./source/'));
 %% ----------------------------------------
 %% STEP 1: Initialize the projects directories and parameters.
 init_project;
-% 
+
 % %%  ----------------------------------------
 % %% STEP 2: Clear and reconstruct the project data folder
 % clean_project;
@@ -177,9 +177,11 @@ init_project;
 % ccm_cnf_fmri_in_gm;  % conflict model
 % ccm_pel_fmri_in_gm;  % prediction error likelihood
 % ccm_pro_fmri_in_gm;  % predicted response outcome
-ccm_evc_fmri_in_gm;  % expected value of control (Q-value)
+% ccm_evc_fmri_in_gm;  % EVC (Q-value) Fit & Gridsearch (***SLOW***)
+% ccm_evc_fmri_in_gm_out_of_sample; % EVC (Q-value) Fit & Gridsearch (***SLOW***)
 
-% analyze_Q_in_vr;     % ***TICKET*** temporarily here...move down
+% % Analyze of Q-iter. meta-param search
+analyze_evc_fmri_in_gm;
 
 % Predict CCMs from icaACC masked beta-series
 % analyze_ccm_icaACC_v;
