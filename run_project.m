@@ -177,8 +177,11 @@ init_project;
 % ccm_cnf_fmri_in_gm;  % conflict model
 % ccm_pel_fmri_in_gm;  % prediction error likelihood
 % ccm_pro_fmri_in_gm;  % predicted response outcome
-% ccm_evc_fmri_in_gm;  % EVC (Q-value) Fit & Gridsearch (***SLOW***)
-% ccm_evc_fmri_in_gm_out_of_sample; % EVC (Q-value) Fit & Gridsearch (***SLOW***)
+% ccm_evc_fmri_in_gm_out_of_sample; % Q-func. param gridsearch (CNS
+%                                   % 2020 ***VERY SLOW***)
+%                                   % Need to select best for next
+%                                   % step *** TICKET ***
+% ccm_evc_fmri_in_gm;  % Re-run Q-values withi subject for comparison.
 
 % % Analyze of Q-iter. meta-param search
 analyze_evc_fmri_in_gm;
