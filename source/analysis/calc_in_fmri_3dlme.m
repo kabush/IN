@@ -8,22 +8,7 @@
 %%========================================
 %%========================================
 
-%% Load in path data
-load('proj.mat');
-
-%% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Comparing IN Cog Control Model Predictions       '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-
-%% ----------------------------------------
-%% Set-up Directory Structure for fMRI betas
-if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.ctrl.in_3dlme_v]);
-    eval(['! rm -rf ',proj.path.ctrl.in_3dlme_v]);
-    disp(['Creating ',proj.path.ctrl.in_3dlme_v]);
-    eval(['! mkdir ',proj.path.ctrl.in_3dlme_v]);
-end
+function [] = calc_in_fmri_3dlme(proj,affect_name)
 
 %% ----------------------------------------
 %% load subjs
@@ -74,38 +59,44 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% Load computational models
 
-        %error
+        % error
         load([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat']);
-        err_mdls = mdls;
+        err_box = eval(['mdls.',affect_name,'_dcmp']);
+        indx_box = eval(['mdls.',affect_name,'_indx']);
 
-        %conflict
+        % conflict
         load([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat']);
-        cnf_mdls = mdls;
+        cnf_box = eval(['mdls.',affect_name,'_dcmp']);
+        %%%%cnf_mdls = mdls;
 
-        %prediction err likelihood
+        % prediction err likelihood
         load([proj.path.ctrl.in_pel_mdl,subj_study,'_',name,'_mdls.mat']);
-        pel_mdls = mdls;
+        pel_box = eval(['mdls.',affect_name,'_dcmp']);
+        %%%%%pel_mdls = mdls;
 
-        %prediction response outcome
+        % prediction response outcome
         load([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat']);
-        pro_mdls = mdls;
+        pro_box = eval(['mdls.',affect_name,'_dcmp']);
+        %%%%pro_mdls = mdls;
 
-        %expected value of control
+        % expected value of control
         load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat']);
-        evc_mdls = mdls;
+        evc_box = eval(['mdls.',affect_name,'_dcmp']);
+        %%%% evc_mdls = mdls;
 
         %% ----------------------------------------
         %% Load fixed effects
 
         % true predictors
-        err = reshape(sqrt((err_mdls.v_dcmp').^2),1,prod(size(err_mdls.v_dcmp)))';
-        cnf = reshape(cnf_mdls.v_dcmp',1,prod(size(cnf_mdls.v_dcmp)))';
-        pel = reshape(pel_mdls.v_dcmp',1,prod(size(pel_mdls.v_dcmp)))';
-        pro = reshape(pro_mdls.v_dcmp',1,prod(size(pro_mdls.v_dcmp)))';
-        evc = reshape(evc_mdls.v_dcmp',1,prod(size(evc_mdls.v_dcmp)))';
+        err = reshape(sqrt((err_box').^2),1,prod(size(err_box)))';
+        cnf = reshape(cnf_box',1,prod(size(cnf_box)))';
+        pel = reshape(pel_box',1,prod(size(pel_box)))';
+        pro = reshape(pro_box',1,prod(size(pro_box)))';
+        evc = reshape(evc_box',1,prod(size(evc_box)))';
 
         %indices (using err as template)
-        indx = reshape(err_mdls.v_indx',1,prod(size(err_mdls.v_indx)));
+        %%%%% indx = reshape(err_mdls.v_indx',1,prod(size(err_mdls.v_indx)));
+        indx = reshape(indx_box',1,prod(size(indx_box)))';
 
         %order of observations
         traj_box = repmat([1:4],30,1);
@@ -150,11 +141,11 @@ for i=1:numel(var_names)
     disp(var_name);
     
     % Build script
-    fid = fopen(['./lme_',var_name,'_script'],'w');
+    fid = fopen(['./lme_',affect_name,'_',var_name,'_script'],'w');
     fprintf(fid,'#! /bin/csh\n');
     fprintf(fid,'\n');
-    fprintf(fid,['3dLME -prefix lme_',var_name,' -jobs 16   \\ ']);
-    fprintf(fid,['      -resid lme_',var_name,'_resid       \\ ']);
+    fprintf(fid,['3dLME -prefix lme_',affect_name,'_',var_name,' -jobs 16   \\ ']);
+    fprintf(fid,['      -resid lme_',affect_name,'_',var_name,'_resid       \\ ']);
     fprintf(fid,['      -model ''traj+',var_name,'''        \\ ']);
     fprintf(fid,['      -qVars ''traj,',var_name,'''        \\ ']);
     fprintf(fid,'       -qVarCenters ''0,0''       \\ ');
@@ -168,53 +159,20 @@ for i=1:numel(var_names)
     fprintf(fid,[' Subj traj ',var_name,'  InputFile   \\ ']);
 
     % Write out datatable
-    Nrows = size(evalin('base',['all_',var_name]),1);
+    Nrows = size(eval(['all_',var_name]),1);
     for i = 1:(Nrows-1)
-        fprintf(fid,' %s %1.3f %1.3f %s   \\',all_subjs{i},all_traj(i),evalin('base',['all_',var_name,'(i)']),all_path{i});
+        fprintf(fid,' %s %1.3f %1.3f %s   \\',all_subjs{i},all_traj(i),eval(['all_',var_name,'(i)']),all_path{i});
     end
     i=Nrows;
-    fprintf(fid,' %s %1.3f %1.3f %s  \n \\',all_subjs{i},all_traj(i),evalin('base',['all_',var_name,'(i)']),all_path{i});
+    fprintf(fid,' %s %1.3f %1.3f %s  \n \\',all_subjs{i},all_traj(i),eval(['all_',var_name,'(i)']),all_path{i});
     fclose(fid);
     
-    eval(['! chmod u+x lme_',var_name,'_script']);
-    eval(['! ./lme_',var_name,'_script']);
+    eval(['! chmod u+x lme_',affect_name,'_',var_name,'_script']);
+    eval(['! ./lme_',affect_name,'_',var_name,'_script']);
     
-    eval(['! mv lme_',var_name,'+tlrc.* ',proj.path.ctrl.in_3dlme_v]);
-    eval(['! mv lme_',var_name,'_resid+tlrc.* ',proj.path.ctrl.in_3dlme_v]);
-    eval(['! mv lme_',var_name,'_script ',proj.path.ctrl.in_3dlme_v]);
+    eval(['! mv lme_',affect_name,'_',var_name,'+tlrc.* ',proj.path.analysis.in_3dlme]);
+    eval(['! mv lme_',affect_name,'_',var_name,'_resid+tlrc.* ',proj.path.analysis.in_3dlme]);
+    eval(['! mv lme_',affect_name,'_',var_name,'_script ',proj.path.analysis.in_3dlme]);
 
 end
-
-%% ----------------------------------------
-%% ----------------------------------------
-%% CLUSTER ANALYSIS BELOW!!!
-%% ----------------------------------------
-%% ----------------------------------------
-
-% eval(['! 3dcalc -a ',proj.path.ctrl.in_3dlme_v,'lme_cmb+tlrc -b ' ...
-%                     ,proj.path.ctrl.in_ica, ...
-%       'clst_sng_orient_thresh_zstatd70_17_3x3x3.nii ' ...
-%       '-expr ''a*b'' -prefix ',proj.path.ctrl.in_3dlme_v,'lme_cmb_dACC']);
-
-
-
-% eval(['! 3dFWHMx -acf -input ',proj.path.ctrl.in_3dlme_v,'lme_cmb_resid+tlrc -mask ',proj.path.ctrl.in_ica,...
-%      'clst_sng_orient_thresh_zstatd70_17_3x3x3.nii > '])
-% 
-% 
-% eval(['! rm 3dFWHMx.1D']);
-% eval(['! rm 3dFWHMx.1D.png']);
-% 
-% eval(['! 3dFWHMx -acf -input ',proj.path.ctrl.in_3dlme_v, ...
-%       'lme_cmb_resid+tlrc > ',proj.path.ctrl.in_3dlme_v,'smooth_params_v.txt'])
-
-% load([proj.path.ctrl.in_3dlme_v,'smooth_params_v.txt']);
-% params = smooth_params_v(2,1:3);
-% 
-% eval(['! 3dClustSim -acf ',...
-%       num2str(params(1)),' ',...
-%       num2str(params(2)),' ',...
-%       num2str(params(3)),' ',...
-%       ' -nxyz 54 64 50 -athr 0.05 -mask ',...
-%       proj.path.mri.gm_mask,'group_gm_mask.nii']);
 

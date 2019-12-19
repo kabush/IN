@@ -110,7 +110,7 @@ init_project;
 % 
 % %% ----------------------------------------
 % %% STEP 7: compare GS vs GM features (see Frontiers 2018 supplemental)
-% analyze_mvpa_gs_vs_gm;
+% analyze_mvpa_fmri_ex_gs_vs_gm;
 % 
 % %% ----------------------------------------
 % %% STEP 8: Analyze EX Physiology Response (compare to brain state)
@@ -138,7 +138,7 @@ init_project;
 % % %% ********* VERY SLOW ABOVE  **********
 % 
 % %% ============================================================
-% %% PHASE 2: Modeling Intrinsic Neuromodulation of Affect
+% %% PHASE 2: Modeling Intrinsic Neuromodulation (IN) of Affect
 % %% ============================================================
 % 
 % %% ----------------------------------------
@@ -170,35 +170,53 @@ init_project;
 % 
 % %% ----------------------------------------
 % %% STEP 6: Test significance of VR effect (output figs)
-analyze_in_vr_skill;
-
+% analyze_in_skill;
 
 % %% ============================================================
-% %% PHASE 3: Characterizing MFC function
+% %% PHASE 3: Characterizing mFC function
 % %% ============================================================
 
-% % format Ray, 2013 70 ICA component (icaACC) to align with beta-series
-% % format Ray, 2013 20 ICA component (RL state) to align with beta-series
+% %% Construct Basic cognitive control models (CCMs)  
+% ccm_err_fmri_in_gm;     % error model
+% ccm_cnf_fmri_in_gm;   % conflict model (neu vs extrem)
+% % ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro; not using)
+% ccm_pel_fmri_in_gm;     % prediction error likelihood
+% ccm_pro_fmri_in_gm;     % predicted response outcome
+
+% %% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
+% % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
+% % mFC has been excluded (mFC will be the CC space).
 % reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
 
-% % Compute cognitive control models (CCM) of ACC function (Non-RL)
-% ccm_err_fmri_in_gm;  % error model
-% % ccm_cnf_fmri_in_gm;  % conflict model  (not using currently)
-% ccm_cnf_alt_fmri_in_gm;  % conflict model
-% ccm_pel_fmri_in_gm;  % prediction error likelihood
-% ccm_pro_fmri_in_gm;  % predicted response outcome
-
-% % Compute RL cognitive control models (EVC)
-% ccm_evc_fmri_in_gm_out_of_sample; % Q-func. param gridsearch (CNS
-%                                   % 2020 ***VERY SLOW***)
-%                                   % Need to select best for next
-%                                   % step *** TICKET ***
+% % Conduct grid search of EVC parm space (mix of err/action-cost)
+% ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
+%                                % 2020 ***VERY SLOW***)
+%                                % Need to select best for next
+%                                % step *** TICKET ***
 %
 % analyze_evc_fmri_in_gm;  % Find best meta-parameters of RL
+%
+% ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max
+%                      % params (fit to valence)
 
-% ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ optimal 
-                       % params (fit to valence)
+%% Compute CCMs Activations
+analyze_in_fmri_3dlme;
 
+%% Estimate Cluster Thresholds
+calc_in_clust_thresh_3dlme;
+
+% %% Apply Cluster Threshold to CCM Activations
+% % (TBD): combine w/ mFC mask
+% 
+% %% Compute Prediction Effects for CCMs
+% % (TBD)
+% 
+% %% Compare Predictions Effects
+% % (TBD) 
+% 
+% 
+% %% ----------------------------------------
+% %% OLD CODE BELOW
 % % Predict CCMs from icaACC masked beta-series
 % analyze_ccm_ALL_v;
 % analyze_ccm_icaACC_traj;
@@ -207,18 +225,9 @@ analyze_in_vr_skill;
 % 
 % % Predict CCMs from icalPFC masked beta-series
 % analyze_ccm_icalPFC_v;
-
-
-%% ALTERNATIVE APPROACH TO AIM #1 Univariate Mixed-effects
-% analyze_3dlme_v;
-% analyze_3dlme_a;
-
-% Compare prediction performance
-% TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
-% Skill via single subj significance?)
 % 
 % %% ============================================================
-% %% PHASE 3: Controlling for Confounds (Supplemental Checks)
+% %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
 % 
 % %% ***TICKET*** path to dynamics have changes from data/in_ctrl to
@@ -228,47 +237,7 @@ analyze_in_vr_skill;
 % %% STEP ???: Analyze IN SCR Response (pilot)
 % analyze_in_scr;
 % analyze_in_emg;
-% 
-% %% ------------------------------------------------------------ 
-% %% Analyze IN VR Cognitive Dynamics
-% %% These scripts used GLMM to determine the significance affect
-% %% dynamics significantly contribute to predicting future affect
-% %% 
-% %% TICKET: Current code is clunky, repeating scripts separately for
-% %% V and A.
-% analyze_v_in_vr_dynamics;
-% analyze_a_in_vr_dynamics;
-
-%% ------------------------------------------------------------ 
-%% Analyze IN VR Control Performance
-%% These scripts determine whether VR succeeded groupwise and which
-%% specific subjects significantly conducted VR.  Then, for the 
-%% significant subjects only, mean control trajectores were
-%% analyzed to understand potential control biases.  Subjects are
-%% labeled if they (on average) lose control in either a positive
-%% or negative affect, where the goal is zero deviation from the
-%% affect induced by the cue image.  Analysis is performed
-%% separately for valence and arousal, respectively. 
-
-%% TICKET: Current code is clunky, repeating scripts separately for V and A.
-% analyze_v_in_vr_skill;
-% analyze_v_in_vr_skill_sex_diffs; % (pilot)
-% analyze_v_in_vr_labels;
-% analyze_v_in_vr_extr_subjs; %(not working)
-
-% analyze_a_in_vr_skill;
-% analyze_a_in_vr_labels;
-% analyze_a_in_vr_extr_subjs; %(not working)
-% 
+%
 % summarize_vr; % -> this information combined with redcap cogbehav data
-
-
-% %% ------------------------------------------------------------ 
-% %% Conduct MVPA for Cognitive Dynamics
-% % TBD
-% 
-
-% %% IN Dynamics (global permutation test)
-% TBD
 
 toc

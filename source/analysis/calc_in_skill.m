@@ -8,7 +8,7 @@
 %%========================================
 %%========================================
 
-function calc_vr_skill(proj,var_name)
+function calc_in_skill(proj,var_name)
 
 %% ----------------------------------------
 %% load subjs
@@ -88,25 +88,29 @@ for i = 1:numel(subjs)
             subj.study = subj_study;
             subj.name = name;
 
-            %% test single subject significance
-            [b stat] = robustfit(stim_kpt,mean(feel_box,2));
-            b_all = [b_all,b(2)]; %% for power
+            tbl = table(feel_form,stim_form,traj_form,'VariableNames', ...
+            {'feel','stim','traj'});
+
+            sbj_mdl_fe = fitlme(tbl,['feel ~ 1 + stim + traj']);
+
+            %% Extract Fixed effects
+            [~,~,FE] = fixedEffects(sbj_mdl_fe);
 
             subj.stim = stim_kpt;
-            subj.b1 = b(2); % slope
-            subj.b0 = b(1); % intercept
-            subj.p1 = stat.p(2); %slope
-            subj.p0 = stat.p(1); %intercept
- 
+            subj.b1 = FE.Estimate(2); % slope
+            subj.b0 = FE.Estimate(1); % intercept
+            subj.p1 = FE.pValue(2); %slope
+            subj.p0 = FE.pValue(1); %intercept
+
             %% sort subjects by significance
-             if(subj.p1<0.05)
-                 sig_subjs{sig_cnt} = subj;
-                 sig_cnt = sig_cnt + 1;
-             else
-                 non_subjs{non_cnt} = subj;
-                 non_cnt = non_cnt + 1;
-             end
-             
+            if(subj.p1<0.05)
+                sig_subjs{sig_cnt} = subj;
+                sig_cnt = sig_cnt + 1;
+            else
+                non_subjs{non_cnt} = subj;
+                non_cnt = non_cnt + 1;
+            end
+            
         else
             disp(['  -Could not find ',var_name,'_dcmp for: ',subj_study,'_', ...
                   name],proj.path.logfile);

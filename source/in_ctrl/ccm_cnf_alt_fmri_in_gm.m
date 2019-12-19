@@ -70,14 +70,6 @@ for i = 1:numel(subjs)
         mdls.a_dcmp = mdls.v_dcmp;
         mdls.a_indx = prds.a_indx.h(:,3:(end-1));
 
-%          % valence
-%          mdls.v_dcmp = 1-abs(tanh(prds.v_dcmp.h(:,3:(end-1))));
-%          mdls.v_indx = prds.v_indx.h(:,3:(end-1));
-%  
-%          % arousal
-%          mdls.a_dcmp = 1-abs(tanh(prds.a_dcmp.h(:,3:(end-1))));
-%          mdls.a_indx = prds.a_indx.h(:,3:(end-1));
-
         % save out model structure
         save([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
 

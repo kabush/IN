@@ -23,9 +23,9 @@ end
 logger(['*************************************************'],proj.path.logfile);
 logger(['Analyzing ER Skill (VALENCE)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-calc_vr_skill(proj,'v');
+calc_in_skill(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
 logger(['Analyzing ER Skill (AROUSAL)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-calc_vr_skill(proj,'a');
+calc_in_skill(proj,'a');

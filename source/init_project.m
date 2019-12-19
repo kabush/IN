@@ -111,7 +111,6 @@ proj.path.betas.scr_in_beta = [proj.path.data,proj.path.betas.name,'scr_in_beta/
 % Under development within project http://github.com/kabush/HR
 
 %% EMG paths
-% this is a prototype analysis (for pilot data)
 proj.path.physio.emg_clean = [proj.path.data,proj.path.physio.name,'emg_clean/'];
 proj.path.betas.emg_in_beta = [proj.path.data,proj.path.betas.name,'emg_in_beta/'];
 
@@ -144,14 +143,15 @@ proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
 proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
 proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_mdl/'];
 proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
-proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
-proj.path.ctrl.in_3dlme_v = [proj.path.data,proj.path.ctrl.name,'in_3dlme_v/'];
-proj.path.ctrl.in_3dlme_a = [proj.path.data,proj.path.ctrl.name,'in_3dlme_a/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
-proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
+proj.path.analysis.in_3dlme = [proj.path.data,proj.path.analysis.name,'in_3dlme/'];
+proj.path.analysis.in_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_clust_thresh/'];
+% proj.path.analysis.in_3dlme_a = [proj.path.data,proj.path.analysis.name,'in_3dlme_a/'];
+% proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
+% proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
 
 %% ----------------------------------------
 %% Task file nomenclature
@@ -264,10 +264,10 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
-proj.param.mvpa.n_resamp = 10; % should be >= 30
+proj.param.mvpa.n_resamp = 30; 
 
 %% Haufe parameters
-proj.param.haufe.npermute = 200;
+proj.param.haufe.npermute = 1000;
 proj.param.haufe.chunk = 10;
 
 %% Plotting parameters
