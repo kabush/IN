@@ -13,16 +13,16 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
-logger(['Computing IN Cog Control EVC Models                  '],proj.path.logfile);
+logger(['Computing IN Cog Control EVC Optimal Parameters  '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
 %% ----------------------------------------
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.ctrl.in_evc_mdl]);
-    eval(['! rm -rf ',proj.path.ctrl.in_evc_mdl]);
-    disp(['Creating ',proj.path.ctrl.in_evc_mdl]);
-    eval(['! mkdir ',proj.path.ctrl.in_evc_mdl]);
+    disp(['Removing ',proj.path.ctrl.in_evc_opt_mdl]);
+    eval(['! rm -rf ',proj.path.ctrl.in_evc_opt_mdl]);
+    disp(['Creating ',proj.path.ctrl.in_evc_opt_mdl]);
+    eval(['! mkdir ',proj.path.ctrl.in_evc_opt_mdl]);
 end
 
 %% ----------------------------------------
@@ -79,7 +79,6 @@ for i = 1:numel(subjs)
 end
 
 %% Use group action to build 3 & 5 discrete action partitions
-% N_3size = round(numel(act_v_all)/3);
 N_5size = round(numel(act_v_all)/5);
 
 act_v_srt = sort(act_v_all);
@@ -87,10 +86,6 @@ act_a_srt = sort(act_a_all);
 
 %% compute standard deviation
 act_v_std = std(act_v_srt);
-
-% act_3part = [act_v_srt(N_3size),act_v_srt(2*N_3size)];
-% act_5part = [act_v_srt(N_5size),act_v_srt(2*N_5size), ...
-%              act_v_srt(3*N_5size),act_v_srt(4*N_5size)];
 
 %% compute partition based on standard deviations
 act_5part = [-2*act_v_std,-act_v_std,act_v_std,2*act_v_std];
@@ -113,7 +108,7 @@ for i = 1:numel(subjs)
     data_exist = 0;
     try
 
-        % load dynamics
+        %% load dynamics
         load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
         
         %% Data is present
@@ -163,7 +158,7 @@ grp_err_v_std = std(dsc_err_v_all);
 %% Meta RL Parameter search
 action_5dscr_set = [1,0]; % otherwise 3 discrete actions
 discount_set = [0:.1:1];
-reward_act_set = [0:.1:1]; % balance between reward/action
+reward_act_set = [0:.2:1]; % balance between reward/action
 
 %% Calculate set-sizes
 Nact = numel(action_5dscr_set);
@@ -179,11 +174,11 @@ Q_worst_v_all = zeros(Nact,Ndsct,Nfrac,Nsbj,30,4);
 tic
 
 %% META-LOOPS HERE
-a = 1;
-
-for b=1:Ndsct
+a = 1; %%only using 5 discrete actions
+ 
+for b=6:Ndsct %% *** debug ***
     
-    for c=1:1 %:Nfrac
+    for c=1:Nfrac
         
         act_dscr = action_5dscr_set(a);
         gamma = discount_set(b);
@@ -336,7 +331,7 @@ for b=1:Ndsct
                 cfg.gamma = gamma; % discount factor
                 cfg.U = unique(U);
                 cfg.datadir = [proj.path.code,'tmp'];
-                cfg.datafile = [proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_v'];
+                cfg.datafile = [proj.path.ctrl.in_evc_opt_mdl,subj_study,'_',name,'_result_v'];
                 cfg.maxiter = 1000;
                 cfg.regmethod = 'extratrees';
                 cfg.singlereg = 0;
@@ -370,7 +365,7 @@ for b=1:Ndsct
             
                 %% ----------------------------------------
                 %% Load subject (state and actions)
-                load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_result_v.mat']);
+                load([proj.path.ctrl.in_evc_opt_mdl,subj_study,'_',name,'_result_v.mat']);
                 this_U = Us;
                 this_X = Xs';
                 
@@ -393,7 +388,7 @@ for b=1:Ndsct
                         
                         %% ----------------------------------------
                         %% Load CV subject (Q-functions)
-                        load([proj.path.ctrl.in_evc_mdl,cv_subj_study,'_',cv_name,'_result_v.mat']);
+                        load([proj.path.ctrl.in_evc_opt_mdl,cv_subj_study,'_',cv_name,'_result_v.mat']);
                         this_reg = reg;
                         
                         disp(['Loaded CV subject']);
@@ -445,12 +440,12 @@ for b=1:Ndsct
         end %i
         
         % Save VALENCE intermediate results
-        save([proj.path.ctrl.in_evc_mdl,'Q_traj_v_all.mat'],'Q_traj_v_all');
-        save([proj.path.ctrl.in_evc_mdl,'Q_rand_v_all.mat'],'Q_rand_v_all');
-        save([proj.path.ctrl.in_evc_mdl,'act_err_v_all.mat'],'act_err_v_all');
+        save([proj.path.ctrl.in_evc_opt_mdl,'Q_traj_v_all.mat'],'Q_traj_v_all');
+        save([proj.path.ctrl.in_evc_opt_mdl,'Q_rand_v_all.mat'],'Q_rand_v_all');
+        save([proj.path.ctrl.in_evc_opt_mdl,'act_err_v_all.mat'],'act_err_v_all');
 
         % Remove the output of the fitted Q-iteration
-        eval(['! rm ',proj.path.ctrl.in_evc_mdl,'*_result_v.mat']);
+        eval(['! rm ',proj.path.ctrl.in_evc_opt_mdl,'*_result_v.mat']);
         
     end
 end

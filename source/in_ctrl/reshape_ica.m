@@ -26,7 +26,7 @@ end
 
 %% ----------------------------------------
 %% ----------------------------------------
-%% Configure the ACC mask
+%% Configure the mPFC (i.e., ACC) mask
 
 %% copy ica to tmp
 eval(['! cp ',proj.path.atlas,'ray2013/ica70/maps/' ...
@@ -59,6 +59,119 @@ eval(['! 3dClusterize -nosum -1Dformat -inset ',proj.path.code, ...
       'tmp/sng_orient_thresh_zstatd70_17_3x3x3.nii.gz ' ...
       '-idat 0 -ithr 0 -NN 1 -clust_nvox 100 -1sided RIGHT_TAIL 0.5 ' ...
       '-pref_map ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_17_3x3x3.nii.gz']);
+
+
+%% ----------------------------------------
+%% ----------------------------------------
+%% Configure the lPFC (i.e., vlPFC) mask
+
+%% copy ica to tmp
+eval(['! cp ',proj.path.atlas,'ray2013/ica70/maps/' ...
+                    'thresh_zstatd70_27.nii.gz ',proj.path.code,'tmp/']);
+eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
+
+%% rotate the ICA to match the rotation of our fMRI data
+eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd70_27.nii.gz ' ...
+      '-input ',proj.path.code,'tmp/thresh_zstatd70_27.nii.gz ']);
+
+%% find ica values greater than threshold to achieve largest single
+%% ROI (>7.380)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd70_27.nii.gz ' ...
+                    '-expr  ''ispositive(a-7.380)'' -prefix ' ...
+                    ,proj.path.code,'tmp/frc_orient_thresh_zstatd70_27.nii.gz']);
+
+%% change from 1x1x1 to 3x3x3 voxel sizes
+eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+      '-input ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_27.nii.gz ' ...
+      '-prefix ',proj.path.code,'tmp/' ...
+      'frc_orient_thresh_zstatd70_27_3x3x3.nii.gz -clip .2']);
+
+%% create mask 
+eval(['! 3dcalc -a ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_27_3x3x3.nii.gz ' ...
+      '-expr  ''bool(a)'' -prefix ' ...
+      ,proj.path.code,'tmp/sng_orient_thresh_zstatd70_27_3x3x3.nii.gz']);
+
+%% clusterize to remove everything but the lPFC (right side)
+eval(['! 3dClusterize -nosum -1Dformat -inset ',proj.path.code, ...
+      'tmp/sng_orient_thresh_zstatd70_27_3x3x3.nii.gz ' ...
+      '-idat 0 -ithr 0 -NN 1 -clust_nvox 100 -1sided RIGHT_TAIL 0.5 ' ...
+      '-pref_map ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_27_3x3x3.nii.gz']);
+
+%% ----------------------------------------
+%% ----------------------------------------
+%% Configure the lPFC (i.e., left dlPFC) mask
+
+%% copy ica to tmp
+eval(['! cp ',proj.path.atlas,'ray2013/ica70/maps/' ...
+                    'thresh_zstatd70_51.nii.gz ',proj.path.code,'tmp/']);
+eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
+
+%% rotate the ICA to match the rotation of our fMRI data
+eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd70_51.nii.gz ' ...
+      '-input ',proj.path.code,'tmp/thresh_zstatd70_51.nii.gz ']);
+
+%% find ica values greater than threshold to achieve largest single
+%% ROI (>5.19)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd70_51.nii.gz ' ...
+                    '-expr  ''ispositive(a-5.19)'' -prefix ' ...
+                    ,proj.path.code,'tmp/frc_orient_thresh_zstatd70_51.nii.gz']);
+
+%% change from 1x1x1 to 3x3x3 voxel sizes
+eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+      '-input ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_51.nii.gz ' ...
+      '-prefix ',proj.path.code,'tmp/' ...
+      'frc_orient_thresh_zstatd70_51_3x3x3.nii.gz -clip .2']);
+
+%% create mask 
+eval(['! 3dcalc -a ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_51_3x3x3.nii.gz ' ...
+      '-expr  ''bool(a)'' -prefix ' ...
+      ,proj.path.code,'tmp/sng_orient_thresh_zstatd70_51_3x3x3.nii.gz']);
+
+%% clusterize to remove everything but the lPFC (right side)
+eval(['! 3dClusterize -nosum -1Dformat -inset ',proj.path.code, ...
+      'tmp/sng_orient_thresh_zstatd70_51_3x3x3.nii.gz ' ...
+      '-idat 0 -ithr 0 -NN 1 -clust_nvox 100 -1sided RIGHT_TAIL 0.5 ' ...
+      '-pref_map ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_51_3x3x3.nii.gz']);
+
+
+%% ----------------------------------------
+%% ----------------------------------------
+%% Configure the lPFC (i.e., right dlPFC) mask
+
+%% copy ica to tmp
+eval(['! cp ',proj.path.atlas,'ray2013/ica70/maps/' ...
+                    'thresh_zstatd70_41.nii.gz ',proj.path.code,'tmp/']);
+eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
+
+%% rotate the ICA to match the rotation of our fMRI data
+eval(['! 3dresample -orient RAI -prefix ',proj.path.code,'tmp/orient_thresh_zstatd70_41.nii.gz ' ...
+      '-input ',proj.path.code,'tmp/thresh_zstatd70_41.nii.gz ']);
+
+%% find ica values greater than threshold to achieve largest single
+%% ROI (>5.31)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_thresh_zstatd70_41.nii.gz ' ...
+                    '-expr  ''ispositive(a-5.31)'' -prefix ' ...
+                    ,proj.path.code,'tmp/frc_orient_thresh_zstatd70_41.nii.gz']);
+
+%% change from 1x1x1 to 3x3x3 voxel sizes
+eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+      '-input ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_41.nii.gz ' ...
+      '-prefix ',proj.path.code,'tmp/' ...
+      'frc_orient_thresh_zstatd70_41_3x3x3.nii.gz -clip .2']);
+
+%% create mask 
+eval(['! 3dcalc -a ',proj.path.code,'tmp/frc_orient_thresh_zstatd70_41_3x3x3.nii.gz ' ...
+      '-expr  ''bool(a)'' -prefix ' ...
+      ,proj.path.code,'tmp/sng_orient_thresh_zstatd70_41_3x3x3.nii.gz']);
+
+%% clusterize to remove everything but the lPFC (right side)
+eval(['! 3dClusterize -nosum -1Dformat -inset ',proj.path.code, ...
+      'tmp/sng_orient_thresh_zstatd70_41_3x3x3.nii.gz ' ...
+      '-idat 0 -ithr 0 -NN 1 -clust_nvox 100 -1sided RIGHT_TAIL 0.5 ' ...
+      '-pref_map ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_41_3x3x3.nii.gz']);
+
+
+
 
 
 %% ----------------------------------------
@@ -185,7 +298,11 @@ for iseq=1:numel(ic_seq)
 end
 
 %% move to permanent storage
+eval(['! mv ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_13_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_17_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_27_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_41_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
+eval(['! mv ',proj.path.code,'tmp/clst_sng_orient_thresh_zstatd70_51_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/TT_icbm452_orig.nii ',proj.path.ctrl.in_ica]);
 
 %% clean-up

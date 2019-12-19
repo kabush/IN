@@ -29,7 +29,11 @@ init_project;
 % %%  ----------------------------------------
 % %% STEP 2: Clear and reconstruct the project data folder
 % clean_project;
-% 
+
+% %%  ----------------------------------------
+% %% STEP 3: Check demographics balance
+% check_demo;
+
 % %%  ----------------------------------------
 % %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 % 
@@ -133,7 +137,6 @@ init_project;
 % % % (TBD)
 % % %% ********* VERY SLOW ABOVE  **********
 % 
-% 
 % %% ============================================================
 % %% PHASE 2: Modeling Intrinsic Neuromodulation of Affect
 % %% ============================================================
@@ -165,30 +168,50 @@ init_project;
 % %% STEP 5: Run quality check (system) on dynamics
 % % (TBD)
 % 
-%% ----------------------------------------
-%% STEP 6: Critically test ACC function (AIM 1)
+% %% ----------------------------------------
+% %% STEP 6: Test significance of VR effect (output figs)
+analyze_in_vr_skill;
+
+
+% %% ============================================================
+% %% PHASE 3: Characterizing MFC function
+% %% ============================================================
 
 % % format Ray, 2013 70 ICA component (icaACC) to align with beta-series
 % % format Ray, 2013 20 ICA component (RL state) to align with beta-series
 % reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
-% 
-% % Compute cognitive control models (CCM) of ACC function
+
+% % Compute cognitive control models (CCM) of ACC function (Non-RL)
 % ccm_err_fmri_in_gm;  % error model
-% ccm_cnf_fmri_in_gm;  % conflict model
+% % ccm_cnf_fmri_in_gm;  % conflict model  (not using currently)
+% ccm_cnf_alt_fmri_in_gm;  % conflict model
 % ccm_pel_fmri_in_gm;  % prediction error likelihood
 % ccm_pro_fmri_in_gm;  % predicted response outcome
+
+% % Compute RL cognitive control models (EVC)
 % ccm_evc_fmri_in_gm_out_of_sample; % Q-func. param gridsearch (CNS
 %                                   % 2020 ***VERY SLOW***)
 %                                   % Need to select best for next
 %                                   % step *** TICKET ***
-% ccm_evc_fmri_in_gm;  % Re-run Q-values withi subject for comparison.
+%
+% analyze_evc_fmri_in_gm;  % Find best meta-parameters of RL
 
-% % Analyze of Q-iter. meta-param search
-analyze_evc_fmri_in_gm;
+% ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ optimal 
+                       % params (fit to valence)
 
-% Predict CCMs from icaACC masked beta-series
+% % Predict CCMs from icaACC masked beta-series
+% analyze_ccm_ALL_v;
+% analyze_ccm_icaACC_traj;
 % analyze_ccm_icaACC_v;
 % analyze_ccm_icaACC_a;
+% 
+% % Predict CCMs from icalPFC masked beta-series
+% analyze_ccm_icalPFC_v;
+
+
+%% ALTERNATIVE APPROACH TO AIM #1 Univariate Mixed-effects
+% analyze_3dlme_v;
+% analyze_3dlme_a;
 
 % Compare prediction performance
 % TBD ((QUESTION: Do we first want to exclude non-performers (Using VR
@@ -235,7 +258,7 @@ analyze_evc_fmri_in_gm;
 
 % analyze_a_in_vr_skill;
 % analyze_a_in_vr_labels;
-% nalyze_a_in_vr_extr_subjs; %(not working)
+% analyze_a_in_vr_extr_subjs; %(not working)
 % 
 % summarize_vr; % -> this information combined with redcap cogbehav data
 

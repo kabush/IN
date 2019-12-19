@@ -36,11 +36,12 @@ cnfs = [];
 pels = [];
 pros = [];
 evcs = [];
-trajs = [];
 subjects = [];
+trajs = [];
 
 % debug
 accs = [];
+dbg_errs = [];
 
 %% ----------------------------------------
 %% Transform beta-series into affect series {v,a}
@@ -82,15 +83,15 @@ for i = 1:numel(subjs)
         mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
         in_brain=find(mask==1);  
 
-        % Load ACCI ICA mask
+        % Load ACC-ICA mask
         ica_nii = load_untouch_nii([proj.path.ctrl.in_ica,'clst_sng_orient_thresh_zstatd70_17_3x3x3.nii.gz']);
         ica = double(ica_nii.img);
         brain_size=size(ica);
         ica = reshape(ica,brain_size(1)*brain_size(2)*brain_size(3),1);
-        in_brain_this_ica = find(ica>0);
+        in_brain_ica = find(ica>0);
 
         % Intersection
-        in_brain_this_ica = intersect(in_brain,in_brain_this_ica);
+        in_brain_this_ica = intersect(in_brain,in_brain_ica);
         disp(['  icaACC|GM voxels: ',num2str(numel(unique(in_brain_this_ica)))]);
 
         % Load beta-series
@@ -104,8 +105,7 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% Find ACC activation trajectory
         base_acc = mean(base_img(:,in_brain_this_ica),2);
-
-
+        
         %% ----------------------------------------
         %% Load computational models
 
@@ -136,7 +136,7 @@ for i = 1:numel(subjs)
         acc = base_acc(indx,1);
 
         % debug
-        accs = [accs,zscore(acc)];
+        accs = [accs;acc]; %zscore(acc)];
 
         % true predictors
         err = reshape(sqrt((err_mdls.v_dcmp').^2),1,prod(size(err_mdls.v_dcmp)))';
@@ -145,7 +145,6 @@ for i = 1:numel(subjs)
         pro = reshape(pro_mdls.v_dcmp',1,prod(size(pro_mdls.v_dcmp)))';
         evc = reshape(evc_mdls.v_dcmp',1,prod(size(evc_mdls.v_dcmp)))';
 
-        
         traj_box = repmat([1:4],30,1);
         traj = reshape(traj_box',1,prod(size(traj_box)))';
 
@@ -159,8 +158,11 @@ for i = 1:numel(subjs)
         pels = [pels;zscore(pel)];
         pros = [pros;zscore(pro)];
         evcs = [evcs;zscore(evc)];
-        trajs = [trajs;traj];
         subjects = [subjects;subject];
+        trajs = [trajs;traj];
+
+        % debug
+        dbg_errs = [dbg_errs,zscore(err)];
 
     end
   
@@ -174,32 +176,28 @@ cnfs = double(cnfs-mean(cnfs));
 pels = double(pels-mean(pels)); 
 pros = double(pros-mean(pros)); 
 evcs = double(evcs-mean(evcs)); 
-trajs = double(trajs);
 subjects = double(subjects);
 
 %% Group GLMM fit
-tbl = table(measures,trajs,errs,cnfs,pels,pros,evcs,subjects,'VariableNames',{'trg', ...
-                    'traj','err','cnf','pel','pro','evc','subj'});
+tbl = table(measures,errs,cnfs,pels,pros,evcs,subjects,'VariableNames',{'trg', ...
+                    'err','cnf','pel','pro','evc','subj'});;
 
-mdl_fe = fitlme(tbl,['trg ~ 1 + traj + err + cnf + pel + pro + evc']);
-mdl_re= fitlme(tbl,['trg ~ 1 + traj + err + cnf + pel + pro + evc + ' ...
-                    '(err|subj) + (cnf|subj) + (pel|subj) + ' ...
-                    '(pro|subj) + (evc|subj)']);
+% mdl_fe = fitlme(tbl,['trg ~ 1 + err + cnf + pel + pro + evc']);
+% mdl_re= fitlme(tbl,['trg ~ 1 + err + cnf + pel + pro + evc + ' ...
+%                     '(err|subj) + (cnf|subj) + (pel|subj) + ' ...
+%                     '(pro|subj) + (evc|subj)']);
 
 
-figure(99)
+mdl_fe = fitlme(tbl,['trg ~ 1 + err']);
+mdl_re= fitlme(tbl,['trg ~ 1 + err + (err|subj)']);
 
-ids1=find(trajs==1);
-ids2=find(trajs==2);
-ids3=find(trajs==3);
-ids4=find(trajs==4);
-
+figure(1)
 mu_meas = [];
 mu_err = [];
 mu_evc = [];
 mu_pel = [];
 mu_pro = [];
-
+mu_cnf = [];
 for i =1:4
     ids = find(trajs==i);
     mu_meas = [mu_meas,mean(measures(ids))];
@@ -207,20 +205,22 @@ for i =1:4
     mu_evc = [mu_evc,mean(evcs(ids))];
     mu_pel = [mu_pel,mean(pels(ids))];
     mu_pro = [mu_pro,mean(pros(ids))];
+    mu_cnf = [mu_cnf,mean(cnfs(ids))];
 end
-
-plot(mu_meas,'LineWidth',2);
+plot(mu_meas,'LineWidth',3);%blue
 hold on;
-plot(mu_err,'LineWidth',2);
-plot(mu_evc,'LineWidth',2);
-plot(mu_pel);
-plot(mu_pro);
+plot(mu_err,'LineWidth',2); %orange
+plot(mu_evc,'LineWidth',2); %mustard
+plot(mu_pel,'LineWidth',2); %purple
+plot(mu_pro,'LineWidth',2); %green
+plot(mu_cnf,'LineWidth',2); %cyan
 hold off;
 
-
-disp(' ');
+export_fig 'ACC_vs_evaluations_v.png' -r300
+eval(['! mv ',proj.path.code,'ACC_vs_evaluations_v.png ',proj.path.fig]);
 
 %%Explore random effects across model types
+disp(' ');
 fe_v_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
@@ -248,152 +248,29 @@ end
 
 %% ----------------------------------------
 %% compute effect size
-% SS_res=sum((mdl.residuals).^2);
-%SS_tot=sum((measures-mean(measures)).^2);
-Rsqr = mdl.Rsquared.Ordinary; %1-(SS_res/SS_tot);
+Rsqr = mdl.Rsquared.Ordinary;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['Overall model fit'],proj.path.logfile);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-
 disp(' ');
 
-
-%% ----------------------------------------
-%% format figure
-ymin = -3;
-ymax = 3;
-xmin = -3;
-xmax = 3; 
-vseq = linspace(xmin,xmax);
-
-
-%% ----------------------------------------
-%% plot all the datapoints
-
-%plot model fit
-figure(1)
-set(gcf,'color','w');
-scatter(zscore(mdl.predict),measures,10,'MarkerFaceColor', ...
-        proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
-hold on;
-xlim([xmin,xmax]);
-ylim([ymin,ymax]);
-
-
-%plot err
-figure(2)
-set(gcf,'color','w');
-scatter(errs,measures,10,'MarkerFaceColor', ...
-        proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
-hold on;
-y_hat_err = FE.Estimate(1) + FE.Estimate(3)*vseq;
-plot(vseq,y_hat_err,'r-','LineWidth',3);
-xlim([-1,3]);
-ylim([ymin,ymax]);
-
-
-
-hold off;
-fig = gcf;
-ax = fig.CurrentAxes;
-ax.FontSize = proj.param.plot.axisLabelFontSize;
-
-xlabel('Estimated Error');
-ylabel('ACC activation');
-
-
-%plot evc
-figure(3)
-set(gcf,'color','w');
-scatter(evcs,measures,10,'MarkerFaceColor', ...
-        proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
-hold on;
-y_hat_evc = FE.Estimate(1) + FE.Estimate(7)*vseq;
-plot(vseq,y_hat_evc,'r-','LineWidth',3);
-
-xlim([xmin,xmax]);
-ylim([ymin,ymax]);
-
-hold off;
-fig = gcf;
-ax = fig.CurrentAxes;
-ax.FontSize = proj.param.plot.axisLabelFontSize;
-
-xlabel('Estimated Q-Value');
-ylabel('ACC activation');
- 
-
-
-
-
-
-% %% ----------------------------------------
-% %% ----------------------------------------
-% %% ----------------------------------------
+% %%% DEBUGGING HERE
+% tmp_img = base_img(indx,in_brain);
+% tmp_acc = mean(accs,2);
 % 
-% %% Compare predictors
-% tbl = table(errs,evcs,trajs,subjects,'VariableNames',{'err','evc','traj','subj'});
+% tmp_errs = mean(dbg_errs,2);
 % 
-% mdl_fe = fitlme(tbl,['err ~ 1 + evc']);
-% mdl_re= fitlme(tbl,['err ~ 1 + evc + (evc|traj) + (evc|subj)']);
+% Nvox = size(tmp_img,2);
 % 
-% disp(' ');
+% all_b = [];
+% for i = 1:Nvox
 % 
-% %%Explore random effects across model types
-% fe_v_re = compare(mdl_fe,mdl_re);
-% 
-% mdl = mdl_fe;
-% if(fe_v_re.pValue<0.05);
-%     disp('Rrandom effects matter');
-%     mdl = mdl_re;
-% else
-%     disp('Random effects DO NOT matter');
-% end
-% 
-% disp(' ');
-% 
-% [~,~,FE] = fixedEffects(mdl);
-% [~,~,RE] = randomEffects(mdl);
-% 
-% for i =2:numel(FE.pValue)
-%     if(FE.pValue(i)<0.05)
-%         disp(['Fixed Effect [',num2str(i-1),'] is significant']);
-%         disp(['  p=',num2str(FE.pValue(i))]);
+%     if(mod(i,100)==0)
+%         i
 %     end
+% 
+%     [b,stat] = robustfit(tmp_errs,tmp_img(:,i));
+%     all_b = [all_b,b(2)];
+% 
 % end
-% 
-% Rsqr = mdl.Rsquared.Ordinary;
-% Fsqr = Rsqr/(1-Rsqr);
-% logger(['Overall model fit'],proj.path.logfile);
-% logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
-% logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-% 
-% disp(' ');
-% 
-% 
-% %plot EVC vs ERR
-% figure(4)
-% set(gcf,'color','w');
-% scatter(evcs,errs,10,'MarkerFaceColor', ...
-%         proj.param.plot.white,'MarkerEdgeColor', ...
-%         proj.param.plot.very_light_grey);
-% hold on;
-% 
-% vseq = linspace(-3,3);
-% y_hat_evc = FE.Estimate(1) + FE.Estimate(2)*vseq;
-% plot(vseq,y_hat_evc,'r-','LineWidth',3);
-% 
-% xlim([-3,3]);
-% ylim([-1,3]);
-% 
-% hold off;
-% fig = gcf;
-% ax = fig.CurrentAxes;
-% ax.FontSize = proj.param.plot.axisLabelFontSize;
-% 
-% xlabel('EVC');
-% ylabel('ERR');

@@ -37,6 +37,7 @@ set(gcf,'color','w');
 %% ----------------------------------------
 %% scatter the underlying stim and feel
 predictors = [];
+trajs = [];
 measures = [];
 subjects = [];
 
@@ -58,8 +59,7 @@ for i = 1:numel(subjs)
     try
 
         %% Load IN trajectory structures
-        load([proj.path.ctrl.in_dyn,subj_study,'_',name, ...
-              '_prds.mat']);
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
 
         if(isfield(prds,'v_dcmp'))
             
@@ -78,11 +78,16 @@ for i = 1:numel(subjs)
             feel_clean = feel(cmb_keep_ids);
             traj_clean = prds.v_dcmp.h(cmb_keep_ids,:)-prds.v_dcmp.h(cmb_keep_ids,1);
 
+%             %% control for trajectory time
+%             traj_box = repmat([1:size(prds.v_dcmp.feel,2)],numel(stim_clean),1size(prds.v_dcmp.feel,1),1);
+%             traj = reshape(traj_box',1,prod(size(traj_box)))';
+
             %% build data for group GLMM
             predictors = [predictors;double(stim_clean)];
             measures = [measures;double(feel_clean)];
             subjects = [subjects;repmat(i,numel(feel_clean),1)];
-            
+            %           trajs = [trajs;traj];
+
             %% scatter plot specific points        
             scatter(stim_clean,feel_clean,10,'MarkerFaceColor', ...
                     proj.param.plot.white,'MarkerEdgeColor', ...
@@ -147,7 +152,6 @@ for i =1:numel(sig_subjs)
          'LineWidth',2);
 end
 
-
 %% ----------------------------------------
 %% identify max/min x-range|y-rang
 %%
@@ -167,11 +171,28 @@ hold on;
 %% Group GLMM fit
 tbl = table(measures,predictors,subjects,'VariableNames', ...
             {'measures','predictors','subjects'});
-mdl = fitlme(tbl,['measures ~ 1 + predictors + (1|subjects) + ' ...
-                  '(predictors-1|subjects)']);
+
+mdl_fe = fitlme(tbl,['measures ~ 1 + predictors']);
+mdl_re = fitlme(tbl,['measures ~ 1 + predictors + (predictors|subjects)']);
+
+% %% ----------------------------------------
+% %% Group GLMM fit
+% tbl = table(measures,predictors,trajs,subjects,'VariableNames', ...
+%             {'measures','predictors','trajs','subjects'});
+% 
+% mdl_fe = fitlme(tbl,['measures ~ 1 + predictors + trajs']);
+% mdl_re = fitlme(tbl,['measures ~ 1 + predictors + trajs + (predictors|subjects)']);
+
+fe_v_re = compare(mdl_fe,mdl_re);
+
+mdl = mdl_fe;
+if(fe_v_re.pValue<0.05);
+    mdl=mdl_re
+    logger('  ---Random effects matter',proj.path.logfile);
+end
+
+%% Extract Fixed effects
 [~,~,FE] = fixedEffects(mdl);
-
-
 
 %% ----------------------------------------
 %% overlay the group VR skill plot

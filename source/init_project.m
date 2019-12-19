@@ -47,6 +47,7 @@ proj.path.raw_physio = 'physio';
 proj.path.raw_logs = 'logfiles';
 proj.path.raw_tabs = 'tabs';
 proj.path.atlas = '/home/kabush/atlas/';
+proj.path.demo = 'demo';
 
 %% Workspace
 proj.path.home = '/home/kabush/workspace/';
@@ -141,8 +142,11 @@ proj.path.ctrl.in_err_mdl = [proj.path.data,proj.path.ctrl.name,'in_err_mdl/'];
 proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
 proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
 proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
+proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_mdl/'];
 proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
 proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
+proj.path.ctrl.in_3dlme_v = [proj.path.data,proj.path.ctrl.name,'in_3dlme_v/'];
+proj.path.ctrl.in_3dlme_a = [proj.path.data,proj.path.ctrl.name,'in_3dlme_a/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
