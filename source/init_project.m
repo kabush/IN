@@ -149,6 +149,8 @@ proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cl
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.in_3dlme = [proj.path.data,proj.path.analysis.name,'in_3dlme/'];
 proj.path.analysis.in_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_clust_thresh/'];
+proj.path.analysis.in_ccm_effect = [proj.path.data,proj.path.analysis.name,'in_ccm_effect/'];
+
 % proj.path.analysis.in_3dlme_a = [proj.path.data,proj.path.analysis.name,'in_3dlme_a/'];
 % proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 % proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];

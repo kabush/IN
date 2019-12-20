@@ -198,19 +198,16 @@ init_project;
 %
 % ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max
 %                      % params (fit to valence)
-
-%% Compute CCMs Activations
-analyze_in_fmri_3dlme;
-
-%% Estimate Cluster Thresholds
-calc_in_clust_thresh_3dlme;
-
-% %% Apply Cluster Threshold to CCM Activations
-% % (TBD): combine w/ mFC mask
+% 
+% %% Compute CCMs Activations
+% analyze_in_fmri_3dlme;
+%
+% %% Estimate & Apply Cluster Thresholds
+% calc_in_clust_thresh_3dlme;
 % 
 % %% Compute Prediction Effects for CCMs
-% % (TBD)
-% 
+analyze_ccm_effect;
+
 % %% Compare Predictions Effects
 % % (TBD) 
 % 
