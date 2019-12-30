@@ -52,17 +52,18 @@ for i = 1:numel(subjs)
         % Load classification performance
         load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
         
-        good_ids = zeros(1,N_ex);
-        good_ids(subjs{i}.beta.mri_ex_id.good_id) = 1;
+        % Identify usable ids
+        good_ids = setdiff(ex_id,subjs{i}.beta.mri_ex_id.nan_ids);
+        % disp(['Nids: ',num2str(numel(good_ids))]);
 
+        % Extract mean accuracy for this subject on usable ids
         acc_v = zeros(1,N_ex)-1;
         acc_a = zeros(1,N_ex)-1;
 
-        %disp(['Nids: ',num2str(numel(subjs{i}.beta.mri_ex_id.good_id))]);
-        for j = 1:numel(subjs{i}.beta.mri_ex_id.good_id)
-            id = subjs{i}.beta.mri_ex_id.good_id(j);
+        for j = 1:numel(good_ids)
+
+            id = good_ids(j); 
             indx = find(ex_id==id);
-            % disp([num2str(j),', ',num2str(id),', ',num2str(indx)]);
             acc_v(indx) = mean(prds.v_cls_acc(:,j),1);
             acc_a(indx) = mean(prds.a_cls_acc(:,j),1);
 
@@ -133,10 +134,9 @@ for i=1:numel(subjs)
     
 end    
 
-%% report findings for this thresh level
-[h p ci stats] = ttest(grp_v_corr_perf,0.5);
-[numel(corr_ids_v),mean(mean(all_raw_acc_v,2)),mean(grp_v_corr_perf),p]
-
+% %% report findings for this thresh level
+% [h p ci stats] = ttest(grp_v_corr_perf,0.5);
+% [numel(corr_ids_v),mean(mean(all_raw_acc_v,2)),mean(grp_v_corr_perf),p]
 
 %% ----------------------------------------
 %% AROUSAL Analysis
@@ -189,22 +189,26 @@ end
 %% ----------------------------------------
 %% Valence output
 
-disp(['Grp VAL accuracy, pre-refit=',num2str(mean(mean(all_raw_acc_v,2))),...
-      ', post-refit=',num2str(mean(grp_v_corr_perf))]);
+logger(['Grp VAL accuracy, pre-refit=', ...
+        num2str(mean(mean(all_raw_acc_v,2))), ', post-refit=', ...
+        num2str(mean(grp_v_corr_perf))],proj.path.logfile);
       
 ncorr = numel(corr_ids_v);
 [a b] = binofit(ncorr/2,ncorr,0.05);
 sscnt_v = numel(find(grp_v_corr_perf>b(2)));
 
-disp(['Sing. Subj VAL significant post-refit=',num2str(sscnt_v),'/',num2str(numel(subjs))]);
+logger(['Sing. Subj VAL significant post-refit=',num2str(sscnt_v), ...
+        '/',num2str(numel(subjs))],proj.path.logfile);
 
 %% ----------------------------------------
-%% Valence output
-disp(['Grp ARO accuracy, pre-refit=',num2str(mean(mean(all_raw_acc_a,2))),...
-      ', post-refit=',num2str(mean(grp_a_corr_perf))]);
+%% Arousal output
+logger(['Grp ARO accuracy, pre-refit=', ...
+        num2str(mean(mean(all_raw_acc_a,2))), ', post-refit=', ...
+        num2str(mean(grp_a_corr_perf))],proj.path.logfile);
       
 ncorr = numel(corr_ids_a);
 [a b] = binofit(ncorr/2,ncorr,0.05);
 sscnt_a = numel(find(grp_a_corr_perf>b(2)));
 
-disp(['Sing. Subj ARO significant post-refit=',num2str(sscnt_a),'/',num2str(numel(subjs))]);
+logger(['Sing. Subj ARO significant post-refit=',num2str(sscnt_a), ...
+        '/',num2str(numel(subjs))],proj.path.logfile);

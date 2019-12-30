@@ -45,8 +45,7 @@ logger(['************************************************'],proj.path.logfile);
 logger(['Calculating EMG beta-series of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
 logger(['************************************************'],proj.path.logfile);
 
-
-for i=1:22 % numel(subjs) % only CTM has EMG recordings that are valid
+for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
     
     %% extract subject info
     subj_study = subjs{i}.study;

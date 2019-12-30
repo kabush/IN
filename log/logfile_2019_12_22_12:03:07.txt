@@ -1,0 +1,1531 @@
+************************************************
+ Characterizing Age|Sex of Subjects             
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+************************************
+Prepocessing fMRI of 75 subjects
+************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+****************************************
+Processing GM Mask of 75 subjects
+****************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+Num. GM voxels: 37165, should be 30K-50K.
+************************************
+Processing SCR of 75 subjects
+************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+  -Processing Error: SCR of Rest: /raw/bush/CTM/physio/CTM_061/CTM_061_Rest.mat
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+  -Processing Error: SCR of Rest: /raw/bush/CTM/physio/CTM_071/CTM_071_Rest.mat
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+  -Processing Error: SCR of Identify run 2: /raw/bush/INCA/physio/INCA_003/INCA_003_Identify_run_2.mat
+  -Processing Error: SCR of Rest: /raw/bush/INCA/physio/INCA_003/INCA_003_Rest.mat
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+  -Processing Error: SCR of Identify run 1: /raw/bush/INCA/physio/INCA_017/INCA_017_Identify_run_1.mat
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+  -Processing Error: SCR of Identify run 1: /raw/bush/INCA/physio/INCA_033/INCA_033_Identify_run_1.mat
+INCA:035
+INCA:037
+****************************************
+Processing EMG of 75 subjects
+****************************************
+----------------------------------------
+ EMG Quality Check 
+----------------------------------------
+************************************************
+Calculating fMRI beta-series (EX) of 75 subjects
+************************************************
+CTM:034
+CTM:035
+ - excluding CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+************************************************
+Calculating SCR beta-series of 75 subjects
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+  - excluding SCR of Identify run 2: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_003_Identify_run_1.mat
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+  - excluding SCR of Identify run 1: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_016_Identify_run_2.mat
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+  - excluding SCR of Identify run 1: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_031_Identify_run_2.mat
+INCA:035
+INCA:037
+*************************************************
+Intra-subject LOOCV MVPA of Gram-Schmidt Features
+*************************************************
+CTM:034
+  v acc: 0.69037
+  a acc: 0.64074
+CTM:035
+  v acc: 0.40766
+  a acc: 0.51571
+CTM:060
+  -MVPA Error: possible missing beta series
+CTM:066
+  v acc: 0.52984
+  a acc: 0.59419
+CTM:070
+  v acc: 0.54074
+  a acc: 0.66444
+CTM:001
+  v acc: 0.47222
+  a acc: 0.66296
+CTM:003
+  v acc: 0.61815
+  a acc: 0.6563
+CTM:004
+  v acc: 0.61259
+  a acc: 0.58444
+CTM:007
+  v acc: 0.48778
+  a acc: 0.58148
+CTM:008
+  v acc: 0.57037
+  a acc: 0.61815
+CTM:009
+  v acc: 0.52259
+  a acc: 0.57556
+CTM:010
+  v acc: 0.42704
+  a acc: 0.57259
+CTM:012
+  v acc: 0.56148
+  a acc: 0.49741
+CTM:013
+  v acc: 0.52148
+  a acc: 0.57444
+CTM:014
+  v acc: 0.53926
+  a acc: 0.53111
+CTM:018
+  v acc: 0.40593
+  a acc: 0.48333
+CTM:021
+  v acc: 0.69037
+  a acc: 0.57704
+CTM:022
+  v acc: 0.49926
+  a acc: 0.51148
+CTM:023
+  v acc: 0.54074
+  a acc: 0.53778
+CTM:024
+  v acc: 0.52889
+  a acc: 0.58111
+CTM:026
+  v acc: 0.65963
+  a acc: 0.51963
+CTM:028
+  v acc: 0.61519
+  a acc: 0.69889
+CTM:029
+  v acc: 0.46667
+  a acc: 0.56593
+CTM:030
+  v acc: 0.59704
+  a acc: 0.56148
+CTM:031
+  v acc: 0.5363
+  a acc: 0.56444
+CTM:033
+  v acc: 0.47667
+  a acc: 0.53926
+CTM:036
+  v acc: 0.54926
+  a acc: 0.63296
+CTM:039
+  v acc: 0.57
+  a acc: 0.58333
+CTM:040
+  v acc: 0.46951
+  a acc: 0.53537
+CTM:042
+  v acc: 0.67926
+  a acc: 0.58111
+CTM:043
+  v acc: 0.53481
+  a acc: 0.59
+CTM:044
+  v acc: 0.57444
+  a acc: 0.53
+CTM:045
+  v acc: 0.53704
+  a acc: 0.74333
+CTM:046
+  v acc: 0.54704
+  a acc: 0.52741
+CTM:047
+  v acc: 0.49519
+  a acc: 0.60778
+CTM:050
+  v acc: 0.49296
+  a acc: 0.65222
+CTM:051
+  v acc: 0.58889
+  a acc: 0.56481
+CTM:055
+  v acc: 0.59333
+  a acc: 0.63481
+CTM:056
+  v acc: 0.58296
+  a acc: 0.60407
+CTM:057
+  v acc: 0.52674
+  a acc: 0.67713
+CTM:058
+  v acc: 0.5963
+  a acc: 0.59963
+CTM:061
+  v acc: 0.56667
+  a acc: 0.57148
+CTM:062
+  v acc: 0.57519
+  a acc: 0.46481
+CTM:063
+  v acc: 0.58852
+  a acc: 0.59444
+CTM:064
+  v acc: 0.52407
+  a acc: 0.53778
+CTM:067
+  v acc: 0.56519
+  a acc: 0.51519
+CTM:068
+  v acc: 0.59111
+  a acc: 0.45148
+CTM:069
+  v acc: 0.61852
+  a acc: 0.63148
+CTM:071
+  v acc: 0.65741
+  a acc: 0.53667
+CTM:072
+  v acc: 0.50074
+  a acc: 0.64444
+CTM:073
+  v acc: 0.51333
+  a acc: 0.5263
+CTM:074
+  v acc: 0.6163
+  a acc: 0.65704
+CTM:075
+  v acc: 0.51444
+  a acc: 0.63481
+CTM:076
+  v acc: 0.61519
+  a acc: 0.65074
+CTM:077
+  v acc: 0.57259
+  a acc: 0.65037
+CTM:078
+  v acc: 0.62259
+  a acc: 0.62074
+INCA:003
+  v acc: 0.52926
+  a acc: 0.52
+INCA:006
+  v acc: 0.56778
+  a acc: 0.60593
+INCA:007
+  v acc: 0.55148
+  a acc: 0.65
+INCA:010
+  v acc: 0.59333
+  a acc: 0.64444
+INCA:012
+  v acc: 0.41852
+  a acc: 0.57667
+INCA:013
+  v acc: 0.59519
+  a acc: 0.59889
+INCA:014
+  v acc: 0.58926
+  a acc: 0.64667
+INCA:016
+  v acc: 0.61222
+  a acc: 0.60704
+INCA:017
+  v acc: 0.53185
+  a acc: 0.58704
+INCA:018
+  v acc: 0.52815
+  a acc: 0.64889
+INCA:020
+  v acc: 0.49185
+  a acc: 0.66111
+INCA:021
+  v acc: 0.62296
+  a acc: 0.6463
+INCA:019
+  v acc: 0.48852
+  a acc: 0.58963
+INCA:023
+  v acc: 0.60444
+  a acc: 0.62741
+INCA:024
+  v acc: 0.52
+  a acc: 0.59296
+INCA:031
+  v acc: 0.6463
+  a acc: 0.63074
+INCA:033
+  v acc: 0.49074
+  a acc: 0.62815
+INCA:035
+  v acc: 0.64185
+  a acc: 0.63741
+INCA:037
+  v acc: 0.59185
+  a acc: 0.55704
+grp v acc ci=[0.54087,0.57031], p=6.4255e-71
+grp a acc ci=[0.57901,0.60526], p=1.6312e-76
+************************************************
+Intra-subject LOOCV MVPA of Gray Matter Features
+************************************************
+CTM:034
+  v acc: 0.62
+  a acc: 0.61778
+CTM:035
+  v acc: 0.5341
+  a acc: 0.5977
+CTM:060
+  -MVPA Error: possible missing beta series
+CTM:066
+  v acc: 0.55194
+  a acc: 0.6314
+CTM:070
+  v acc: 0.50037
+  a acc: 0.62444
+CTM:001
+  v acc: 0.51111
+  a acc: 0.61259
+CTM:003
+  v acc: 0.63704
+  a acc: 0.6337
+CTM:004
+  v acc: 0.64667
+  a acc: 0.63815
+CTM:007
+  v acc: 0.46333
+  a acc: 0.64074
+CTM:008
+  v acc: 0.54148
+  a acc: 0.65074
+CTM:009
+  v acc: 0.51926
+  a acc: 0.54889
+CTM:010
+  v acc: 0.36926
+  a acc: 0.5063
+CTM:012
+  v acc: 0.48778
+  a acc: 0.56148
+CTM:013
+  v acc: 0.5063
+  a acc: 0.57074
+CTM:014
+  v acc: 0.55519
+  a acc: 0.58593
+CTM:018
+  v acc: 0.45185
+  a acc: 0.55593
+CTM:021
+  v acc: 0.66593
+  a acc: 0.59111
+CTM:022
+  v acc: 0.54852
+  a acc: 0.51407
+CTM:023
+  v acc: 0.56556
+  a acc: 0.52481
+CTM:024
+  v acc: 0.54815
+  a acc: 0.63593
+CTM:026
+  v acc: 0.71519
+  a acc: 0.55407
+CTM:028
+  v acc: 0.59444
+  a acc: 0.67889
+CTM:029
+  v acc: 0.46407
+  a acc: 0.60074
+CTM:030
+  v acc: 0.58
+  a acc: 0.57185
+CTM:031
+  v acc: 0.47444
+  a acc: 0.59815
+CTM:033
+  v acc: 0.47556
+  a acc: 0.49556
+CTM:036
+  v acc: 0.56852
+  a acc: 0.64
+CTM:039
+  v acc: 0.58667
+  a acc: 0.55741
+CTM:040
+  v acc: 0.39065
+  a acc: 0.55041
+CTM:042
+  v acc: 0.68593
+  a acc: 0.59185
+CTM:043
+  v acc: 0.59519
+  a acc: 0.5837
+CTM:044
+  v acc: 0.64889
+  a acc: 0.52
+CTM:045
+  v acc: 0.53704
+  a acc: 0.75148
+CTM:046
+  v acc: 0.46704
+  a acc: 0.46407
+CTM:047
+  v acc: 0.51593
+  a acc: 0.61
+CTM:050
+  v acc: 0.4963
+  a acc: 0.6537
+CTM:051
+  v acc: 0.62741
+  a acc: 0.54111
+CTM:055
+  v acc: 0.50741
+  a acc: 0.67741
+CTM:056
+  v acc: 0.65037
+  a acc: 0.60741
+CTM:057
+  v acc: 0.46589
+  a acc: 0.62054
+CTM:058
+  v acc: 0.56556
+  a acc: 0.63556
+CTM:061
+  v acc: 0.49889
+  a acc: 0.61889
+CTM:062
+  v acc: 0.61667
+  a acc: 0.58148
+CTM:063
+  v acc: 0.57444
+  a acc: 0.7037
+CTM:064
+  v acc: 0.55926
+  a acc: 0.61259
+CTM:067
+  v acc: 0.53296
+  a acc: 0.55407
+CTM:068
+  v acc: 0.49704
+  a acc: 0.54963
+CTM:069
+  v acc: 0.59074
+  a acc: 0.62185
+CTM:071
+  v acc: 0.65074
+  a acc: 0.58111
+CTM:072
+  v acc: 0.56481
+  a acc: 0.59926
+CTM:073
+  v acc: 0.51889
+  a acc: 0.59556
+CTM:074
+  v acc: 0.57148
+  a acc: 0.63148
+CTM:075
+  v acc: 0.52667
+  a acc: 0.64519
+CTM:076
+  v acc: 0.74
+  a acc: 0.59704
+CTM:077
+  v acc: 0.61481
+  a acc: 0.66741
+CTM:078
+  v acc: 0.60556
+  a acc: 0.63185
+INCA:003
+  v acc: 0.5563
+  a acc: 0.64778
+INCA:006
+  v acc: 0.55481
+  a acc: 0.58667
+INCA:007
+  v acc: 0.50963
+  a acc: 0.66
+INCA:010
+  v acc: 0.56185
+  a acc: 0.59963
+INCA:012
+  v acc: 0.47148
+  a acc: 0.62852
+INCA:013
+  v acc: 0.61185
+  a acc: 0.62
+INCA:014
+  v acc: 0.56852
+  a acc: 0.62889
+INCA:016
+  v acc: 0.62556
+  a acc: 0.60333
+INCA:017
+  v acc: 0.54111
+  a acc: 0.59
+INCA:018
+  v acc: 0.61444
+  a acc: 0.65519
+INCA:020
+  v acc: 0.51741
+  a acc: 0.67148
+INCA:021
+  v acc: 0.59815
+  a acc: 0.57185
+INCA:019
+  v acc: 0.49481
+  a acc: 0.60852
+INCA:023
+  v acc: 0.63074
+  a acc: 0.66704
+INCA:024
+  v acc: 0.50333
+  a acc: 0.6137
+INCA:031
+  v acc: 0.64407
+  a acc: 0.65963
+INCA:033
+  v acc: 0.56741
+  a acc: 0.60222
+INCA:035
+  v acc: 0.57
+  a acc: 0.65741
+INCA:037
+  v acc: 0.55407
+  a acc: 0.55333
+  grp v acc ci=[0.54063,0.57274], p=2.8748e-68
+g  rp a acc ci=[0.59332,0.61648], p=3.9223e-81
+************************************************
+Intra-subject LOOCV MVPA of Gray Matter Models  
+************************************************
+CTM:034
+CTM:035
+CTM:060
+  -MVPA Error: possible missing beta series
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+********************************************
+ Analyzing GS Classification (Refit)        
+********************************************
+*********************************************
+Analyzing MVPA GS vs GM                      
+*********************************************
+CTM_034
+CTM_035
+CTM_060
+  -Could not find/load prds for: CTM_060
+CTM_066
+CTM_070
+CTM_001
+CTM_003
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+CTM_036
+CTM_039
+CTM_040
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+   Rsqr=0.32828
+   Fsqr=0.48871
+   Rsqr=0.55252
+   Fsqr=1.2347
+*************************************************
+ Analyzing SCR responses to EX stimuli           
+*************************************************
+CTM_034
+CTM_035
+CTM_060
+CTM_066
+CTM_070
+CTM_001
+CTM_003
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+CTM_036
+CTM_039
+CTM_040
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+  Rsqr=0.0023104
+  Fsqr=0.0023157
+************************************************
+Intra-subject LOOCV MVPA RGR GM Features -> SCRs
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+  Rsqr=0.07114
+  Fsqr=0.076589
+************************************************
+Intra-subject LOOCV MVPA RGR GM Features -> Arousal
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+  Rsqr=0.090756
+  Fsqr=0.099814
+************************************************
+Calculating fMRI beta-series (IN) of 75 subjects
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+INCA:035
+INCA:037
+************************************************
+Calculating SCR beta-series of 75 subjects
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
+CTM:029
+CTM:030
+CTM:031
+CTM:033
+CTM:036
+CTM:039
+CTM:040
+CTM:042
+CTM:043
+CTM:044
+CTM:045
+CTM:046
+CTM:047
+CTM:050
+CTM:051
+CTM:055
+CTM:056
+CTM:057
+CTM:058
+CTM:061
+CTM:062
+CTM:063
+CTM:064
+CTM:067
+CTM:068
+CTM:069
+CTM:071
+CTM:072
+CTM:073
+CTM:074
+CTM:075
+CTM:076
+CTM:077
+CTM:078
+INCA:003
+  -LSS Error: SCR of Identify run 2: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_003_Identify_run_2.mat
+INCA:006
+INCA:007
+INCA:010
+INCA:012
+INCA:013
+INCA:014
+INCA:016
+INCA:017
+  -LSS Error: SCR of Identify run 1: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_017_Identify_run_1.mat
+INCA:018
+INCA:020
+INCA:021
+INCA:019
+INCA:023
+INCA:024
+INCA:031
+INCA:033
+  -LSS Error: SCR of Identify run 1: /home/kabush/workspace/data/IN/physio/scr_clean/INCA_033_Identify_run_1.mat
+INCA:035
+INCA:037
+************************************************
+Calculating EMG beta-series of 75 subjects
+************************************************
+CTM:034
+CTM:035
+CTM:060
+CTM:066
+CTM:070
+CTM:001
+CTM:003
+CTM:004
+CTM:007
+CTM:008
+CTM:009
+CTM:010
+CTM:012
+CTM:013
+CTM:014
+CTM:018
+CTM:021
+CTM:022
+CTM:023
+CTM:024
+CTM:026
+CTM:028
