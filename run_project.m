@@ -227,11 +227,11 @@ calc_emg_in_beta; % (pilot)
 % %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
 % 
-% %% ***TICKET*** path to dynamics have changes from data/in_ctrl to
+ % %% ***TICKET*** path to dynamics have changes from data/in_ctrl to
 % %% data/in_dyn ... will likely break analysis code below.
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP ???: Analyze IN SCR Response (pilot)
+% %% STEP ???: Analyze IN Physio Response (pilot)
 % analyze_in_scr;
 % analyze_in_emg;
 %
