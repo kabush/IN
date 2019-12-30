@@ -153,7 +153,7 @@ init_project;
 % 
 % %% Physio data
 % calc_scr_in_beta; % (pilot)
-calc_emg_in_beta; % (pilot)
+% calc_emg_in_beta; % (pilot)
 % % - calc_hr_in_beta (TBD);
 
 % %% ----------------------------------------
@@ -175,18 +175,18 @@ calc_emg_in_beta; % (pilot)
 % %% ============================================================
 % %% PHASE 3: Characterizing mFC function
 % %% ============================================================
-
+% 
 % %% Construct Basic cognitive control models (CCMs)  
 % ccm_err_fmri_in_gm;     % error model
-% ccm_cnf_fmri_in_gm;   % conflict model (neu vs extrem)
-% % ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro; not using)
+% ccm_cnf_fmri_in_gm;     % conflict model (neu vs extrem)
+% ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro)
 % ccm_pel_fmri_in_gm;     % prediction error likelihood
 % ccm_pro_fmri_in_gm;     % predicted response outcome
 
-% %% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
-% % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
-% % mFC has been excluded (mFC will be the CC space).
-% reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
+%% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
+% is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
+% mFC has been excluded (mFC will be the CC space).
+reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
 
 % % Conduct grid search of EVC parm space (mix of err/action-cost)
 % ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS

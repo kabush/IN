@@ -70,10 +70,6 @@ for i = 1:numel(subjs)
         %% Concatenate the MASKED base image
         subj_img = base_img(in_brain,:)';
         
-        % %% Concatenate all label/subj identifiers
-        % subj_id = [repmat(id,numel(label_id),1)];
-        % subj_i = [repmat(i,numel(label_id),1)];
-        
         %% Perform quality
         qlty = check_gm_img_qlty(subj_img);
         

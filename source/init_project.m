@@ -139,6 +139,7 @@ proj.path.ctrl.in_dyn = [proj.path.data,proj.path.ctrl.name,'in_dyn/']; ...
 proj.path.ctrl.in_ica = [proj.path.data,proj.path.ctrl.name,'in_ica/'];
 proj.path.ctrl.in_err_mdl = [proj.path.data,proj.path.ctrl.name,'in_err_mdl/'];
 proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
+proj.path.ctrl.in_cnf_alt_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_alt_mdl/'];
 proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
 proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
 proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_mdl/'];
@@ -267,6 +268,9 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
+
+%% Control parameters
+proj.param.ctrl.ccm_names = {'err','cnf','cnf_alt','pel','pro'};
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

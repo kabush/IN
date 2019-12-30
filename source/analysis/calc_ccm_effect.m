@@ -15,7 +15,7 @@ function [] = calc_ccm_effect(proj,affect_name)
 %% load subjs
 subjs = load_subjs(proj);
 
-var_names = {'err','cnf','evc','pel','pro'};
+var_names = proj.param.ctrl.ccm_names; %{'err','cnf','evc','pel','pro'};
 
 for i=3:3 %numel(var_names)
 

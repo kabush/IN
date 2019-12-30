@@ -19,10 +19,10 @@ logger(['*************************************************'],proj.path.logfile);
 %% ----------------------------------------
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.ctrl.in_cnf_mdl]);
-    eval(['! rm -rf ',proj.path.ctrl.in_cnf_mdl]);
-    disp(['Creating ',proj.path.ctrl.in_cnf_mdl]);
-    eval(['! mkdir ',proj.path.ctrl.in_cnf_mdl]);
+    disp(['Removing ',proj.path.ctrl.in_cnf_alt_mdl]);
+    eval(['! rm -rf ',proj.path.ctrl.in_cnf_alt_mdl]);
+    disp(['Creating ',proj.path.ctrl.in_cnf_alt_mdl]);
+    eval(['! mkdir ',proj.path.ctrl.in_cnf_alt_mdl]);
 end
 
 %% ----------------------------------------
@@ -71,7 +71,7 @@ for i = 1:numel(subjs)
         mdls.a_indx = prds.a_indx.h(:,3:(end-1));
 
         % save out model structure
-        save([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
+        save([proj.path.ctrl.in_cnf_alt_mdl,subj_study,'_',name,'_mdls.mat'],'mdls');
 
     end
     
