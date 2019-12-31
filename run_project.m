@@ -125,6 +125,7 @@ init_project;
 % %% mvpa_fmri_ex_gm_rgr_hr; (TBD)
 % %% mvpa_fmri_ex_gm_rgr_v; (TBD)
 % 
+% % % %% ************************************
 % % % %% ********* VERY SLOW BELOW **********
 % % %% ----------------------------------------
 % % %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)
@@ -136,6 +137,7 @@ init_project;
 % % %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
 % % % (TBD)
 % % %% ********* VERY SLOW ABOVE  **********
+% % % %% ************************************
 % 
 % %% ============================================================
 % %% PHASE 2: Modeling Intrinsic Neuromodulation (IN) of Affect
@@ -183,7 +185,10 @@ init_project;
 % ccm_pel_fmri_in_gm;     % prediction error likelihood
 % ccm_pro_fmri_in_gm;     % predicted response outcome
 
-%% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
+%% ************************************
+%% ********* VERY SLOW BELOW **********
+
+% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
 % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
 % mFC has been excluded (mFC will be the CC space).
 % reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
@@ -198,7 +203,10 @@ ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
 %
 % ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max
 %                      % params (fit to valence)
-% 
+
+% %% ********* VERY SLOW ABOVE **********
+% %% ************************************
+%
 % %% Compute CCMs Activations
 % analyze_in_fmri_3dlme;
 %

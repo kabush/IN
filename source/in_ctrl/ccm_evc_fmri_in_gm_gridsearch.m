@@ -44,7 +44,7 @@ end
 subjs = load_subjs(proj);
 
 % randomly select a subset 
-Nrand = 30;
+Nrand = round(numel(subjs)/2);
 rand_subj_ids = randsample(1:numel(subjs),Nrand);
 
 % Meta RL Parameter search
@@ -74,11 +74,9 @@ grp_err_std = err_std_v;
 act_5part = act_5part_v;
 affect_name = 'v';
 
-tic
+for a=1:Ndsct
 
-for a=1:1 %Ndsct
-
-    for b=1:1 %Nfrac
+    for b=1:Nfrac
 
         gamma = discount_set(a);
         rwrd_act_f = reward_act_set(b);
@@ -134,9 +132,9 @@ grp_err_std = err_std_a;
 act_5part = act_5part_a;
 affect_name = 'a';
 
-for a=1:1 %Ndsct
+for a=1:Ndsct
 
-    for b=1:1 %Nfrac
+    for b=1:Nfrac
 
         gamma = discount_set(a);
         rwrd_act_f = reward_act_set(b);
@@ -172,5 +170,3 @@ for a=1:1 %Ndsct
     end
 
 end
-
-toc

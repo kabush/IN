@@ -25,7 +25,7 @@ subjs = load_subjs(proj);
 Nrand = numel(rand_subj_ids);
 
 % log progress
-logger('Fitting the Q-functions',proj.path.logfile);
+logger('* Fitting the Q-functions',proj.path.logfile);
 
 for i=1:Nrand
     
@@ -185,7 +185,7 @@ sbj_i = 0;
 eval_sbj_ids = [];
 
 % log progress
-logger('CV of Fit Q-functions',proj.path.logfile);
+logger('* CV of Fit Q-functions',proj.path.logfile);
 
 for i=1:Nrand
     
