@@ -186,14 +186,14 @@ init_project;
 %% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
 % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
 % mFC has been excluded (mFC will be the CC space).
-reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
+% reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
 
-% % Conduct grid search of EVC parm space (mix of err/action-cost)
-% ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
-%                                % 2020 ***VERY SLOW***)
-%                                % Need to select best for next
-%                                % step *** TICKET ***
-%
+% Conduct grid search of EVC parm space (mix of err/action-cost)
+ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
+                               % 2020 ***VERY SLOW***)
+                               % Need to select best for next
+                               % step *** TICKET ***
+
 % analyze_evc_fmri_in_gm;  % Find best meta-parameters of RL
 %
 % ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max

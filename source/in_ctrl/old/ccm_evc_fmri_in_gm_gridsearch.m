@@ -78,17 +78,12 @@ for i = 1:numel(subjs)
 
 end
 
-%% Use group action to build 3 & 5 discrete action partitions
-N_5size = round(numel(act_v_all)/5);
-
-act_v_srt = sort(act_v_all);
-act_a_srt = sort(act_a_all);
-
 %% compute standard deviation
-act_v_std = std(act_v_srt);
+act_v_std = std(act_v_all);
 
 %% compute partition based on standard deviations
 act_5part = [-2*act_v_std,-act_v_std,act_v_std,2*act_v_std];
+
 
 %% ----------------------------------------
 %% Balance action and error scales
@@ -126,7 +121,7 @@ for i = 1:numel(subjs)
         actions = (prds.v_dcmp.h(:,4:end)-prds.v_dcmp.h(:,3:(end-1)));
         actions_1d = zscore(reshape(actions',1,prod(size(actions))));
 
-        %% 5 discrete actions
+        %% 5 discrete actions [-2,-1,0,1,2]
         dsc_actions_1d = 0*actions_1d;
         dsc_actions_1d(find(actions_1d>act_5part(3)))=1; 
         dsc_actions_1d(find(actions_1d>act_5part(4)))=2; 
@@ -142,6 +137,7 @@ for i = 1:numel(subjs)
     end
 
 end
+
 
 % Compute group params
 grp_act_v_mean = mean(dsc_act_v_all);
