@@ -185,37 +185,42 @@ init_project;
 % ccm_pel_fmri_in_gm;     % prediction error likelihood
 % ccm_pro_fmri_in_gm;     % predicted response outcome
 
-%% ************************************
-%% ********* VERY SLOW BELOW **********
-
+% %% ************************************
+% %% ********* VERY SLOW BELOW **********
+% 
 % Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
 % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
 % mFC has been excluded (mFC will be the CC space).
 % reshape_ica;  % ***TICKET*** finalize dACC and IC interaction and ICs
 
 % Conduct grid search of EVC parm space (mix of err/action-cost)
-ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
+% ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
                                % 2020 ***VERY SLOW***)
                                % Need to select best for next
                                % step *** TICKET ***
-
-% analyze_evc_fmri_in_gm;  % Find best meta-parameters of RL
-%
-% ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max
-%                      % params (fit to valence)
-
+                               %
 % %% ********* VERY SLOW ABOVE **********
 % %% ************************************
+% 
+% %% Select optimal parameters (separately for V & A)w
+% select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
 %
+% %% Compute Q-values (separately for V & A)
+% ccm_evc_fmri_in_gm;  % compute EVC cog mdls w/ max
+ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated within subj)
+
 % %% Compute CCMs Activations
 % analyze_in_fmri_3dlme;
-%
+% 
+% %% Compute CCMs Activations
+analyze_in_cmb_fmri_3dlme;
+
 % %% Estimate & Apply Cluster Thresholds
 % calc_in_clust_thresh_3dlme;
 % 
 % %% Compute Prediction Effects for CCMs
 % analyze_ccm_effect;
-
+% 
 % %% Compare Predictions Effects
 % % (TBD) 
 % 

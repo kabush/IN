@@ -1,7 +1,7 @@
 %%========================================
 %%========================================
 %%
-%% Keith Bush, PhD (2019)
+%% Keith Bush, PhD (2018)
 %% Univ. of Arkansas for Medical Sciences
 %% Brain Imaging Research Center (BIRC)
 %%
@@ -14,23 +14,20 @@ load('proj.mat');
 %% ----------------------------------------
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.analysis.in_ccm_effect]);
-    eval(['! rm -rf ',proj.path.analysis.in_ccm_effect]);
-    disp(['Creating ',proj.path.analysis.in_ccm_effect]);
-    eval(['! mkdir ',proj.path.analysis.in_ccm_effect]);
+    disp(['Removing ',proj.path.analysis.in_cmb_3dlme]);
+    eval(['! rm -rf ',proj.path.analysis.in_cmb_3dlme]);
+    disp(['Creating ',proj.path.analysis.in_cmb_3dlme]);
+    eval(['! mkdir ',proj.path.analysis.in_cmb_3dlme]);
 end
 
-%% Initialize log section
-logger(['*************************************************'],proj.path.logfile);
-logger(['Compute CCM Prediction Effects (VALENCE)       '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-calc_ccm_effect(proj,'v');
 
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
-logger(['Compute CCM Prediction Effects (AROUSAL)       '],proj.path.logfile);
+logger(['3dLME detection of Cog Ctrl Voxels (VALENCE)     '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-calc_ccm_effect(proj,'a');
+calc_in_cmb_fmri_3dlme(proj,'v');
 
-%% Group comparison here
-% (TBD)
+logger(['*************************************************'],proj.path.logfile);
+logger(['3dLME detection of Cog Ctrl Voxels (AROUSAL)      '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+calc_in_cmb_fmri_3dlme(proj,'a');

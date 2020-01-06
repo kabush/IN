@@ -9,7 +9,7 @@
 %%========================================
 
 % Observe Q-function parameters 
-function [all_q_perf,all_act_err,all_sig_test] = observe_Q_param_perf(proj,...
+function [all_q_perf,all_act_err,all_sig_test] = calc_q_param_perf(proj,...
                                                   discount_set,...
                                                   reward_frac_set,...
                                                   Q_traj_all,...
@@ -18,6 +18,9 @@ function [all_q_perf,all_act_err,all_sig_test] = observe_Q_param_perf(proj,...
 
 %% Calculate set-sizes
 [Ndsct,Nfrac,Nsbj,Nvr,Nt] = size(Q_traj_all);
+
+Nsbj = 32;
+
 
 %% META-LOOPS HERE
 all_q_traj_dsct = zeros(Ndsct,Nfrac,Nsbj);
@@ -39,27 +42,25 @@ for a=1:Ndsct
         
         for c = 1:Nsbj
 
-                %% Q analysis
-                q_traj = squeeze(Q_traj_all(a,b,c,:,:));
-                q_rand = squeeze(Q_rand_all(a,b,c,:,:));
-
-                q_diff = (q_traj-q_rand);
-                q_perf = q_diff./abs(q_rand);
-                q_effx = q_diff/std(vec(q_diff));
-
-                all_q_traj_dsct(a,b,c) = median(median(q_traj));
-                all_q_rand_dsct(a,b,c) = median(median(q_rand));
-                all_q_diff_dsct(a,b,c) = median(median(q_diff));
-                all_q_perf_dsct(a,b,c) = median(median(q_perf));
-
-                %% Action analysis
-                act_err_dsct(a,b,c) = mean(mean(abs(squeeze(act_err_all(a,b,c,:,:)))));
-
-            end
-
-            disp(['act=',num2str(act_dscr),', gamma=',num2str(gamma),', frac=',num2str(rwrd_f)]);            
-
+            %% Q analysis
+            q_traj = squeeze(Q_traj_all(a,b,c,:,:));
+            q_rand = squeeze(Q_rand_all(a,b,c,:,:));
+            
+            q_diff = (q_traj-q_rand);
+            q_perf = q_diff./abs(q_rand);
+            q_effx = q_diff/std(vec(q_diff));
+            
+            all_q_traj_dsct(a,b,c) = median(median(q_traj));
+            all_q_rand_dsct(a,b,c) = median(median(q_rand));
+            all_q_diff_dsct(a,b,c) = median(median(q_diff));
+            all_q_perf_dsct(a,b,c) = median(median(q_perf));
+            
+            %% Action analysis
+            act_err_dsct(a,b,c) = mean(mean(abs(squeeze(act_err_all(a,b,c,:,:)))));
+            
         end
+        
+        disp(['gamma=',num2str(gamma),', frac=',num2str(rwrd_f)]);            
     end
 end
 

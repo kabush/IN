@@ -8,16 +8,15 @@
 %%========================================
 %%========================================
 
-
 function [] = calc_ccm_effect(proj,affect_name)
 
 %% ----------------------------------------
 %% load subjs
 subjs = load_subjs(proj);
 
-var_names = proj.param.ctrl.ccm_names; %{'err','cnf','evc','pel','pro'};
+var_names = proj.param.ctrl.ccm_names; 
 
-for i=3:3 %numel(var_names)
+for i=1:numel(var_names)
 
     var_name = var_names{i};
     disp(var_name);
@@ -48,21 +47,7 @@ for i=3:3 %numel(var_names)
             fpath = eval(['proj.path.ctrl.in_',var_name,'_mdl']);
             full_fpath = ([fpath,subj_study,'_',name,'_mdls.mat']);
             load(full_fpath);
-            
-            %% Data is present
-            data_exist = 1;
-            
-        catch
-            logger(['   -predictions do not exist'],proj.path.logfile);
-        end
-        
-        if(data_exist)
-            
-            subj_cnt = subj_cnt+1;
-            
-            %% ----------------------------------------
-            %% Find GM intersection with ACC ICA
-            
+
             % Load mFC Mask
             mfc_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
             mfc_mask = double(mfc_nii.img);
@@ -70,11 +55,10 @@ for i=3:3 %numel(var_names)
             mfc_mask = reshape(mfc_mask,mfc_brain_size(1)*mfc_brain_size(2)*mfc_brain_size(3),1);
             mfc_in_brain=find(mfc_mask==1);  
             
-            % Load Cluster Mask (*** THIS WILL CHANGE to cluster mask***)
+            % Load mFC-masked cluster mask
             clust_nii = ...
                 load_untouch_nii([proj.path.analysis ...
-                                .in_clust_thresh,'clust_mask_',affect_name,'_',var_name,'.nii']); 
-            %clust_nii = load_untouch_nii([proj.path.ctrl.in_ica,'clst_sng_orient_thresh_zstatd70_17_3x3x3.nii.gz']);
+                                .in_clust_thresh,'mfc_clust_mask_',affect_name,'_',var_name,'.nii']); 
             clust = double(clust_nii.img);
             clust_brain_size=size(clust);
             clust = reshape(clust,clust_brain_size(1)*clust_brain_size(2)*clust_brain_size(3),1);
@@ -91,9 +75,21 @@ for i=3:3 %numel(var_names)
             % Vectorize the base image
             base_img = vec_img_2d_nii(base_nii);
             base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4))';
+
+
+            %% Data is present
+            data_exist = 1;
+            
+        catch
+            logger(['   -predictions do not exist'],proj.path.logfile);
+        end
+        
+        if(data_exist)
+            
+            subj_cnt = subj_cnt+1;
             
             %% ----------------------------------------
-            %% Find ACC activation trajectory
+            %% Find mFC activation trajectory
             base_mfc = mean(base_img(:,in_brain),2);
             
             %% ----------------------------------------
@@ -178,9 +174,6 @@ for i=3:3 %numel(var_names)
     logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
     disp(' ');
 
-
     mdl
+
 end
-
-
-

@@ -144,11 +144,13 @@ proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
 proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
 proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_mdl/'];
 proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
+proj.path.ctrl.in_evc_cv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_cv_mdl/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.in_3dlme = [proj.path.data,proj.path.analysis.name,'in_3dlme/'];
+proj.path.analysis.in_cmb_3dlme = [proj.path.data,proj.path.analysis.name,'in_cmb_3dlme/'];
 proj.path.analysis.in_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_clust_thresh/'];
 proj.path.analysis.in_ccm_effect = [proj.path.data,proj.path.analysis.name,'in_ccm_effect/'];
 
@@ -270,7 +272,7 @@ proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
 %% Control parameters
-proj.param.ctrl.ccm_names = {'err','cnf','cnf_alt','pel','pro'};
+proj.param.ctrl.ccm_names = {'evc','err','cnf','cnf_alt','pel','pro'};
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

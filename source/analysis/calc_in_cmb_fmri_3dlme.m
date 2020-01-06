@@ -8,7 +8,7 @@
 %%========================================
 %%========================================
 
-function [] = calc_in_fmri_3dlme(proj,affect_name)
+function [] = calc_in_cmb_fmri_3dlme(proj,affect_name)
 
 %% ----------------------------------------
 %% load subjs
@@ -81,8 +81,8 @@ for i = 1:numel(subjs)
         load([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat']);
         pro_box = eval(['mdls.',affect_name,'_dcmp']);
 
-        % expected value of control
-        load([proj.path.ctrl.in_evc_mdl,subj_study,'_',name,'_mdls.mat']);
+        % expected value of control (cross-validated values)
+        load([proj.path.ctrl.in_evc_cv_mdl,subj_study,'_',name,'_mdls.mat']);
         evc_box = eval(['mdls.',affect_name,'_dcmp']);
 
         %% ----------------------------------------
@@ -136,47 +136,60 @@ all_pel = all_pel-mean(all_pel);
 all_pro = all_pro-mean(all_pro);
 all_traj = all_traj-mean(all_traj);
 
-var_names = proj.param.ctrl.ccm_names;
+% Build script
+fid = fopen(['./lme_',affect_name,'_cmb_script'],'w');
+fprintf(fid,'#! /bin/csh\n');
+fprintf(fid,'\n');
+fprintf(fid,['3dLME -prefix lme_',affect_name,'_cmb -jobs 16   \\ ']);
+fprintf(fid,['      -resid lme_',affect_name,'_cmb_resid       \\ ']);
+fprintf(fid,['      -model ''traj+err+cnf+evc+pel+pro''       \\']);
+fprintf(fid,['      -qVars ''traj,err,cnf,evc,pel,pro''       \\ ']);
+fprintf(fid,'       -qVarCenters ''0,0,0,0,0,0''       \\ ');
+fprintf(fid,['      -ranEff ''~1+traj'' \\ ']); 
+fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
+fprintf(fid,'       -num_glt 11                      \\ ');
+fprintf(fid,['      -gltLabel 1  traj -gltCode  1  ''traj :'' \\']);
+fprintf(fid,['      -gltLabel 2  err  -gltCode  2  ''err :'' \\']);
+fprintf(fid,['      -gltLabel 3  cnf  -gltCode  3  ''cnf :'' \\']);
+fprintf(fid,['      -gltLabel 4  evc  -gltCode  4  ''evc :'' \\']);
+fprintf(fid,['      -gltLabel 5  pel  -gltCode  5  ''pel :'' \\']);
+fprintf(fid,['      -gltLabel 6  pro  -gltCode  6  ''pro :'' \\']);
+fprintf(fid,['      -gltLabel 7  y_err -gltCode 7  ''err : 0'' \\']);
+fprintf(fid,['      -gltLabel 8  y_cnf -gltCode 8  ''cnf : 0'' \\']);
+fprintf(fid,['      -gltLabel 9  y_evc -gltCode 9  ''evc : 0'' \\']);
+fprintf(fid,['      -gltLabel 10 y_pel -gltCode 10 ''pel : 0'' \\']);
+fprintf(fid,['      -gltLabel 11 y_pro -gltCode 11 ''pro : 0'' \\']);
+fprintf(fid,'       -dataTable                       \\ ');
+fprintf(fid,[' Subj traj err cnf evc pel pro  InputFile   \\ ']);
 
-for i=1:numel(var_names) 
-
-    %Current performance measure
-    var_name = var_names{i}; 
-    disp(var_name);
-    
-    % Build script
-    fid = fopen(['./lme_',affect_name,'_',var_name,'_script'],'w');
-    fprintf(fid,'#! /bin/csh\n');
-    fprintf(fid,'\n');
-    fprintf(fid,['3dLME -prefix lme_',affect_name,'_',var_name,' -jobs 16   \\ ']);
-    fprintf(fid,['      -resid lme_',affect_name,'_',var_name,'_resid       \\ ']);
-    fprintf(fid,['      -model ''traj+',var_name,'''        \\ ']);
-    fprintf(fid,['      -qVars ''traj,',var_name,'''        \\ ']);
-    fprintf(fid,'       -qVarCenters ''0,0''       \\ ');
-    fprintf(fid,['      -ranEff ''~1+',var_name,'''         \\ ']);
-    fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
-    fprintf(fid,'       -num_glt 3                      \\ ');
-    fprintf(fid,['      -gltLabel 1 ',var_name,' -gltCode 1 ''',var_name,' :'' \\']);
-    fprintf(fid,['      -gltLabel 2 traj -gltCode 2 ''traj :'' \\']);
-    fprintf(fid,['      -gltLabel 3 intr -gltCode 3 ''',var_name,' : 0'' \\']);
-    fprintf(fid,'       -dataTable                       \\ ');
-    fprintf(fid,[' Subj traj ',var_name,'  InputFile   \\ ']);
-
-    % Write out datatable
-    Nrows = size(eval(['all_',var_name]),1);
-    for i = 1:(Nrows-1)
-        fprintf(fid,' %s %1.3f %1.3f %s   \\',all_subjs{i},all_traj(i),eval(['all_',var_name,'(i)']),all_path{i});
-    end
-    i=Nrows;
-    fprintf(fid,' %s %1.3f %1.3f %s  \n \\',all_subjs{i},all_traj(i),eval(['all_',var_name,'(i)']),all_path{i});
-    fclose(fid);
-    
-    eval(['! chmod u+x lme_',affect_name,'_',var_name,'_script']);
-    eval(['! ./lme_',affect_name,'_',var_name,'_script']);
-    
-    eval(['! mv lme_',affect_name,'_',var_name,'+tlrc.* ',proj.path.analysis.in_3dlme]);
-    eval(['! mv lme_',affect_name,'_',var_name,'_resid+tlrc.* ',proj.path.analysis.in_3dlme]);
-    eval(['! mv lme_',affect_name,'_',var_name,'_script ',proj.path.analysis.in_3dlme]);
-
+% Write out datatable
+Nrows = size(all_err,1); 
+for i = 1:(Nrows-1)
+    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s   \\',...
+            all_subjs{i},...
+            all_traj(i),...
+            all_err(i),...
+            all_cnf(i),...
+            all_evc(i),...
+            all_pel(i),...
+            all_pro(i),...
+            all_path{i});
 end
+i=Nrows;
+    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \n  \\',...
+            all_subjs{i},...
+            all_traj(i),...
+            all_err(i),...
+            all_cnf(i),...
+            all_evc(i),...
+            all_pel(i),...
+            all_pro(i),...
+            all_path{i});
+fclose(fid);
 
+eval(['! chmod u+x lme_',affect_name,'_cmb_script']);
+eval(['! ./lme_',affect_name,'_cmb_script']);
+
+eval(['! mv lme_',affect_name,'_cmb+tlrc.* ',proj.path.analysis.in_cmb_3dlme]);
+eval(['! mv lme_',affect_name,'_cmb_resid+tlrc.* ',proj.path.analysis.in_cmb_3dlme]);
+eval(['! mv lme_',affect_name,'_cmb_script ',proj.path.analysis.in_cmb_3dlme]);

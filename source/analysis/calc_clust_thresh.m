@@ -11,7 +11,7 @@
 
 function [] = calc_clust_thresh(proj,affect_name)
 
-var_names = {'err','cnf','evc','pel','pro'};
+var_names = proj.param.ctrl.ccm_names; 
 
 %% clean-up
 eval(['! rm 3dFWHMx.1D']);

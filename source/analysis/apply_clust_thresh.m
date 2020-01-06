@@ -10,7 +10,7 @@
 
 function [] = apply_clust_thresh(proj,affect_name)
 
-var_names = {'err','cnf','evc','pel','pro'};
+var_names = proj.param.ctrl.ccm_names; 
 
 for i=1:numel(var_names)
 
@@ -23,7 +23,7 @@ for i=1:numel(var_names)
     clust_size_array = dlmread(['./tmp/tmp.txt'],' ',0,1);
     clust_size = clust_size_array(5); %fifth value to be parsed out.
 
-    %% Cluster threshold 3dlme findins
+    %% Cluster threshold 3dlme findings
 
     cmd = ['! 3dClusterize -nosum -1Dformat -inset ', ...
            proj.path.analysis.in_3dlme, ...
