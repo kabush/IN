@@ -39,14 +39,14 @@ load('proj.mat');
 % logger(['Apply 3dLME cluster threshold (AROUSAL)  '],proj.path.logfile);
 % logger(['*************************************************'],proj.path.logfile);
 % apply_clust_thresh(proj,'a');
-
-logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster threshold (VALENCE)   '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_mfc_mask(proj,'v');
-
-logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster threshold (AROUSAL)   '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_mfc_mask(proj,'a');
+% 
+% logger(['*************************************************'],proj.path.logfile);
+% logger(['Apply 3dLME cluster threshold (VALENCE)   '],proj.path.logfile);
+% logger(['*************************************************'],proj.path.logfile);
+% apply_mfc_mask(proj,'v');
+% 
+% logger(['*************************************************'],proj.path.logfile);
+% logger(['Apply 3dLME cluster threshold (AROUSAL)   '],proj.path.logfile);
+% logger(['*************************************************'],proj.path.logfile);
+% apply_mfc_mask(proj,'a');
 

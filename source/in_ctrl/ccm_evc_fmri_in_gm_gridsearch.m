@@ -35,7 +35,6 @@ end
 [act_mu_v,act_std_v,err_mu_v,err_std_v] = compute_dsc_act_err_stats(proj,'v',act_5part_v);
 [act_mu_a,act_std_a,err_mu_a,err_std_a] = compute_dsc_act_err_stats(proj,'a',act_5part_a);
 
-
 %% ----------------------------------------
 %% Compute Q-functions for all random subject set
 %% to characterize EVC params.

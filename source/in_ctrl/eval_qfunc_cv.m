@@ -8,132 +8,131 @@
 %%========================================
 %%========================================
 
-function [dcmp,indx] = eval_qfunc_cv(proj, ...
-                                     subj, ...
-                                     act_5part, ...
-                                     grp_act_mu, ...
-                                     grp_act_std, ...
-                                     grp_err_mu, ...
-                                     grp_err_std, ...
-                                     gamma, ...
-                                     rwrd_act_f,...
-                                     affect_name)
+function [Q_cv,Q_traj_cv,Q_rand_cv,act_err_cv] = ...
+        eval_qfunc_cv(proj, ...
+                      act_5part, ...
+                      grp_act_mu, ...
+                      grp_act_std, ...
+                      grp_err_mu, ...
+                      grp_err_std, ...
+                      subj_ids,gamma, ...
+                      rwrd_act_f,affect_name);
     
-q_traj = [];
-dcmp = [];
-indx = [];
-    
-% extract subject info
-subj_study = subj.study;
-name = subj.name;
-id = subj.id;
+% load subjs
+subjs = load_subjs(proj);
 
-% log processing of subject
-logger([subj_study,'_',name],proj.path.logfile);
+% number of subjs to evaluat params
+Nsubj = numel(subj_ids);
 
-data_exist = 0;
-try
-    
-    % load dynamics
-    load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
-    
-    % data is present
-    data_exist = 1;
-    
-catch
-    logger(['   -predictions do not exist'],proj.path.logfile);
-end
+% log progress
+logger('* Fitting the Q-functions',proj.path.logfile);
 
-if(data_exist)
+for i=1:Nsubj
     
-    %% ----------------------------------------
-    %% Extract state from beta-series
+    sbj_id = subj_ids(i);
     
-    % Load gray matter mask 
-    gm_nii = load_nii([proj.path.mri.gm_mask,'group_gm_mask.nii']);
-    mask = double(gm_nii.img);
-    brain_size=size(mask);
-    mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
-    in_brain=find(mask==1);  
+    % extract subject info
+    subj_study = subjs{sbj_id}.study;
+    name = subjs{sbj_id}.name;
+    id = subjs{sbj_id}.id;
     
-    % Load beta-series
-    base_nii = load_nii([proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii']);
-    brain_size = size(base_nii.img);
+    % log processing of subject
+    logger([subj_study,'_',name],proj.path.logfile);
     
-    % Vectorize the base image
-    base_img = vec_img_2d_nii(base_nii);
-    base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4))';
-    
-    % Load ICA masks comprising the state space (and grab
-    % activations)
-    ica_seq = [1:5]; % *** TICKET: EMOTION ICs ONLY ***
-    Nica = numel(ica_seq);
-    all_states = zeros(size(base_img,1),Nica);
-    
-    for j=1:Nica
+    data_exist = 0;
+    try
         
-        ica_n= ica_seq(j);
+        % load dynamics
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
         
-        ica_nii = load_nii([proj.path.ctrl.in_ica, ...
-                            'sng_orient_thresh_zstatd20_', ...
-                            num2str(ica_n),'_3x3x3.nii.gz']);
-        ica = double(ica_nii.img);
-        brain_size=size(ica);
-        ica = reshape(ica,brain_size(1)*brain_size(2)*brain_size(3),1);
-        in_brain_this_ica = find(abs(ica)>0); % 4 is the z-score threshold
-                                              % displayed in Ray 2013
-        in_brain_this_ica = intersect(in_brain,in_brain_this_ica);
-        all_states(:,j) = mean(base_img(:,in_brain_this_ica),2);
+        % data is present
+        data_exist = 1;
         
+    catch
+        logger(['   -predictions do not exist'],proj.path.logfile);
     end
     
-    % standard score each dimension separately
-    all_states = zscore(all_states);
-    
-    %% ------------------------------------------------------------
-    %% Calculate Q-function
-    
-    % Build tuples for RL
-    s_indx = eval(['prds.',affect_name,'_indx.h(:,3:(end-1))']);
-    sp_indx = eval(['prds.',affect_name,'_indx.h(:,4:end)']);
-    pre_vals = eval(['prds.',affect_name,'_dcmp.h(:,3:(end-1))']);
-    post_vals = eval(['prds.',affect_name,'_dcmp.h(:,4:end)']);
-    actions = post_vals-pre_vals;
-    errors = eval(['prds.',affect_name,'_dcmp.err(:,4:end)']);
-    terminals = zeros(size(s_indx));terminals(:,end) = 1;
-    
-    % reshape to 1D
-    s_indx_1d = reshape(s_indx',1,prod(size(s_indx)));
-    sp_indx_1d = reshape(sp_indx',1,prod(size(sp_indx)));
-    terminals_1d = reshape(terminals',1,prod(size(terminals)));
-    actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET
-    errors_1d = zscore(reshape(errors',1,prod(size(errors)))); %TICKET
-
-    % assign action to discrete space (5 actions)
-    dsc_actions_1d = 0*actions_1d;
-    dsc_actions_1d(find(actions_1d>act_5part(3)))=1; 
-    dsc_actions_1d(find(actions_1d>act_5part(4)))=2; 
-    dsc_actions_1d(find(actions_1d<act_5part(2)))=-1; 
-    dsc_actions_1d(find(actions_1d<act_5part(1)))=-2; 
-    
-    % Rescale actions and errors at the group level
-    rwd_actions_1d = (dsc_actions_1d-grp_act_mu)/grp_act_std;
-    rwd_errors_1d = (errors_1d-grp_err_mu)/grp_err_std;
-    
-    %% compute reward
-    f_cost_act = rwrd_act_f; 
-    f_cost_err = 1;
-    rewards_1d = -f_cost_act*abs(rwd_actions_1d)-f_cost_err*sqrt(rwd_errors_1d.^2);
-    
-
-    %% ----------------------------------------
-    %% ----------------------------------------
-    %% ----------------------------------------
-    for j=1:30 %%***TICKET Hardcode number of trials
+    if(data_exist)
         
-        sbj_ids = (((j-1)*4)+1):(j*4);
-        cv_ids = setdiff(1:120,sbj_ids);
-
+        %% ----------------------------------------
+        %% Extract state from beta-series
+        
+        % Load gray matter mask 
+        gm_nii = load_nii([proj.path.mri.gm_mask,'group_gm_mask.nii']);
+        mask = double(gm_nii.img);
+        brain_size=size(mask);
+        mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
+        in_brain=find(mask==1);  
+        
+        % Load beta-series
+        base_nii = load_nii([proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii']);
+        brain_size = size(base_nii.img);
+        
+        % Vectorize the base image
+        base_img = vec_img_2d_nii(base_nii);
+        base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4))';
+        
+        % Load ICA masks comprising the state space (and grab
+        % activations)
+        ica_seq = [1:5]; % *** TICKET: EMOTION ICs ONLY ***
+        Nica = numel(ica_seq);;
+        all_states = zeros(size(base_img,1),Nica);
+        
+        for j=1:Nica
+            
+            ica_n= ica_seq(j);
+            
+            ica_nii = load_nii([proj.path.ctrl.in_ica, ...
+                                'sng_orient_thresh_zstatd20_', ...
+                                num2str(ica_n),'_3x3x3.nii.gz']);
+            ica = double(ica_nii.img);
+            brain_size=size(ica);
+            ica = reshape(ica,brain_size(1)*brain_size(2)*brain_size(3),1);
+            in_brain_this_ica = find(abs(ica)>0); % 4 is the z-score threshold
+                                                  % displayed in Ray 2013
+            in_brain_this_ica = intersect(in_brain,in_brain_this_ica);
+            all_states(:,j) = mean(base_img(:,in_brain_this_ica),2);
+            
+        end
+        
+        % standard score each dimension separately
+        all_states = zscore(all_states);
+        
+        %% ------------------------------------------------------------
+        %% Calculate Q-function
+        
+        % Build tuples for RL
+        s_indx = eval(['prds.',affect_name,'_indx.h(:,3:(end-1))']);
+        sp_indx = eval(['prds.',affect_name,'_indx.h(:,4:end)']);
+        pre_vals = eval(['prds.',affect_name,'_dcmp.h(:,3:(end-1))']);
+        post_vals = eval(['prds.',affect_name,'_dcmp.h(:,4:end)']);
+        actions = post_vals-pre_vals;
+        errors = eval(['prds.',affect_name,'_dcmp.err(:,4:end)']);
+        terminals = zeros(size(s_indx));terminals(:,end) = 1;
+        
+        % reshape to 1D
+        s_indx_1d = reshape(s_indx',1,prod(size(s_indx)));
+        sp_indx_1d = reshape(sp_indx',1,prod(size(sp_indx)));
+        terminals_1d = reshape(terminals',1,prod(size(terminals)));
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET
+        errors_1d = zscore(reshape(errors',1,prod(size(errors)))); %TICKET
+        
+        % assign action to discrete space (5 actions)
+        dsc_actions_1d = 0*actions_1d;
+        dsc_actions_1d(find(actions_1d>act_5part(3)))=1; 
+        dsc_actions_1d(find(actions_1d>act_5part(4)))=2; 
+        dsc_actions_1d(find(actions_1d<act_5part(2)))=-1; 
+        dsc_actions_1d(find(actions_1d<act_5part(1)))=-2; 
+        
+        % Rescale actions and errors at the group level
+        rwd_actions_1d = (dsc_actions_1d-grp_act_mu)/grp_act_std;
+        rwd_errors_1d = (errors_1d-grp_err_mu)/grp_err_std;
+        
+        %% compute reward
+        f_cost_act = rwrd_act_f; 
+        f_cost_err = 1;
+        rewards_1d = -f_cost_act*abs(rwd_actions_1d)-f_cost_err*sqrt(rwd_errors_1d.^2);
+        
         %% ----------------------------------------
         %% format data for writing out structure
         %%   N   // number of tuples
@@ -142,16 +141,12 @@ if(data_exist)
         %%   Xp  // next states
         %%   R   // reward (at Xp)
         %%   T   // Xp terminal state (1) or continuing (0)?
-        N = numel(s_indx_1d(cv_ids));
-        X = all_states(s_indx_1d(cv_ids),:)';
-        Xp = all_states(sp_indx_1d(cv_ids),:)';
-        R = rewards_1d(cv_ids);
-        T = terminals_1d(cv_ids);
-        U = dsc_actions_1d(cv_ids);
-
-        % for cv
-        Xsbj = all_states(s_indx_1d(sbj_ids),:)';
-        Usbj = dsc_actions_1d(sbj_ids);
+        N = numel(s_indx_1d);
+        X = all_states(s_indx_1d,:)';
+        Xp = all_states(sp_indx_1d,:)';
+        R = rewards_1d;
+        T = terminals_1d;
+        U = dsc_actions_1d;
         
         % load into struct
         samples = varstostruct('N','X','U','Xp','R','T');
@@ -163,7 +158,7 @@ if(data_exist)
         cfg.gamma = gamma; % discount factor
         cfg.U = unique(U);
         cfg.datadir = [proj.path.code,'tmp'];
-        cfg.datafile = [proj.path.ctrl.in_evc_cv_mdl,subj_study,'_',name,'_result_',affect_name,'_',num2str(j)];
+        cfg.datafile = [proj.path.ctrl.in_evc_icv_mdl,subj_study,'_',name,'_result_',affect_name];
         cfg.maxiter = 1000;
         cfg.regmethod = 'extratrees';
         cfg.singlereg = 0;
@@ -176,41 +171,108 @@ if(data_exist)
         %% execute fitted Q-iteration
         fittedqi(cfg);
         
-        %% ----------------------------------------
-        %% load model and predict outlier trial
-        try
-
-                        
-            %% ----------------------------------------
-            %% Load CV subject (Q-functions)
-            load([proj.path.ctrl.in_evc_cv_mdl,subj_study,'_',name,'_result_',affect_name,'_',num2str(j),'.mat']);
-
-            this_U = Usbj';
-            this_X = Xsbj';
-            this_reg = reg;
-                
-            for k=1:numel(Usbj)
-                    
-                u = find(this_U(k)==cfg.U);
-                q = rtenspred(this_reg{u},this_X(k,:));
-                q_traj = [q_traj;q];
-
-            end %% k
-        
-        catch
-            disp('  subject result not found');
-        end
-
     end
-
-    %% ----------------------------------------
-    %% ----------------------------------------
-    %% ----------------------------------------
-
-    %% ----------------------------------------
-    %% construct models
-    dcmp = q_traj; 
-    dcmp = reshape(dcmp,size(s_indx,2),size(s_indx,1))';
-    indx = s_indx;
     
 end
+
+%% ----------------------------------------
+%% Analyze control for sign. existence
+Q_cv = zeros(Nsubj,Nsubj);
+Q_traj_cv = zeros(Nsubj,Nsubj,30,4);
+Q_rand_cv = zeros(Nsubj,Nsubj,30,4);
+act_err_cv = zeros(Nsubj,Nsubj,30,4);
+
+% log progress
+logger('* CV of Fit Q-functions',proj.path.logfile);
+
+for i=1:Nsubj
+    
+    sbj_id = subj_ids(i);
+    
+    % extract subject info
+    subj_study = subjs{sbj_id}.study;
+    name = subjs{sbj_id}.name;
+    id = subjs{sbj_id}.id;
+
+    % log processing of subject
+    logger([subj_study,'_',name],proj.path.logfile);
+    
+    try
+        
+        %% ----------------------------------------
+        %% Load subject (state and actions)
+        load([proj.path.ctrl.in_evc_icv_mdl,subj_study,'_',name,'_result_',affect_name,'.mat']);
+
+        this_U = Us;
+        this_X = Xs';
+        
+        cv_ids = setdiff(subj_ids,sbj_id);
+        
+        for vv = 1:numel(cv_ids)
+            
+            jj = cv_ids(vv);
+
+            % extract CV subject info
+            cv_subj_study = subjs{jj}.study;
+            cv_name = subjs{jj}.name;
+            
+            logger([' *',subj_study,'_',name,'CV: ',cv_subj_study,'_',cv_name],proj.path.logfile);
+            
+            %% extract subject info
+            cv_subj_study = subjs{jj}.study;
+            cv_name = subjs{jj}.name;
+
+            Q_traj = zeros(120,1);
+            Q_rand = zeros(120,1);
+            policy = zeros(120,1);
+            icv_policy = zeros(120,1);
+            good_cv = 1;
+            try
+                
+                %% ----------------------------------------
+                %% Load CV subject (Q-functions)
+                load([proj.path.ctrl.in_evc_icv_mdl,cv_subj_study,'_',cv_name,'_result_',affect_name,'.mat']);
+                this_reg = reg;
+
+                parfor k=1:numel(this_U)
+                    
+                    u = find(this_U(k)==cfg.U);
+                    q = rtenspred(this_reg{u},this_X(k,:));
+                    policy(k)= this_U(k);
+                    Q_traj(k) = q; 
+                    
+                    %% Compute the random action as the average                            
+                    Naction=numel(unique(U));
+                    Q_values = [];
+                    Q_run = 0;
+                    
+                    for m=1:Naction
+                        pu = numel(find(this_U==cfg.U(m)))/numel(this_U);
+                        q = rtenspred(this_reg{m},this_X(k,:));
+                        Q_values = [Q_values,q];
+                        Q_run = Q_run + pu*q;
+                    end
+                    icv_policy(k) = U(find(Q_values==max(Q_values)));
+                    Q_rand(k) = Q_run; 
+                    
+                end
+
+            catch
+                disp('****CV subject results not found');
+                good_cv = 0;
+            end
+
+            Q_cv(i,jj,:,:) = good_cv;
+            Q_traj_cv(i,jj,:,:) = reshape(Q_traj,4,30)';
+            Q_rand_cv(i,jj,:,:) = reshape(Q_rand,4,30)';
+            act_err_cv(i,jj,:,:) = reshape(policy-icv_policy,4,30)';                    
+        end %jj
+
+    catch
+        disp('***Subject result not found');
+    end
+    
+end %i
+
+
+toc
