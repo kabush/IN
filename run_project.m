@@ -206,27 +206,14 @@ init_project;
 % select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
 %
 % %% Compute Q-values (separately for V & A)
-% ccm_evc_fmri_in_gm; % compute EVC cog mdls w/ max
-% ccm_evc_cv_fmri_in_gm_old; % compute EVC (cross-validated within subj)
 % ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated within subj)
 
-%% Estimate & Apply Cluster Thresholds
+%% Estimate the CCMs effects
+analyze_in_cv_cmb_fmri_3dlme;
+
+%% Estimate & apply cluster thresholds
 analyze_in_cv_cmb_clust_thresh_3dlme;
 
-
-
-
-
-
-
-
-% %% Compute Prediction Effects for CCMs
-% analyze_ccm_effect;
-% 
-% %% Compare Predictions Effects
-% % (TBD) 
-% 
-% 
 % %% ----------------------------------------
 % %% OLD CODE BELOW
 % % Predict CCMs from icaACC masked beta-series
