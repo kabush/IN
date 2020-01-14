@@ -74,7 +74,7 @@ for i=1:Nrand
         
         % Load ICA masks comprising the state space (and grab
         % activations)
-        ica_seq = [1:5]; % *** TICKET: EMOTION ICs ONLY ***
+        ica_seq = proj.param.ctrl.ica_ids; %ica_seq = [1:5]; % *** TICKET: EMOTION ICs ONLY ***
         Nica = numel(ica_seq);;
         all_states = zeros(size(base_img,1),Nica);
         

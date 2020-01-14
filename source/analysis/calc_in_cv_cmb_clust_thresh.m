@@ -11,8 +11,6 @@
 
 function [] = calc_in_cv_cmb_clust_thresh(proj,affect_name)
 
-% var_names = proj.param.ctrl.ccm_names; 
-
 %% clean-up
 eval(['! rm 3dFWHMx.1D']);
 eval(['! rm 3dFWHMx.1D.png']);

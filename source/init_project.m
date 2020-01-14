@@ -146,7 +146,8 @@ proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_
 % proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
 % proj.path.ctrl.in_evc_cv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_cv_mdl/'];
 proj.path.ctrl.in_evc_icv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_icv_mdl/'];
-
+proj.path.ctrl.in_pel_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_opt_mdl/'];
+proj.path.ctrl.in_pro_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_opt_mdl/'];
 
 %% Analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
@@ -160,6 +161,8 @@ proj.path.analysis.in_cv_cmb_clust_thresh = [proj.path.data,proj.path.analysis.n
 % proj.path.analysis.in_3dlme_a = [proj.path.data,proj.path.analysis.name,'in_3dlme_a/'];
 % proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
 % proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
+proj.path.analysis.in_cv_cmb_ccm_effect = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_ccm_effect/'];
+
 
 %% ----------------------------------------
 %% Task file nomenclature
@@ -260,9 +263,9 @@ proj.param.physio.hz_hr = 2000;
 
 %% SCR analysis parameters
 proj.param.physio.scr.filt_med_samp = 0.01; %(Bach 2015)
-proj.param.physio.scr.filt_high = 0.0159; %halfway between .05 and
-                                          %.0159
-                                          %(Staib 2015)
+proj.param.physio.scr.filt_high = 0.0159;   %halfway between .05 and
+                                            %.0159
+                                            %(Staib 2015)
 proj.param.physio.scr.filt_low = 5;
 proj.param.physio.scr.filt_type = 2; 
 
@@ -274,8 +277,11 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
-%% Control parameters
-proj.param.ctrl.ccm_names = {'evc','err','cnf','cnf_alt','pel','pro'};
+%% Control analysis variable names
+proj.param.ctrl.ccm_names = {'traj','err','cnf','evc','pel','pro','yint'};
+proj.param.ctrl.ccm_z_ids = {8,10,12,14,16,18,20};
+proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,0};
+proj.param.ctrl.ica_ids = 1:18; %%Ray ICAs to be used.
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

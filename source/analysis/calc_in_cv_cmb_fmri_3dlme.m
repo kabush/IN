@@ -69,17 +69,15 @@ for i = 1:numel(subjs)
         load([proj.path.ctrl.in_cnf_mdl,subj_study,'_',name,'_mdls.mat']);
         cnf_box = eval(['mdls.',affect_name,'_dcmp']);
 
-        % conflict
+        % conflict (alternate)
         load([proj.path.ctrl.in_cnf_alt_mdl,subj_study,'_',name,'_mdls.mat']);
         cnf_alt_box = eval(['mdls.',affect_name,'_dcmp']);
 
         % prediction err likelihood
-        load([proj.path.ctrl.in_pel_mdl,subj_study,'_',name,'_mdls.mat']);
-        pel_box = eval(['mdls.',affect_name,'_dcmp']);
+        load([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_',affect_name,'.mat']);
 
         % prediction response outcome
-        load([proj.path.ctrl.in_pro_mdl,subj_study,'_',name,'_mdls.mat']);
-        pro_box = eval(['mdls.',affect_name,'_dcmp']);
+        load([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_pro_opt_',affect_name,'.mat']);
 
         % expected value of control (cross-validated values)
         load([proj.path.ctrl.in_evc_icv_mdl,'Q_traj_',affect_name,'.mat']); 
@@ -94,13 +92,29 @@ for i = 1:numel(subjs)
 
         %% ----------------------------------------
         %% Load fixed effects
+        %%
+        %% Key feature of this code is that positive for all
+        %% measures is considered worse. Therefore, mFC should
+        %% code these quantities using positive weights if
+        %% it is calculating these
 
-        % true predictors (make adjustments)
+        % Squared error 
         err = reshape(sqrt((err_box').^2),1,prod(size(err_box)))';
+
+        % Conflict (high for neutral, low for extreme)
+        % hypothesis is the pre-potent response is medium (lazy)
         cnf = reshape(cnf_box',1,prod(size(cnf_box)))';
         cnf_alt = reshape(cnf_alt_box',1,prod(size(cnf_alt_box)))';
-        pel = reshape(pel_box',1,prod(size(pel_box)))';
-        pro = reshape(pro_box',1,prod(size(pro_box)))';
+
+        % Prediction of current error (time: t), convert to prob.
+        pel_sqr = sqrt(pel_opt.^2); %rse.
+        pel = 1./(1+exp(-pel_sqr)); %prob.
+
+        % Prediction of future error (time: t+1), convert to prob.
+        pro_sqr = sqrt(pro_opt.^2); %rse.
+        pro = 1./(1+exp(-pro_sqr)); %prob.
+
+        % Prediction of Q-value
         evc = reshape(evc_box',1,prod(size(evc_box)))';
         evc = -evc; %%originally coded in ML format (error and
                     %%effort is negative).
@@ -116,7 +130,7 @@ for i = 1:numel(subjs)
         indx_box = err_indx_box;
         indx = reshape(indx_box',1,prod(size(indx_box)))';
 
-        % gather group level information
+        % gather group level information (z-score within subject)
         all_err = [all_err;zscore(err)];
         all_cnf = [all_cnf;zscore(cnf)];
         all_cnf_alt = [all_cnf_alt;zscore(cnf_alt)];

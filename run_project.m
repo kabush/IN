@@ -181,7 +181,7 @@ init_project;
 % %% Construct Basic cognitive control models (CCMs)  
 % ccm_err_fmri_in_gm;     % error model
 % ccm_cnf_fmri_in_gm;     % conflict model (neu vs extrem)
-% ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro)
+% ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro) *unused*
 % ccm_pel_fmri_in_gm;     % prediction error likelihood
 % ccm_pro_fmri_in_gm;     % predicted response outcome
 
@@ -198,44 +198,43 @@ init_project;
 %                                % 2020 ***VERY SLOW***)
 %                                % Need to select best for next
 %                                % step *** TICKET ***
-%                                %
+%                                
 % %% ********* VERY SLOW ABOVE **********
 % %% ************************************
 % 
 % %% Select optimal parameters (separately for V & A)w
 % select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
-%
-% %% Compute Q-values (separately for V & A)
-% ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated within subj)
 
-%% Estimate the CCMs effects
+%% Compute Q-values (separately for V & A)
+ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
+
+%% Compute PEL-values
+ccm_pel_opt_cv_fmri_in_gm;
+
+%% Compute PRO-values
+ccm_pro_opt_cv_fmri_in_gm;
+
+%% Compute 3dLME Effects
 analyze_in_cv_cmb_fmri_3dlme;
 
 %% Estimate & apply cluster thresholds
 analyze_in_cv_cmb_clust_thresh_3dlme;
 
-% %% ----------------------------------------
-% %% OLD CODE BELOW
-% % Predict CCMs from icaACC masked beta-series
-% analyze_ccm_ALL_v;
-% analyze_ccm_icaACC_traj;
-% analyze_ccm_icaACC_v;
-% analyze_ccm_icaACC_a;
-% 
-% % Predict CCMs from icalPFC masked beta-series
-% analyze_ccm_icalPFC_v;
-% 
+%% Estimate CCM Effects
+analyze_in_cv_cmb_ccm_effect;
+
 % %% ============================================================
 % %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
-% 
+
+% %% ------------------------------------------------------------ 
+% %% Validation of volitional affect induction
+% analyze_in_scr;
+% analyze_in_emg;
+
  % %% ***TICKET*** path to dynamics have changes from data/in_ctrl to
 % %% data/in_dyn ... will likely break analysis code below.
 % 
-% %% ------------------------------------------------------------ 
-% %% STEP ???: Analyze IN Physio Response (pilot)
-% analyze_in_scr;
-% analyze_in_emg;
 %
 % summarize_vr; % -> this information combined with redcap cogbehav data
 

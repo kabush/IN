@@ -40,7 +40,7 @@ end
 %% to characterize EVC params.
 
 % load subjs
-subjs = load_subjs(proj);t 
+subjs = load_subjs(proj);
 Nsubj = numel(subjs);
 subj_ids = 1:Nsubj;
 
