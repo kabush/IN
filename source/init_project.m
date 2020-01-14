@@ -281,7 +281,7 @@ proj.param.mvpa.n_resamp = 30;
 proj.param.ctrl.ccm_names = {'traj','err','cnf','evc','pel','pro','yint'};
 proj.param.ctrl.ccm_z_ids = {8,10,12,14,16,18,20};
 proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,0};
-proj.param.ctrl.ica_ids = 1:18; %%Ray ICAs to be used.
+proj.param.ctrl.ica_ids = 1:18; %%Ray ICAs to be used
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

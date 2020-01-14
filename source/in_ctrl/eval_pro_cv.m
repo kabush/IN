@@ -118,7 +118,7 @@ for i=1:numel(subjs)
         %% ------------------------------------------------------------
         %% Store out pro errors
         pro_opt = err_out_1d;
-        save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_pro_opt_',affect_name,'.mat'],'pro_opt');
+        save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_pro_opt_sbj',affect_name,'.mat'],'pro_opt');
 
         %% ------------------------------------------------------------
         %% Store out model
@@ -179,6 +179,10 @@ for i=1:numel(subjs)
             end
 
         end 
+
+        % Store out mean CV prediction for CCM
+        pro_opt = mean(pro_cv,2);
+        save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_pro_opt_',affect_name,'.mat'],'pro_opt');
         
         % validate
         pro_all_out = [pro_all_out,pro_opt];
@@ -186,8 +190,7 @@ for i=1:numel(subjs)
     catch
         disp('***Subject result not found');
     end
-    
-end 
 
+end 
 
 toc

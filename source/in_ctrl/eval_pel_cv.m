@@ -104,7 +104,6 @@ for i=1:numel(subjs)
         err_out_1d = err_out';
         disp(['   corr=',num2str(corr(err_1d',err_out_1d'))]);
 
-
         %% ------------------------------------------------------------
         %% Store out indices
         save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_indx_1d.mat'],'indx_1d');
@@ -116,7 +115,7 @@ for i=1:numel(subjs)
         %% ------------------------------------------------------------
         %% Store out errors
         pel_opt = err_out_1d;
-        save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_',affect_name,'.mat'],'pel_opt');
+        save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_sbj_',affect_name,'.mat'],'pel_opt');
 
         %% ------------------------------------------------------------
         %% Store out model
@@ -161,7 +160,7 @@ for i=1:numel(subjs)
                 
                 %% ----------------------------------------
                 %% Load CV subject model
-                load([proj.path.ctrl.in_pel_opt_mdl,cv_subj_study,'_',cv_name,'_pel_mdl.mat']);
+                load([proj.path.ctrl.in_pel_opt_mdl,cv_subj_study,'_',cv_name,'_pel_mdl_',affect_name,'.mat']);
 
                 %% predict error
                 [err_out] = predict(mdl,states(indx_1d,:));
@@ -177,6 +176,10 @@ for i=1:numel(subjs)
             end
 
         end 
+
+        % Store out mean CV prediction for CCM
+        pel_opt = mean(pel_cv,2);
+        save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_',affect_name,'.mat'],'pel_opt');
         
         % validate
         pel_all_out = [pel_all_out,pel_opt];
@@ -184,6 +187,9 @@ for i=1:numel(subjs)
     catch
         disp('***Subject result not found');
     end
+
+
+
     
 end 
 

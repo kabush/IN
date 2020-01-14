@@ -1,0 +1,353 @@
+*************************************************
+Compute EVC Trajectories  
+*************************************************
+CTM_034
+CTM_035
+CTM_060
+   -predictions do not exist
+CTM_066
+   -predictions do not exist
+CTM_070
+   -predictions do not exist
+CTM_001
+CTM_003
+   -predictions do not exist
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+   -predictions do not exist
+CTM_036
+CTM_039
+CTM_040
+   -predictions do not exist
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+   -predictions do not exist
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+   -predictions do not exist
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+   -predictions do not exist
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+CTM_034
+CTM_035
+CTM_060
+   -predictions do not exist
+CTM_066
+   -predictions do not exist
+CTM_070
+   -predictions do not exist
+CTM_001
+CTM_003
+   -predictions do not exist
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+   -predictions do not exist
+CTM_036
+CTM_039
+CTM_040
+   -predictions do not exist
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+   -predictions do not exist
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+   -predictions do not exist
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+   -predictions do not exist
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+CTM_034
+CTM_035
+CTM_060
+   -predictions do not exist
+CTM_066
+   -predictions do not exist
+CTM_070
+   -predictions do not exist
+CTM_001
+CTM_003
+   -predictions do not exist
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+   -predictions do not exist
+CTM_036
+CTM_039
+CTM_040
+   -predictions do not exist
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+   -predictions do not exist
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+   -predictions do not exist
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+   -predictions do not exist
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+CTM_034
+CTM_035
+CTM_060
+   -predictions do not exist
+CTM_066
+   -predictions do not exist
+CTM_070
+   -predictions do not exist
+CTM_001
+CTM_003
+   -predictions do not exist
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+   -predictions do not exist
+CTM_036
+CTM_039
+CTM_040
+   -predictions do not exist
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+   -predictions do not exist
+CTM_058
+CTM_061
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+CTM_069
+CTM_071
+   -predictions do not exist
+CTM_072
+CTM_073
+CTM_074
+CTM_075
+CTM_076
+CTM_077
+CTM_078
+INCA_003
+INCA_006
+INCA_007
+INCA_010
+INCA_012
+INCA_013
+INCA_014
+INCA_016
+INCA_017
+INCA_018
+INCA_020
+   -predictions do not exist
+INCA_021
+INCA_019
+INCA_023
+INCA_024
+INCA_031
+INCA_033
+INCA_035
+INCA_037
+*************************************************
+Compute inter-subject EVC Parameters (VALENCE) 
+*************************************************
+gamma: 0.8, frac: 0.2
+* Fitting the Q-functions
+CTM_034
+CTM_035
+CTM_060
+   -predictions do not exist
+CTM_066
+   -predictions do not exist
+CTM_070
+   -predictions do not exist
+CTM_001
