@@ -1,0 +1,136 @@
+%%========================================
+%%========================================
+%%
+%% Keith Bush, PhD (2018)
+%% Univ. of Arkansas for Medical Sciences
+%% Brain Imaging Research Center (BIRC)
+%%
+%%========================================
+%%========================================
+
+function [] = calc_in_base_fmri_3dlme(proj,affect_name)
+
+%% ----------------------------------------
+%% load subjs
+subjs = load_subjs(proj);
+
+%% Storage for analysis
+all_subjs = [];
+all_path = [];
+all_traj = [];
+
+%% ----------------------------------------
+%% Transform beta-series into affect series {v,a}
+subj_cnt = 0;
+data_cnt = 0;
+
+for i = 1:numel(subjs)
+
+    %% extract subject info
+    subj_study = subjs{i}.study;
+    name = subjs{i}.name;
+    id = subjs{i}.id;
+
+    % log processing of subject
+    logger([subj_study,'_',name],proj.path.logfile);
+
+    data_exist = 0;
+    try
+
+        % load dynamics
+        load([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat']);
+        
+        %% Data is present
+        data_exist = 1;
+        
+    catch
+        logger(['   -predictions do not exist'],proj.path.logfile);
+    end
+
+    if(data_exist)
+
+        subj_cnt = subj_cnt+1;
+
+        %% ----------------------------------------
+        %% Load computational models
+
+        % error (using ONLY for sizing)
+        load([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat']);
+        err_box = eval(['mdls.',affect_name,'_dcmp']);
+        err_indx_box = eval(['mdls.',affect_name,'_indx']); 
+        err = reshape(sqrt((err_box').^2),1,prod(size(err_box)))';
+
+        %% ----------------------------------------
+        %% Load additional effects
+
+        % Order of observations
+        traj_box = repmat([1:4],numel(err)/4,1);
+        traj = reshape(traj_box',1,prod(size(traj_box)))';
+
+        % True subject id
+        subj = repmat([subj_study,'_',name],numel(err),1);
+        
+        % Indices of LSS
+        indx_box = err_indx_box;
+        indx = reshape(indx_box',1,prod(size(indx_box)))';
+
+        %% ----------------------------------------
+        %% Scale all fixed effects
+
+        % gather group level information (z-score within subject)
+        all_traj = [all_traj;traj];
+
+        % gather the path information (indices select correct volume)
+        for j = 1:numel(indx)
+            data_cnt = data_cnt + 1;
+            all_path{data_cnt} = [proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii''[',num2str(indx(j)),']'''];
+            all_subjs{data_cnt} = [subj_study,'_',name];
+        end
+
+    end
+  
+end
+
+% Grand mean center all (already zscored within subject)
+all_traj = all_traj-mean(all_traj);
+
+% Build script
+fid = fopen(['./lme_',affect_name,'_base_script'],'w');
+fprintf(fid,'#! /bin/csh\n');
+fprintf(fid,'\n');
+fprintf(fid,['3dLME -prefix lme_',affect_name,'_base -jobs 16   \\ ']);
+fprintf(fid,['      -resid lme_',affect_name,'_base_resid       \\ ']);
+fprintf(fid,['      -model ''traj''       \\']);
+fprintf(fid,['      -qVars ''traj''       \\ ']);
+fprintf(fid,'       -qVarCenters ''0''       \\ ');
+fprintf(fid,['      -ranEff ''~1+traj'' \\ ']); 
+fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
+fprintf(fid,'       -num_glt 2                      \\ ');
+fprintf(fid,['      -gltLabel 1  traj -gltCode  1  ''traj :'' \\']);
+fprintf(fid,['      -gltLabel 2  y_int -gltCode 2  ''traj : 0'' \\']);
+fprintf(fid,'       -dataTable                       \\ ');
+fprintf(fid,[' Subj traj InputFile   \\ ']);
+
+% Write out datatable
+Nrows = size(all_traj,1); 
+for i = 1:(Nrows-1)
+    fprintf(fid,' %s %1.3f %s   \\',...
+            all_subjs{i},...
+            all_traj(i),...
+            all_path{i});
+end
+i=Nrows;
+    fprintf(fid,' %s %1.3f %s \n  \\',...
+            all_subjs{i},...
+            all_traj(i),...
+            all_path{i});
+fclose(fid);
+
+% Execute the script
+eval(['! chmod u+x lme_',affect_name,'_base_script']);
+eval(['! ./lme_',affect_name,'_base_script']);
+
+% Clean-up
+eval(['! mv lme_',affect_name,'_base+tlrc.* ',proj.path.analysis.in_base_3dlme]);
+eval(['! mv lme_',affect_name,'_base_resid+tlrc.* ',proj.path.analysis.in_base_3dlme]);
+eval(['! mv lme_',affect_name,'_base_script ',proj.path.analysis.in_base_3dlme]);

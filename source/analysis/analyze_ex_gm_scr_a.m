@@ -11,6 +11,14 @@
 %% Load in path data
 load('proj.mat');
 
+%% Set-up Directory Structure for fMRI betas
+if(proj.flag.clean_build)
+    disp(['Removing ',proj.path.analysis.ex_gm_scr_a]);
+    eval(['! rm -rf ',proj.path.analysis.ex_gm_scr_a]);
+    disp(['Creating ',proj.path.analysis.ex_gm_scr_a]);
+    eval(['! mkdir ',proj.path.analysis.ex_gm_scr_a]);
+end
+
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
 logger([' Analyzing SCR responses to EX stimuli           '],proj.path.logfile);
@@ -106,6 +114,9 @@ else
 end
 logger(' ',proj.path.logfile);
 
+%save out the model
+save([proj.path.analysis.ex_gm_scr_a,'ex_gm_scr_a_mdl.mat'],'mdl');
+
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
@@ -120,7 +131,6 @@ Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-
 disp(' ');
 
 figure(1)

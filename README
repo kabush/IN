@@ -87,16 +87,17 @@ objective 3 findings (anticipated to be January 2021).
 
 /IN
     run_project.m  # the master script which sequentially
-    		  # calls all supporting scripts.  If the
-	      	  # project executes correctly then the 
-	      	  # log directory will contain a textual
-	      	  # description of all important statistical
-	      	  # findings and the fig directroy will contain
-	      	  # all important figures.  Intermediate data
-	      	  # will be stored at the path location specified
-	      	  # by proj.path.data in the proj.mat 
+    		   # calls all supporting scripts.  If the
+	      	   # project executes correctly then the 
+	      	   # log directory will contain a textual
+	      	   # description of all important statistical
+	      	   # findings and the fig directroy will contain
+	      	   # all important figures.  Intermediate data
+	      	   # will be stored at the path location specified
+	      	   # by proj.path.data in the proj.mat 
+
     matlab_reset.m # clears the workspace and resets matlab's
-                  # path to the initial launch state
+                   # path to the initial launch state
 
     /design
         # Stores critical task design data files

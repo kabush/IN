@@ -54,15 +54,8 @@ proj.path.home = '/home/kabush/workspace/';
 proj.path.name = 'IN';
 proj.path.code = [proj.path.home,'code/',proj.path.name,'/'];
 proj.path.data = [proj.path.home,'data/',proj.path.name,'/'];
-
 proj.path.log =[proj.path.code,'log/']; 
 proj.path.fig = [proj.path.code,'fig/'];
-% proj.path.tmp = [proj.path.code,'tmp/']; %*** TICKET move to data side
-
-%% ----------------------------------------
-%% TICKET: Refactor output paths by data
-%% mri[raw, i.e. clean and gm], state, scr, hrv, emg
-%% ----------------------------------------
 
 %% Subject Lists
 proj.path.subj_list = [proj.path.code,'subj_lists/'];
@@ -134,31 +127,36 @@ proj.path.mvpa.fmri_ex_gm_rgr_v = [proj.path.data,proj.path.mvpa.name,'fmri_ex_g
 %% Haufe path
 proj.path.haufe.fmri_ex_gm_mdl = [proj.path.data,proj.path.haufe.name,'haufe_ex_gm_mdl/'];
 
-%% Inrinsic (IN) control path
+%% Intrinsic (IN) control path
 proj.path.ctrl.in_dyn = [proj.path.data,proj.path.ctrl.name,'in_dyn/']; ...
 proj.path.ctrl.in_ica = [proj.path.data,proj.path.ctrl.name,'in_ica/'];
 proj.path.ctrl.in_err_mdl = [proj.path.data,proj.path.ctrl.name,'in_err_mdl/'];
-proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
-proj.path.ctrl.in_cnf_alt_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_alt_mdl/'];
-proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
-proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
 proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_mdl/'];
 proj.path.ctrl.in_evc_icv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_icv_mdl/'];
-proj.path.ctrl.in_pel_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_opt_mdl/'];
 proj.path.ctrl.in_pro_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_opt_mdl/'];
 
+% TICKET (remove)
+% proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
+% proj.path.ctrl.in_cnf_alt_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_alt_mdl/'];
+% proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
+% proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
+% proj.path.ctrl.in_pel_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_opt_mdl/'];
 % proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
 % proj.path.ctrl.in_evc_cv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_cv_mdl/'];
 
-%% Analysis path
+%% Intrinsic (IN) analysis path
+proj.path.analysis.ex_gm_scr_a = [proj.path.data,proj.path.analysis.name,'ex_gm_scr_a/'];
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.in_cv_cmb_3dlme = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_3dlme/'];
 proj.path.analysis.in_cv_cmb_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_clust_thresh/'];
 proj.path.analysis.in_cv_cmb_ccm_effect = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_ccm_effect/'];
+proj.path.analysis.in_base_3dlme = [proj.path.data,proj.path.analysis.name,'in_base_3dlme/'];
+proj.path.analysis.in_base_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_base_clust_thresh/'];
 proj.path.analysis.in_scr = [proj.path.data,proj.path.analysis.name,'in_scr/'];
 proj.path.analysis.in_emg = [proj.path.data,proj.path.analysis.name,'in_emg/'];
 
+% TICKET (remove)
 % proj.path.analysis.in_3dlme = [proj.path.data,proj.path.analysis.name,'in_3dlme/'];
 % proj.path.analysis.in_cmb_3dlme = [proj.path.data,proj.path.analysis.name,'in_cmb_3dlme/'];
 % proj.path.analysis.in_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_clust_thresh/'];
@@ -281,10 +279,13 @@ proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
 %% Control analysis variable names
-proj.param.ctrl.ccm_names = {'traj','err','pro','evc','cnf','yint'}; %'cnf','evc','pel','pro','yint'};
+proj.param.ctrl.ccm_names = {'traj','err','pro','evc','cnf','yint'};
 proj.param.ctrl.ccm_z_ids = {7,9,11,13,15,17}; 
 proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,0};
-proj.param.ctrl.ica_ids = 1:18; %%Ray ICAs to be used
+proj.param.ctrl.base_names = {'traj','yint'};
+proj.param.ctrl.base_z_ids = {3,5};
+proj.param.ctrl.base_f_ids = {1,0};
+proj.param.ctrl.ica_ids = 1:18; %%Ray (2013) ICAs to be used
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

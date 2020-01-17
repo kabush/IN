@@ -126,6 +126,9 @@ else
 end
 logger(' ',proj.path.logfile);
 
+% save out model
+save([proj.path.mvpa.fmri_ex_gm_rgr_a,'rgr_a_mdl.mat'],'mdl');
+
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
@@ -173,7 +176,7 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('Predicted Arosual Scores');
+xlabel('Predicted Arousal Scores');
 ylabel('Arousal Scores');
 
 %% ----------------------------------------

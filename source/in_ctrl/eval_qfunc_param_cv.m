@@ -74,7 +74,7 @@ for i=1:Nrand
         
         % Load ICA masks comprising the state space (and grab
         % activations)
-        ica_seq = proj.param.ctrl.ica_ids; %ica_seq = [1:5]; % *** TICKET: EMOTION ICs ONLY ***
+        ica_seq = proj.param.ctrl.ica_ids; 
         Nica = numel(ica_seq);;
         all_states = zeros(size(base_img,1),Nica);
         
@@ -114,8 +114,8 @@ for i=1:Nrand
         s_indx_1d = reshape(s_indx',1,prod(size(s_indx)));
         sp_indx_1d = reshape(sp_indx',1,prod(size(sp_indx)));
         terminals_1d = reshape(terminals',1,prod(size(terminals)));
-        actions_1d = zscore(reshape(actions',1,prod(size(actions))));%TICKET
-        errors_1d = zscore(reshape(errors',1,prod(size(errors)))); %TICKET
+        actions_1d = zscore(reshape(actions',1,prod(size(actions))));
+        errors_1d = zscore(reshape(errors',1,prod(size(errors)))); 
         
         % assign action to discrete space (5 actions)
         dsc_actions_1d = 0*actions_1d;

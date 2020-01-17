@@ -18,10 +18,10 @@ matlab_reset;
 %% Link all source code
 addpath(genpath('./source/'));
 
-% %% ============================================================
-% %% PHASE 0: Project Initialization and Preprocessing 
-% %% ============================================================
-% 
+%% ============================================================
+%% PHASE 0: Project Initialization and Preprocessing 
+%% ============================================================
+
 %% ----------------------------------------
 %% STEP 1: Initialize the projects directories and parameters.
 init_project;
@@ -34,7 +34,7 @@ init_project;
 % %% STEP 3: Check demographics balance
 % check_demo;
 % 
-% %%  ----------------------------------------
+% %% ----------------------------------------
 % %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 % 
 % %% fMRI data
@@ -49,7 +49,7 @@ init_project;
 % %% Cognitive data
 % % - preprocess_cog (TBD);
 % 
-% %%  ----------------------------------------
+% %% ----------------------------------------
 % %% STEP 4: Run quality check (system) on preprocessing outcomes
 % check_mri;
 % check_scr;
@@ -82,7 +82,7 @@ init_project;
 % check_scr_ex_beta;
 % % - check_hr_ex_beta (TBD);
 % % - check_emg_ex_beta (TBD);
-% % - project_summary;   %% master summary 
+% % - project_summary; %% master summary 
 % 
 % %% ----------------------------------------
 % %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -125,19 +125,23 @@ init_project;
 % %% mvpa_fmri_ex_gm_rgr_hr; (TBD)
 % %% mvpa_fmri_ex_gm_rgr_v; (TBD)
 % 
-% % % %% ************************************
-% % % %% ********* VERY SLOW BELOW **********
+% % %% ************************************
+% % %% ************************************
+% % %% ********* VERY SLOW BELOW **********
+% % 
 % % %% ----------------------------------------
 % % %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)
 % % 
 % % % Encodings of Haufe-transformed hyperplanes
 % % haufe_fmri_ex_gm; (uses global permuation test ... slow)
-% 
+% % 
 % % %% ----------------------------------------
 % % %% STEP 10: V vs A hyperplane cosine sim (see SciReports 2018 paper)
 % % % (TBD)
+% % 
 % % %% ********* VERY SLOW ABOVE  **********
-% % % %% ************************************
+% % %% *************************************
+% % %% *************************************
 % 
 % %% ============================================================
 % %% PHASE 2: Modeling Intrinsic Neuromodulation (IN) of Affect
@@ -157,7 +161,7 @@ init_project;
 % calc_scr_in_beta;
 % calc_emg_in_beta;
 % % - calc_hr_in_beta (TBD);
-
+% 
 % %% ----------------------------------------
 % %% STEP 3: Run quality check (system) on beta-series
 % % (TBD)
@@ -173,18 +177,15 @@ init_project;
 % %% ----------------------------------------
 % %% STEP 6: Test significance of VR effect (output figs)
 % analyze_in_skill;
-
+% 
 % %% ============================================================
 % %% PHASE 3: Characterizing mFC function
 % %% ============================================================
 % 
-% %% Construct Basic cognitive control model (CCMs)  
+% %% ------------------------------------------------------------
+% %% STEP 1: Construct cognitive control models (CCMs)  
 % ccm_err_fmri_in_gm;     % error model
-%%% % ccm_cnf_fmri_in_gm;     % conflict model (neu vs extrem)
-%%% % ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro) *unused*
-%%% % ccm_pel_fmri_in_gm;     % prediction error likelihood
-%%% % ccm_pro_fmri_in_gm;     % predicted response outcome
-
+% 
 % %% ************************************
 % %% ********* VERY SLOW BELOW **********
 % 
@@ -192,8 +193,8 @@ init_project;
 % % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
 % % mFC has been excluded (mFC will be the CC space).
 % reshape_ica;
-
-% Conduct grid search of EVC parm space (mix of err/action-cost)
+% 
+% % Conduct grid search of EVC parm space (mix of err/action-cost)
 % ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
 %                                % 2020 ***VERY SLOW***)
 %                                % Need to select best for next
@@ -208,13 +209,13 @@ init_project;
 % %% Compute Q-values (separately for V & A)
 % ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
 % 
-%%% % %% Compute PEL-values
-%%% % ccm_pel_opt_cv_fmri_in_gm;
-% 
 % %% Compute PRO-values
 % ccm_pro_opt_cv_fmri_in_gm;
 % 
-% %% Compute 3dLME Effects
+% %% ------------------------------------------------------------
+% %% STEP 2: Identify (and compare) CCM neural correlates
+% 
+% %% Compute 3dLME Effects (full model with ccms)
 % analyze_in_cv_cmb_fmri_3dlme;
 % 
 % %% Estimate & apply cluster thresholds
@@ -222,14 +223,23 @@ init_project;
 % 
 % %% Estimate CCM Effects
 % analyze_in_cv_cmb_ccm_effect;
+% 
+% %% ------------------------------------------------------------
+% %% STEP 3: Identify BASE TASK neural correlates
+% 
+% %%Compute 3dLME Effects (base with only trajectory)
+% analyze_in_base_fmri_3dlme;
+
+%% Estimate & apply cluster thresholds
+analyze_in_base_clust_thresh_3dlme;
 
 % %% ============================================================
 % %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
 % 
 % %% ------------------------------------------------------------ 
-% %% Validation of volitional affect induction
-analyze_in_scr;
-analyze_in_emg;
+% %% STEP 1: Validation of volitional affect induction
+% analyze_in_scr;
+% analyze_in_emg;
 
 toc

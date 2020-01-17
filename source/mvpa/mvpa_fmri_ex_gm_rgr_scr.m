@@ -144,6 +144,9 @@ else
 end
 logger(' ',proj.path.logfile);
 
+% save out model
+save([proj.path.mvpa.fmri_ex_gm_rgr_scr,'rgr_scr_mdl.mat'],'mdl');
+
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);

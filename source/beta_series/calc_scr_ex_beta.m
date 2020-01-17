@@ -48,14 +48,6 @@ end
 
 %% ----------------------------------------
 %% TICKET
-%% [prime_in_1 other_in_1] = scr_dsgn_preproc(proj,proj.param.n_trs_id1,run1_in_stim_times);
-%% [prime_in_2 other_in_2] = scr_dsgn_preproc(proj,proj.param.n_trs_id2,run2_in_stim_times);
-%% 
-%% [prime_feel_1 other_feel_1] = scr_dsgn_preproc(proj,proj.param.n_trs_id1,run1_feel_stim_times);
-%% [prime_feel_2 other_feel_2] = scr_dsgn_preproc(proj,proj.param.n_trs_id2,run2_feel_stim_times);
-
-%% ----------------------------------------
-%% TICKET
 %% Should rewrite this whole system in terms of tasks and runs
 %% to make it more flexible and general
 
