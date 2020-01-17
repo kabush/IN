@@ -35,7 +35,7 @@ for i=1:numel(subjs)
     name = subjs{i}.name;
 
     %% debug
-    disp([subj_study,':',name]);
+    logger([subj_study,':',name],proj.path.logfile);
 
     if(strcmp(subj_study,'CTM') ~= 0 | strcmp(subj_study,'CTER') ~= ...
        0)
@@ -44,7 +44,7 @@ for i=1:numel(subjs)
             
             %% ----------------------------------------
             %% Process Identify Run 1
-            disp('Processing (in Matlab) Identify 1');
+            logger('Processing (in Matlab) Identify 1',proj.path.logfile);
             
             %% load Identify 1 data
             in_path = [proj.path.raw_data,subj_study,'/', ...
@@ -74,7 +74,7 @@ for i=1:numel(subjs)
             
             %% ----------------------------------------
             %% Process Identify Run 2
-            disp('Processing (in Matlab) Identify 2');
+            logger('Processing (in Matlab) Identify 2',proj.path.logfile);
             
             %% load Identify 1 data
             in_path = [proj.path.raw_data,subj_study,'/', ...

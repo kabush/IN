@@ -11,12 +11,12 @@
 %% Load in path data
 load('proj.mat');
 
-logger('----------------------------------------');
-logger(' Summarize Project Data');
-logger('----------------------------------------');
+logger('----------------------------------------',proj.path.logfile);
+logger(' Summarize Project Data',proj.path.logfile);
+logger('----------------------------------------',proj.path.logfile);
 
 %% Create the subjects to be analyzed (possible multiple studies)
-subjs = proj.process.subjs; %load_subjs(proj);
+subjs = proj.process.subjs; 
 
 %% Preprocess analysis
 mri_cnt = 0;
@@ -69,9 +69,9 @@ for i=1:numel(subjs)
 
 end
 
-disp(['--Passed OVERALL qlty   ',num2str(100*(tot_cnt/numel(subjs))),'%']);
-disp(['--Passed MRI qlty:      ',num2str(100*(mri_cnt/numel(subjs))),'%']);
-disp(['--Passed SCR qlty:      ',num2str(100*(scr_cnt/numel(subjs))),'%']);
-disp(['--Passed EMG qlty:      ',num2str(100*(emg_cnt/numel(subjs))),'%']);
-disp(['--Passed MRI beta qlty: ',num2str(100*(beta_mri_ex_id_cnt/numel(subjs))),'%']);
-disp(['--Passed SCR beta qlty: ',num2str(100*(beta_scr_ex_id_cnt/numel(subjs))),'%']);
+logger(['--Passed OVERALL qlty   ',num2str(100*(tot_cnt/numel(subjs))),'%'],proj.path.logfile);
+logger(['--Passed MRI qlty:      ',num2str(100*(mri_cnt/numel(subjs))),'%'],proj.path.logfile);
+logger(['--Passed SCR qlty:      ',num2str(100*(scr_cnt/numel(subjs))),'%'],proj.path.logfile);
+logger(['--Passed EMG qlty:      ',num2str(100*(emg_cnt/numel(subjs))),'%'],proj.path.logfile);
+logger(['--Passed MRI beta qlty: ',num2str(100*(beta_mri_ex_id_cnt/numel(subjs))),'%'],proj.path.logfile);
+logger(['--Passed SCR beta qlty: ',num2str(100*(beta_scr_ex_id_cnt/numel(subjs))),'%'],proj.path.logfile);

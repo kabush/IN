@@ -119,32 +119,28 @@ fe_v_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
 if(fe_v_re.pValue<0.05);
-    disp('   random effects matter');
+    logger('   random effects matter',proj.path.logfile);
     mdl = mdl_re;
 else
-    disp('   random effects DO NOT matter');
+    logger('   random effects DO NOT matter',proj.path.logfile);
 end
-
-disp(' ');
+logger(' ',proj.path.logfile);
 
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
 if(FE.pValue(2)<0.05)
-    disp('Fixed Effects are significant');
-    disp(['  p=',num2str(FE.pValue(2))]);
+    logger('Fixed Effects are significant',proj.path.logfile);
+    logger(['  p=',num2str(FE.pValue(2))],proj.path.logfile);
 end
 
 %% ----------------------------------------
 %% compute effect size
-SS_res=sum((mdl.residuals).^2);
-SS_tot=sum((measures-mean(measures)).^2);
-Rsqr = 1-(SS_res/SS_tot);
+Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-
-disp(' ');
+logger(' ',proj.path.logfile);
 
 figure(1)
 set(gcf,'color','w');

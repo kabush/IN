@@ -80,7 +80,7 @@ for i=1:numel(subjs)
             end
             
             %debug
-            disp(['Identify task motion (fd>0.5): ',num2str(round(100*N_bad/N_all)),'%']);
+            logger(['Identify task motion (fd>0.5): ',num2str(round(100*N_bad/N_all)),'%'],proj.path.logfile);
             
         end
         
@@ -146,7 +146,7 @@ for i=1:numel(subjs)
     % assign master flag to false
     if(subj.mri.ok==0)
         subj.ok = 0;
-        disp([' -Excluding from study: ',subj_study,'_',name]);
+        logger([' -Excluding from study: ',subj_study,'_',name],proj.path.logfile);
     end
     
     % output
