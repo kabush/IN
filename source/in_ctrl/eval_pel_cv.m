@@ -90,7 +90,7 @@ for i=1:numel(subjs)
         %% ----------------------------------------
         %% Extract labels
         indx = eval(['prds.',affect_name,'_indx.h(:,3:(end-1))']);
-        err = eval(['prds.',affect_name,'_dcmp.err(:,3:end-1)']);
+        err = eval(['prds.',affect_name,'_dcmp.err(:,4:end)']);
         indx_1d = reshape(indx',1,prod(size(indx)));
         err_1d = zscore(reshape(err',1,prod(size(err)))); 
 
@@ -114,8 +114,7 @@ for i=1:numel(subjs)
 
         %% ------------------------------------------------------------
         %% Store out errors
-        pel_opt = err_out_1d;
-        save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_sbj_',affect_name,'.mat'],'pel_opt');
+        save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_err_1d.mat'],'err_1d');
 
         %% ------------------------------------------------------------
         %% Store out model
@@ -139,9 +138,9 @@ for i=1:numel(subjs)
         
         %% ----------------------------------------
         %% Load subj states/indices
+        load([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_indx_1d.mat']);
         load([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_states.mat']);
         load([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_err_1d.mat']);
-        load([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_indx_1d.mat']);
 
         cv_ids = setdiff(1:numel(subjs),i);
 
@@ -154,7 +153,7 @@ for i=1:numel(subjs)
             % extract CV subject info
             cv_subj_study = subjs{cv_id}.study;
             cv_name = subjs{cv_id}.name;
-            logger([' *',subj_study,'_',name,'CV: ',cv_subj_study,'_',cv_name],proj.path.logfile);
+            logger([' *',subj_study,'_',name,', CV: ',cv_subj_study,'_',cv_name],proj.path.logfile);
             
             try
                 
@@ -178,7 +177,7 @@ for i=1:numel(subjs)
         end 
 
         % Store out mean CV prediction for CCM
-        pel_opt = mean(pel_cv,2);
+        pel_opt = std(pel_cv,0,2);
         save([proj.path.ctrl.in_pel_opt_mdl,subj_study,'_',name,'_pel_opt_',affect_name,'.mat'],'pel_opt');
         
         % validate

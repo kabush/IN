@@ -11,18 +11,13 @@
 %% Load in path data
 load('proj.mat');
 
-%% Set-up Directory Structure for fMRI betas
-if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.analysis.in_scr]);
-    eval(['! rm -rf ',proj.path.analysis.in_scr]);
-    disp(['Creating ',proj.path.analysis.in_scr]);
-    eval(['! mkdir ',proj.path.analysis.in_scr]);
-end
-
 %% Initialize log section
-logger(['*********************************************'],proj.path.logfile);
-logger(['Analyzing SCR responses to IN stimuli        '],proj.path.logfile);
-logger(['*********************************************'],proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
+logger(['Analyzing SCR responses to IN stimuli            '], ...
+       proj.path.logfile);
+logger(['*************************************************'], ...
+       proj.path.logfile);
 
 %% ----------------------------------------
 %% load subjs
@@ -33,7 +28,6 @@ subjs = load_subjs(proj);
 measures = [];
 predictors = [];
 subjects = [];
-trajs = [];
 
 for i = 1:numel(subjs)
 
@@ -53,26 +47,17 @@ for i = 1:numel(subjs)
     end
 
     scr_in_betas = [in_betas.id1,in_betas.id2];
-    scr_feel_betas = [feel_betas.id1;feel_betas.id2];
+    scr_feel_betas = [feel_betas.id1,feel_betas.id2];
     
-    % vectorize stimulus measures
-    in_box = repmat(scr_in_betas',1,4);
-    in_betas_tmp = reshape(in_box',prod(size(in_box)),1);
+    Nfact= numel(scr_feel_betas)/numel(scr_in_betas);
+    mu_scr_feel_betas = mean(reshape(scr_feel_betas,Nfact, ...
+                                numel(scr_in_betas))',2);
 
-    % vectorize feel measures
-    feel_betas_tmp = reshape(scr_feel_betas',prod(size(scr_feel_betas)),1);
+    if(~isempty(scr_in_betas))
 
-    % build trajectory measure of time
-    traj_box = repmat(1:4,numel(scr_in_betas),1);
-    traj = reshape(traj_box',prod(size(traj_box)),1);
-
-
-    if(~isempty(in_betas_tmp))
-
-        measures = [measures;zscore(feel_betas_tmp)];
-        predictors = [predictors;zscore(in_betas_tmp)];
-        subjects = [subjects;repmat(i,numel(feel_betas_tmp),1)];
-        trajs = [trajs;zscore(traj)];
+        measures = [measures;mu_scr_feel_betas];
+        predictors = [predictors;scr_in_betas'];
+        subjects = [subjects;repmat(i,numel(scr_in_betas),1)];
 
     end
 
@@ -82,36 +67,34 @@ end
 %% Group GLMM fit
 measures = double(measures);
 predictors = double(predictors-mean(predictors));
-trajs = double(trajs);
 subjects = double(subjects);
 
-tbl = table(measures,predictors,trajs,subjects,'VariableNames',{'trg', ...
-                    'pred','traj','subj'});
+tbl = table(measures,predictors,subjects,'VariableNames',{'trg', ...
+                    'pred','subj'});
 
-mdl_fe = fitlme(tbl,['trg ~ 1 + pred + traj']);
-mdl_re= fitlme(tbl,['trg ~ 1 + pred + traj + (1+pred|subj) + (1+traj|subj)']);
+mdl_fe = fitlme(tbl,['trg ~ 1 + pred']);
+mdl_re= fitlme(tbl,['trg ~ 1 + pred + (1+pred|subj)']);
 
 %%Explore random effects across model types
 fe_v_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
 if(fe_v_re.pValue<0.05);
-    logger('  random effects matter',proj.path.logfile);
+    disp('   random effects matter');
     mdl = mdl_re;
 else
-    logger('  random effects DO NOT matter',proj.path.logfile);
+    disp('   random effects DO NOT matter');
 end
-logger(' ',proj.path.logfile);
 
-% save out the fit
-save([proj.path.analysis.in_scr,'scr_mdl.mat'],'mdl');
+
+disp(' ');
 
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
 if(FE.pValue(2)<0.05)
-    logger('Fixed Effects are significant',proj.path.logfile);
-    logger(['  p=',num2str(FE.pValue(2))],proj.path.logfile);
+    disp('Fixed Effects are significant');
+    disp(['  p=',num2str(FE.pValue(2))]);
 end
 
 %% ----------------------------------------
@@ -120,7 +103,8 @@ Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-logger(' ',proj.path.logfile);
+
+disp(' ');
 
 figure(1)
 set(gcf,'color','w');
@@ -134,9 +118,9 @@ hold on;
 
 %% ----------------------------------------
 %% format figure
-ymin = -3; %-2.88;
-ymax = 3; %3.63;
-xmin = -3; %-3.24;
+ymin = -2; %-2.88;
+ymax = 2; %3.63;
+xmin = -2; %-3.24;
 xmax = 3; %3.61;
 
 %% ----------------------------------------

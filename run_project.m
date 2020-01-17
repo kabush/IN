@@ -154,8 +154,8 @@ init_project;
 % calc_fmri_in_beta;
 % 
 % %% Physio data
-% calc_scr_in_beta; % (pilot)
-% calc_emg_in_beta; % (pilot)
+% calc_scr_in_beta;
+% calc_emg_in_beta;
 % % - calc_hr_in_beta (TBD);
 
 % %% ----------------------------------------
@@ -178,20 +178,20 @@ init_project;
 % %% PHASE 3: Characterizing mFC function
 % %% ============================================================
 % 
-% %% Construct Basic cognitive control models (CCMs)  
+% %% Construct Basic cognitive control model (CCMs)  
 % ccm_err_fmri_in_gm;     % error model
-% ccm_cnf_fmri_in_gm;     % conflict model (neu vs extrem)
-% ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro) *unused*
-% ccm_pel_fmri_in_gm;     % prediction error likelihood
-% ccm_pro_fmri_in_gm;     % predicted response outcome
+%%% % ccm_cnf_fmri_in_gm;     % conflict model (neu vs extrem)
+%%% % ccm_cnf_alt_fmri_in_gm; % conflict model (val vs aro) *unused*
+%%% % ccm_pel_fmri_in_gm;     % prediction error likelihood
+%%% % ccm_pro_fmri_in_gm;     % predicted response outcome
 
 % %% ************************************
 % %% ********* VERY SLOW BELOW **********
 % 
-% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
-% is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
-% mFC has been excluded (mFC will be the CC space).
-% reshape_ica;  % ***TICKET*** finalize mFC and IC interaction and ICs
+% % Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
+% % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
+% % mFC has been excluded (mFC will be the CC space).
+% reshape_ica;
 
 % Conduct grid search of EVC parm space (mix of err/action-cost)
 % ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
@@ -204,38 +204,32 @@ init_project;
 % 
 % %% Select optimal parameters (separately for V & A)w
 % select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
-
-%% Compute Q-values (separately for V & A)
-ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
-
-%% Compute PEL-values
-ccm_pel_opt_cv_fmri_in_gm;
-
-%% Compute PRO-values
-ccm_pro_opt_cv_fmri_in_gm;
-
-%% Compute 3dLME Effects
-analyze_in_cv_cmb_fmri_3dlme;
-
-%% Estimate & apply cluster thresholds
-analyze_in_cv_cmb_clust_thresh_3dlme;
-
-%% Estimate CCM Effects
-analyze_in_cv_cmb_ccm_effect;
+% 
+% %% Compute Q-values (separately for V & A)
+% ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
+% 
+%%% % %% Compute PEL-values
+%%% % ccm_pel_opt_cv_fmri_in_gm;
+% 
+% %% Compute PRO-values
+% ccm_pro_opt_cv_fmri_in_gm;
+% 
+% %% Compute 3dLME Effects
+% analyze_in_cv_cmb_fmri_3dlme;
+% 
+% %% Estimate & apply cluster thresholds
+% analyze_in_cv_cmb_clust_thresh_3dlme;
+% 
+% %% Estimate CCM Effects
+% analyze_in_cv_cmb_ccm_effect;
 
 % %% ============================================================
 % %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
-
+% 
 % %% ------------------------------------------------------------ 
 % %% Validation of volitional affect induction
-% analyze_in_scr;
-% analyze_in_emg;
-
- % %% ***TICKET*** path to dynamics have changes from data/in_ctrl to
-% %% data/in_dyn ... will likely break analysis code below.
-% 
-%
-% summarize_vr; % -> this information combined with redcap cogbehav data
+analyze_in_scr;
+analyze_in_emg;
 
 toc

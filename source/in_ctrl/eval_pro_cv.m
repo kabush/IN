@@ -93,7 +93,7 @@ for i=1:numel(subjs)
         %% ----------------------------------------
         %% Extract labels
         indx = eval(['prds.',affect_name,'_indx.h(:,3:(end-1))']);
-        err = eval(['prds.',affect_name,'_dcmp.err(:,4:end)']); %; %:end-1)']);
+        err = eval(['prds.',affect_name,'_dcmp.err(:,4:end)']);
         indx_1d = reshape(indx',1,prod(size(indx)));
         err_1d = zscore(reshape(err',1,prod(size(err)))); 
 
@@ -116,9 +116,8 @@ for i=1:numel(subjs)
         save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_states.mat'],'states');
 
         %% ------------------------------------------------------------
-        %% Store out pro errors
-        pro_opt = err_out_1d;
-        save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_pro_opt_sbj',affect_name,'.mat'],'pro_opt');
+        %% Store out errors
+        save([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_err_1d.mat'],'err_1d');
 
         %% ------------------------------------------------------------
         %% Store out model
@@ -142,9 +141,9 @@ for i=1:numel(subjs)
         
         %% ----------------------------------------
         %% Load subj states/indices
+        load([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_indx_1d.mat']);
         load([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_states.mat']);
         load([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_err_1d.mat']);
-        load([proj.path.ctrl.in_pro_opt_mdl,subj_study,'_',name,'_indx_1d.mat']);
 
         cv_ids = setdiff(1:numel(subjs),i);
 
@@ -157,13 +156,13 @@ for i=1:numel(subjs)
             % extract CV subject info
             cv_subj_study = subjs{cv_id}.study;
             cv_name = subjs{cv_id}.name;
-            logger([' *',subj_study,'_',name,'CV: ',cv_subj_study,'_',cv_name],proj.path.logfile);
+            logger([' *',subj_study,'_',name,', CV: ',cv_subj_study,'_',cv_name],proj.path.logfile);
             
             try
                 
                 %% ----------------------------------------
                 %% Load CV subject model
-                load([proj.path.ctrl.in_pro_opt_mdl,cv_subj_study,'_',cv_name,'_pro_mdl.mat']);
+                load([proj.path.ctrl.in_pro_opt_mdl,cv_subj_study,'_',cv_name,'_pro_mdl_',affect_name,'.mat']);
 
                 %% predict error
                 [err_out] = predict(mdl,states(indx_1d,:));

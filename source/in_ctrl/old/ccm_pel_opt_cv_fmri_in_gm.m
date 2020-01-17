@@ -63,23 +63,23 @@ affect_name = 'a';
 % Predict the PEL
 [pel_all_out,pel_all,mdl] = eval_pel_cv(proj,affect_name);
 
-% Analyze the PEL
-[Ntrials,Nsbjs] = size(pel_all_out);
-measures = [];
-predictors = [];
-subjects = [];
-for i=1:numel(Nsbjs)
-   measures = [measures;zscore(pel_all(:,i))];
-   predictors = [predictors;zscore(pel_all_out(:,i))];
-   subjects = [subjects;repmat(i,Ntrials,1)];
-end
-tbl = table(measures,predictors,subjects,'VariableNames',{'measures','predictors','subjects'});
-mdl_fe = fitlme(tbl,['measures ~ 1 + predictors']);
-mdl_re = fitlme(tbl,['measures ~ 1 + predictors + (predictors|subjects)']);
-fe_vs_re = compare(mdl_fe,mdl_re);
-mdl = mdl_fe;
-if(fe_vs_re.pValue<0.05)
-    mdl=mdl_re;
-    logger('  ---Random effects matters',proj.path.logfile');
-end
-save([proj.path.ctrl.in_pel_opt_mdl,'evaluate_pel_',affect_name,'.mat'],'mdl');
+% % Analyze the PEL
+% [Ntrials,Nsbjs] = size(pel_all_out);
+% measures = [];
+% predictors = [];
+% subjects = [];
+% for i=1:numel(Nsbjs)
+%    measures = [measures;zscore(pel_all(:,i))];
+%    predictors = [predictors;zscore(pel_all_out(:,i))];
+%    subjects = [subjects;repmat(i,Ntrials,1)];
+% end
+% tbl = table(measures,predictors,subjects,'VariableNames',{'measures','predictors','subjects'});
+% mdl_fe = fitlme(tbl,['measures ~ 1 + predictors']);
+% mdl_re = fitlme(tbl,['measures ~ 1 + predictors + (predictors|subjects)']);
+% fe_vs_re = compare(mdl_fe,mdl_re);
+% mdl = mdl_fe;
+% if(fe_vs_re.pValue<0.05)
+%     mdl=mdl_re;
+%     logger('  ---Random effects matters',proj.path.logfile');
+% end
+% save([proj.path.ctrl.in_pel_opt_mdl,'evaluate_pel_',affect_name,'.mat'],'mdl');

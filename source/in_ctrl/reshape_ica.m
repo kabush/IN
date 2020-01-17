@@ -11,10 +11,6 @@
 %% Load in path data
 load('proj.mat');
 
-% logger(['*******************************************'],proj.path.logfile);
-% logger([' Reshape Ray 2013 ACC ICA to match our data'],proj.path.logfile);
-% logger(['*******************************************'],proj.path.logfile);
-% 
 logger(['*******************************************'],proj.path.logfile);
 logger([' Reshape masks and Ray 2013 ICAs to match our data'],proj.path.logfile);
 logger(['*******************************************'],proj.path.logfile);
@@ -28,13 +24,44 @@ if(proj.flag.clean_build)
     eval(['! mkdir ',proj.path.ctrl.in_ica]);
 end
 
+%% Copy atlas to tmp directory
+eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
+
 %% ----------------------------------------
 %% ----------------------------------------
-%% Configure the mPFC (i.e., ACC) mask
+%% Configure the Ray2013 dACC mask (5.91)
+eval(['! cp ',proj.path.atlas,'ray2013/ica70/maps/' ...
+      'thresh_zstatd70_17.nii.gz ',...
+      proj.path.code, ...
+      'tmp/dacc_mask.nii.gz']);
+
+%% rotate the mask to match the rotation of our fMRI data
+eval(['! 3dresample -orient RAI  -prefix ',...
+        proj.path.code,'tmp/orient_dacc_mask.nii.gz -input ',...
+        proj.path.code,'tmp/dacc_mask.nii.gz']);
+
+%% threshold to isolate dACC (using threshold 5.91)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/orient_dacc_mask.nii.gz ' ...
+      '-expr ''step(a-5.971)'' -prefix ', ...
+      proj.path.code,'tmp/sng_orient_dacc_mask.nii.gz']);
+
+%% change from 1x1x1 to 3x3x3 voxel sizes
+eval(['! 3dfractionize -template ',proj.path.mri.gm_mask,'group_gm_mask.nii ' ...
+      '-input ',proj.path.code,'tmp/sng_orient_dacc_mask.nii.gz ' ...
+          '-prefix ',proj.path.code,'tmp/' ...
+          'tmp_sng_orient_dacc_mask_3x3x3.nii.gz -clip .2']);
+
+%% threshold to isolate dACC (using threshold 5.91)
+eval(['! 3dcalc -a ',proj.path.code,'tmp/tmp_sng_orient_dacc_mask_3x3x3.nii.gz ' ...
+      '-expr ''bool(a)'' -prefix ', ...
+      proj.path.code,'tmp/sng_orient_dacc_mask_3x3x3.nii.gz']);
+
+%% ----------------------------------------
+%% ----------------------------------------
+%% Configure the Vega2016 mFC mask
 
 %% copy ica to tmp
 eval(['! cp ',proj.path.atlas,'Vega2016/mfc_mask.nii.gz ',proj.path.code,'tmp/']);
-eval(['! cp ',proj.path.atlas,'TT/TT_icbm452_orig.nii ',proj.path.code,'tmp/']);
 
 %% rotate the mask to match the rotation of our fMRI data
 eval(['! 3dresample -orient RAI  -prefix ' ...
@@ -68,17 +95,25 @@ eval(['! 3dcalc -a ',proj.path.code,'tmp/erode_sng_orient_mfc_mask_3x3x3.nii.gz 
 
 %% ----------------------------------------
 %% ----------------------------------------
+%% Configure the joint Vega2016 mFC Ray2013 dACC mask
+
+eval(['! 3dcalc -a ',proj.path.code,'tmp/sng_orient_dacc_mask_3x3x3.nii.gz ' ...
+      '-b ',proj.path.code,'tmp/sng_orient_mfc_mask_3x3x3.nii.gz ' ...
+      '-expr ''and(a,b)'' -prefix ', ...
+      proj.path.code,'tmp/mfc_restrict_sng_orient_dacc_mask_3x3x3.nii.gz']);
+
+%% ----------------------------------------
+%% ----------------------------------------
 %% Configure the State mask (for EVC)
 
 %% copy ica to tmp
 eval(['! cp ',proj.path.atlas,'ray2013/ica20/maps/*.gz ',proj.path.code,'tmp/']);
 
-%% ----------------------------------------
 %% As per Ray et al., (2013)
 %% EMOTION/INTEROCEPTION REGIONS: ICs 1-5
 %% SENSORY/MOTOR: ICs 6-12
 %% HIGHER COGNITION: ICs 13-18
-%%
+
 ica_seq = proj.param.ctrl.ica_ids;
 
 for i = 1:numel(ica_seq) % generate all 18 and use only first 5 (emotion)
@@ -101,7 +136,7 @@ for i = 1:numel(ica_seq) % generate all 18 and use only first 5 (emotion)
           '-expr  ''bool(a)'' -prefix ' ...
           ,proj.path.code,'tmp/full_orient_thresh_zstatd20_',num2str(ica),'_3x3x3.nii.gz']);
     
-    %% subtract out dACC from Mask
+    %% subtract out mFC from Mask
     eval(['! 3dcalc -a ',proj.path.code,'tmp/full_orient_thresh_zstatd20_',num2str(ica),'_3x3x3.nii.gz ' ...
           '-b ',proj.path.code,'tmp/erode2_sng_orient_mfc_mask_3x3x3.nii.gz ' ...
           '-expr  ''a-b'' -prefix ' ...
@@ -119,6 +154,7 @@ for i = 1:numel(ica_seq) % generate all 18 and use only first 5 (emotion)
 end
 
 %% move mask and template to permanent storage
+eval(['! mv ',proj.path.code,'tmp/mfc_restrict_sng_orient_dacc_mask_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/sng_orient_mfc_mask_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/erode2_sng_orient_mfc_mask_3x3x3.nii.gz ',proj.path.ctrl.in_ica]);
 eval(['! mv ',proj.path.code,'tmp/TT_icbm452_orig.nii ',proj.path.ctrl.in_ica]);

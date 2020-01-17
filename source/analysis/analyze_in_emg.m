@@ -11,6 +11,14 @@
 %% Load in path data
 load('proj.mat');
 
+%% Set-up Directory Structure for fMRI betas
+if(proj.flag.clean_build)
+    disp(['Removing ',proj.path.analysis.in_emg]);
+    eval(['! rm -rf ',proj.path.analysis.in_emg]);
+    disp(['Creating ',proj.path.analysis.in_emg]);
+    eval(['! mkdir ',proj.path.analysis.in_emg]);
+end
+
 %% Initialize log section
 logger(['*********************************************'],proj.path.logfile);
 logger(['Analyzing EMG responses to IN stimuli        '],proj.path.logfile);
@@ -27,8 +35,9 @@ corr_measures = [];
 zygo_predictors = [];
 corr_predictors = [];
 subjects = [];
+trajs = [];
 
-for i = 1:22 % numel(subjs) ONLY CTM subjs have EMG
+for i = 1:numel(subjs) %ONLY CTM subjs have EMG
 
     %% extract subject info
     subj_study = subjs{i}.study;
@@ -41,81 +50,91 @@ for i = 1:22 % numel(subjs) ONLY CTM subjs have EMG
     try
         load([proj.path.betas.emg_in_beta,subj_study,'_',name,'_in_betas.mat']);
         load([proj.path.betas.emg_in_beta,subj_study,'_',name,'_feel_betas.mat']);
+
+        % Construct EMG of stimulus
+        in_zygo_betas = zscore([in_betas.zygo.id1;in_betas.zygo.id2]);
+        in_corr_betas = zscore([in_betas.corr.id1;in_betas.corr.id2]);
+        
+        % Construct EMG of VR
+        feel_zygo_betas = [feel_betas.zygo.id1;feel_betas.zygo.id2];
+        feel_corr_betas = [feel_betas.corr.id1;feel_betas.corr.id2];
+        zygo_measures = [zygo_measures;zscore(reshape(feel_zygo_betas',prod(size(feel_zygo_betas)),1))];
+        corr_measures = [corr_measures;zscore(reshape(feel_corr_betas',prod(size(feel_corr_betas)),1))];
+
+        % ----------------------------------------
+        % Reshape for use in GLMM 
+
+        % zygo predictors
+        in_zygo_betas_box = repmat(in_zygo_betas,1,4);
+        in_zygo_preds = reshape(in_zygo_betas_box',prod(size(in_zygo_betas_box)),1);
+        zygo_predictors = [zygo_predictors;in_zygo_preds];
+        
+        % corr predictors
+        in_corr_betas_box = repmat(in_corr_betas,1,4);
+        in_corr_preds = reshape(in_corr_betas_box',prod(size(in_corr_betas_box)),1);
+        corr_predictors = [corr_predictors;in_corr_preds];
+        
+        % controls
+        subjects = [subjects;repmat(i,4*numel(in_zygo_betas),1)];
+        traj_box = repmat(1:4,size(in_zygo_betas,1),1);
+        traj_rshp = reshape(traj_box',prod(size(traj_box)),1);
+        trajs = [trajs;traj_rshp];
+
     catch
         logger('    Could not find emg beta file for processing.',proj.path.logfile);
     end
 
-    in_zygo_betas = zscore([in_betas.zygo.id1;in_betas.zygo.id2]);
-    in_corr_betas = zscore([in_betas.corr.id1;in_betas.corr.id2]);
-
-    feel_zygo_betas = [feel_betas.zygo.id1,feel_betas.zygo.id2];
-    feel_corr_betas = [feel_betas.corr.id1,feel_betas.corr.id2];
-
-    Nfact= numel(feel_zygo_betas)/numel(in_zygo_betas);
-    mu_feel_zygo_betas = zscore(mean(reshape(feel_zygo_betas,Nfact,numel(in_zygo_betas))',2));
-
-    Nfact= numel(feel_corr_betas)/numel(in_corr_betas);
-    mu_feel_corr_betas = zscore(mean(reshape(feel_corr_betas,Nfact,numel(in_corr_betas))',2));
-
-    zygo_measures = [zygo_measures;mu_feel_zygo_betas];
-    corr_measures = [corr_measures;mu_feel_corr_betas];    
-
-    zygo_predictors = [zygo_predictors,in_zygo_betas'];
-    corr_predictors = [corr_predictors,in_corr_betas'];
-
-    subjects = [subjects;repmat(i,numel(in_zygo_betas),1)];
-
 end
 
-disp('----------------------------------------');
-disp(' ZYGOMATICUS ANALYSIS ');
-disp('----------------------------------------');
+logger('----------------------------------------',proj.path.logfile);
+logger(' ZYGOMATICUS ANALYSIS                   ',proj.path.logfile);
+logger('----------------------------------------',proj.path.logfile);
+
 %% ----------------------------------------
 %% Group GLMM fit
 measures = double(zygo_measures);
-predictors = double(zygo_predictors');
+predictors = double(zygo_predictors);
 subjects = double(subjects);
+trajs = double(trajs);
 
-tbl = table(measures,predictors,subjects,'VariableNames',{'trg', ...
-                    'pred','subj'});
+tbl = table(measures,predictors,trajs,subjects,'VariableNames',{'trg', ...
+                    'pred','traj','subj'});
 
-mdl_fe = fitlme(tbl,['trg ~ 1 + pred']);
-mdl_re= fitlme(tbl,['trg ~ 1 + pred + (1+pred|subj)']);
+mdl_fe = fitlme(tbl,['trg ~ 1 + traj + pred']);
+mdl_re= fitlme(tbl,['trg ~ 1 + pred + traj + (1+traj|subj) + (1+pred|subj)']);
 
 %%Explore random effects across model types
 fe_v_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
-disp('Testing Random Effects');
+logger('Testing Random Effects',proj.path.logfile);
 if(fe_v_re.pValue<0.05);
-    disp('  random effects matter');
+    logger('  random effects matter',proj.path.logfile);
     mdl = mdl_re;
 else
-    disp('  random effects DO NOT matter');
+    logger('  random effects DO NOT matter',proj.path.logfile);
 end
+logger(' ',proj.path.logfile);
 
-
-disp(' ');
+% save out the fit
+save([proj.path.analysis.in_emg,'zygo_mdl.mat'],'mdl');
 
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
 if(FE.pValue(2)<0.05)
-    disp('Fixed Effects are significant');
-    disp(['  p=',num2str(FE.pValue(2))]);
+    logger('Fixed Effects are significant',proj.path.logfile);
+    logger(['  p=',num2str(FE.pValue(2))],proj.path.logfile);
 end
 
 
 %% ----------------------------------------
 %% compute effect size
-SS_res=sum((mdl.residuals).^2);
-SS_tot=sum((measures-mean(measures)).^2);
-Rsqr = 1-(SS_res/SS_tot);
+Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-
-disp(' ');
+logger(' ',proj.path.logfile);
 
 figure(1)
 set(gcf,'color','w');
@@ -147,67 +166,64 @@ hold off;
 fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
-
-% xlabel('VR(cue) EMG responses');
-% ylabel('VR(modulate) EMG responses');
 
 %% ----------------------------------------
 %% explot hi-resolution figure
 export_fig 'IN_emg_zygo_summary.png' -r300  
 eval(['! mv ',proj.path.code,'IN_emg_zygo_summary.png ',proj.path.fig]);
 
+logger('----------------------------------------',proj.path.logfile);
+logger(' CORRUGATOR ANALYSIS                    ',proj.path.logfile);
+logger('----------------------------------------',proj.path.logfile);
 
-disp('----------------------------------------');
-disp(' CORRUGATOR ANALYSIS ');
-disp('----------------------------------------');
 %% ----------------------------------------
 %% Group GLMM fit
 measures = double(corr_measures);
-predictors = double(corr_predictors');
+predictors = double(corr_predictors);
 subjects = double(subjects);
+trajs = double(trajs);
 
-tbl = table(measures,predictors,subjects,'VariableNames',{'trg', ...
-                    'pred','subj'});
+tbl = table(measures,predictors,trajs,subjects,'VariableNames',{'trg', ...
+                    'pred','traj','subj'});
 
-mdl_fe = fitlme(tbl,['trg ~ 1 + pred']);
-mdl_re= fitlme(tbl,['trg ~ 1 + pred + (1+pred|subj)']);
+mdl_fe = fitlme(tbl,['trg ~ 1 + traj + pred']);
+mdl_re= fitlme(tbl,['trg ~ 1 + pred + traj + (1+traj|subj) + (1+pred|subj)']);
 
 %%Explore random effects across model types
 fe_v_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
-disp('Testing Random Effects');
+logger('Testing Random Effects',proj.path.logfile);
 if(fe_v_re.pValue<0.05);
-    disp('  random effects matter');
+    logger('  random effects matter',proj.path.logfile);
     mdl = mdl_re;
 else
-    disp('  random effects DO NOT matter');
+    logger('  random effects DO NOT matter',proj.path.logfile);
 end
+logger(' ',proj.path.logfile);
 
+% save out the fit
+save([proj.path.analysis.in_emg,'corr_mdl.mat'],'mdl');
 
-disp(' ');
 
 %% ----------------------------------------
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
 if(FE.pValue(2)<0.05)
-    disp('Fixed Effects are significant');
-    disp(['  p=',num2str(FE.pValue(2))]);
+    logger('Fixed Effects are significant',proj.path.logfile);
+    logger(['  p=',num2str(FE.pValue(2))],proj.path.logfile);
 end
 
 
 %% ----------------------------------------
 %% compute effect size
-SS_res=sum((mdl.residuals).^2);
-SS_tot=sum((measures-mean(measures)).^2);
-Rsqr = 1-(SS_res/SS_tot);
+Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
 logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
 logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
+logger(' ',proj.path.logfile);
 
-disp(' ');
-
-figure(1)
+figure(2)
 set(gcf,'color','w');
 
 %% ----------------------------------------
@@ -238,12 +254,7 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-% xlabel('VR(cue) EMG responses');
-% ylabel('VR(modulate) EMG responses');
-
 %% ----------------------------------------
 %% explot hi-resolution figure
 export_fig 'IN_emg_corr_summary.png' -r300  
 eval(['! mv ',proj.path.code,'IN_emg_corr_summary.png ',proj.path.fig]);
-
-%% ***TICKET DO BOTH ZYGO AND CORR

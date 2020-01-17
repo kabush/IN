@@ -45,7 +45,7 @@ logger(['************************************************'],proj.path.logfile);
 logger(['Calculating EMG beta-series of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
 logger(['************************************************'],proj.path.logfile);
 
-for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
+for i=1:numel(subjs) % only CTM has EMG recordings that are valid
     
     %% extract subject info
     subj_study = subjs{i}.study;
@@ -81,10 +81,13 @@ for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
                 end_id = start_id+stim_samples-1;
                 in_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
                 in_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
-                in_betas.zygo.id1 = [in_betas.zygo.id1;sum(in_beta_zygo)];
-                in_betas.corr.id1 = [in_betas.corr.id1;sum(in_beta_corr)];
+                in_betas.zygo.id1 = [in_betas.zygo.id1;in_beta_zygo];
+                in_betas.corr.id1 = [in_betas.corr.id1;in_beta_corr];
             end
+
             
+            feel_beta_zygo_tmp = [];
+            feel_beta_corr_tmp = [];
             for j = 1:numel(run1_feel_stim_times)
                 start_time = run1_feel_stim_times(j);
                 start_id = start_time*proj.param.physio.hz_emg;
@@ -92,10 +95,11 @@ for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
                 end_id = start_id+stim_samples-1;
                 feel_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
                 feel_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
-                feel_betas.zygo.id1 = [feel_betas.zygo.id1;sum(feel_beta_zygo)];
-                feel_betas.corr.id1 = [feel_betas.corr.id1;sum(feel_beta_corr)];
+                feel_beta_zygo_tmp = [feel_beta_zygo_tmp;feel_beta_zygo];
+                feel_beta_corr_tmp = [feel_beta_corr_tmp;feel_beta_corr];
             end
-            
+            feel_betas.zygo.id1 = reshape(feel_beta_zygo_tmp,4,15)';
+            feel_betas.corr.id1 = reshape(feel_beta_corr_tmp,4,15)';
             
         catch
             logger(['  -Error: EMG of Identify run 1: ',path],proj.path.logfile);
@@ -122,10 +126,12 @@ for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
                 end_id = start_id+stim_samples-1;
                 in_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
                 in_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
-                in_betas.zygo.id2 = [in_betas.zygo.id2;sum(in_beta_zygo)];
-                in_betas.corr.id2 = [in_betas.corr.id2;sum(in_beta_corr)];
+                in_betas.zygo.id2 = [in_betas.zygo.id2;in_beta_zygo];
+                in_betas.corr.id2 = [in_betas.corr.id2;in_beta_corr];
             end
             
+            feel_beta_zygo_tmp = [];
+            feel_beta_corr_tmp = [];
             for j = 1:numel(run2_feel_stim_times)
                 start_time = run2_feel_stim_times(j);
                 start_id = start_time*proj.param.physio.hz_emg;
@@ -133,10 +139,11 @@ for i=1:numel(subjs) % numel(subjs) % only CTM has EMG recordings that are valid
                 end_id = start_id+stim_samples-1;
                 feel_beta_zygo = sum(rect_zygo(round(start_id):round(end_id)));
                 feel_beta_corr = sum(rect_corr(round(start_id):round(end_id)));
-                feel_betas.zygo.id2 = [feel_betas.zygo.id2;sum(feel_beta_zygo)];
-                feel_betas.corr.id2 = [feel_betas.corr.id2;sum(feel_beta_corr)];
+                feel_beta_zygo_tmp = [feel_beta_zygo_tmp;feel_beta_zygo];
+                feel_beta_corr_tmp = [feel_beta_corr_tmp;feel_beta_corr];
             end
-            
+            feel_betas.zygo.id2 = reshape(feel_beta_zygo_tmp,4,15)';
+            feel_betas.corr.id2 = reshape(feel_beta_corr_tmp,4,15)';
             
         catch
             logger(['  -Error: EMG of Identify run 2: ',path],proj.path.logfile);

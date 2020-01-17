@@ -88,18 +88,19 @@ for i=1:numel(subjs)
             in_betas.id1 = [in_betas.id1,mdl_in_1.beta(2)'];
         end
 
-        %%Normalize
-        in_betas.id1 = zscore(in_betas.id1);
-        
+        % %%Normalize
+        % in_betas.id1 = zscore(in_betas.id1);
+
+        feel_betas_tmp = [];
         for j=1:size(prime_feel_1)
             prime = prime_feel_1(j,:);
             other = other_feel_1(j,:);
             mdl_feel_1 = regstats(scr,[prime_feel_1(j,:)',other_feel_1(j,:)']);
-            feel_betas.id1 = [feel_betas.id1,mdl_feel_1.beta(2)'];
+            feel_betas_tmp = [feel_betas_tmp,mdl_feel_1.beta(2)'];
+            % % old way
+            % feel_betas.id1 = [feel_betas.id1,mdl_feel_1.beta(2)'];
         end
-        
-        %%Normalize
-        feel_betas.id1 = zscore(feel_betas.id1);
+        feel_betas.id1 = reshape(feel_betas_tmp,4,15)';
 
     catch
         logger(['  -LSS Error: SCR of Identify run 1: ',path],proj.path.logfile);
@@ -121,19 +122,22 @@ for i=1:numel(subjs)
             in_betas.id2 = [in_betas.id2,mdl_in_2.beta(2)'];
         end
         
-        %%Normalize
-        in_betas.id2 = zscore(in_betas.id2);
+        % %%Normalize
+        % in_betas.id2 = zscore(in_betas.id2);
         
-        
+        feel_betas_tmp = [];
         for j=1:size(prime_feel_2)
             prime = prime_feel_2(j,:);
             other = other_feel_2(j,:);
             mdl_feel_2 = regstats(scr,[prime_feel_2(j,:)',other_feel_2(j,:)']);
-            feel_betas.id2 = [feel_betas.id2,mdl_feel_2.beta(2)'];
+            feel_betas_tmp = [feel_betas_tmp,mdl_feel_2.beta(2)'];
+            % % old way
+            % feel_betas.id2 = [feel_betas.id2,mdl_feel_2.beta(2)'];
         end
-        
-        %%Normalize
-        feel_betas.id2 = zscore(feel_betas.id2);
+        feel_betas.id2 = reshape(feel_betas_tmp,4,15)';
+
+        % %%Normalize
+        % feel_betas.id2 = zscore(feel_betas.id2);
         
     catch
         logger(['  -LSS Error: SCR of Identify run 2: ',path],proj.path.logfile);

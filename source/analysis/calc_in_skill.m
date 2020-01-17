@@ -55,7 +55,7 @@ for i = 1:numel(subjs)
             feel_raw = eval(['prds.',var_name,'_dcmp.feel(ids,:)']);
             feel_mu = eval(['mean(prds.',var_name,'_dcmp.feel(ids,:),2)']);
 
-            %% remove extreme outliers (TICKET hardcoded outliers)
+            %% remove extreme outliers (***TICKET*** hardcoded outliers)
             stim_keep_ids = find(abs(stim)<=3);
             stim_feel_ids = find(abs(feel_mu)<=3);
             cmb_keep_ids = intersect(stim_keep_ids,stim_feel_ids);
@@ -66,7 +66,7 @@ for i = 1:numel(subjs)
             Nkpt = numel(cmb_keep_ids);
             Nrep = eval(['size(prds.',var_name,'_dcmp.feel,2)']);
             stim_box = repmat(stim_kpt,1,Nrep);
-            feel_box = feel_raw(cmb_keep_ids,:); %-stim_box;
+            feel_box = feel_raw(cmb_keep_ids,:);
             traj_box = repmat(1:Nrep,Nkpt,1);
 
             %% reformat

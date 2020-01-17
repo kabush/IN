@@ -30,3 +30,8 @@ logger(['Estimate Relative CCM Effects (AROUSAL)     '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 calc_in_cv_cmb_ccm_effect(proj,'a');
 
+logger(['*************************************************'],proj.path.logfile);
+logger(['Compare CCM Effects across affect     '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+cmp_in_cv_cmb_ccm_effect(proj);
+

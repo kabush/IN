@@ -18,116 +18,61 @@ mask = vec_img_2d_nii(gm_nii);
 in_brain=find(mask==1);
 
 %% ----------------------------------------
-%% Load F-statistic Maps
-err_fstat_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'mfc_clust_map_',affect_name,'_err_fstat.nii']);
-err_fstat_img = vec_img_2d_nii(err_fstat_nii);
-evc_fstat_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'mfc_clust_map_',affect_name,'_evc_fstat.nii']);
-evc_fstat_img = vec_img_2d_nii(evc_fstat_nii);
+%% find voxel ids with positive z-scores
+Nccm = numel(proj.param.ctrl.ccm_names);
+z_imgs = zeros(numel(mask),Nccm);
+f_imgs = zeros(numel(mask),Nccm);
+all_pos_ids = [];
 
-%% ------------------------------------------------------------
-%% Queston #1: Compare model fit effects between error and EVC
+for i=1:Nccm;
+    
+    ccm_name = proj.param.ctrl.ccm_names{i};
+    disp(ccm_name)
 
-logger(['Operationss to break up F-statistics by CCM'],proj.path.logfile);
-err_f_ids = find(err_fstat_img(in_brain)>0);
-evc_f_ids = find(evc_fstat_img(in_brain)>0);
-jnt_f_ids = intersect(err_f_ids,evc_f_ids);
-evc_gtr_err_f_ids = find(evc_fstat_img(in_brain(jnt_f_ids))>err_fstat_img(in_brain(jnt_f_ids)));;
+    z_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'dacc_clust_map_',affect_name,'_',ccm_name,'.nii']);
+    z_img = vec_img_2d_nii(z_nii);
+    z_imgs(:,i) = z_img;
+ 
+    f_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'dacc_clust_map_',affect_name,'_',ccm_name,'_fstat.nii']);
+    f_img = vec_img_2d_nii(f_nii);
+    f_imgs(:,i) = f_img;
+   
+    pos_ids = find(z_img>0);
+    all_pos_ids = [all_pos_ids;pos_ids];
+    numel(all_pos_ids)
 
-%%ERR Alone
-err_alone_f_ids = setdiff(err_f_ids,jnt_f_ids);
-logger(['Num. sign. Error voxels: ',num2str(numel(err_alone_f_ids))],proj.path.logfile);
+end
+unq_pos_ids = unique(all_pos_ids);
 
-%%EVC Alone
-evc_alone_f_ids = setdiff(evc_f_ids,jnt_f_ids);
-logger(['Num. sign. EVC voxels: ',num2str(numel(evc_alone_f_ids))],proj.path.logfile);
-
-%%EVC > ERR
-evc_gtr_err_jnt_f_ids = jnt_f_ids(evc_gtr_err_f_ids);
-logger(['Num. sign. voxels where f(EVC)>f(ERR): ',num2str(numel(evc_gtr_err_jnt_f_ids))],proj.path.logfile);
-
-%%EVC < ERR
-evc_lss_err_jnt_f_ids = setdiff(jnt_f_ids,evc_gtr_err_jnt_f_ids);
-logger(['Num. sign. voxels where f(EVC)<f(ERR): ',num2str(numel(evc_lss_err_jnt_f_ids))],proj.path.logfile);
-
-%% Assign winners to voxels for visualization
-prt_fstat_img = 0*evc_fstat_img;
-prt_fstat_img(in_brain(err_alone_f_ids)) = 1 ;
-prt_fstat_img(in_brain(evc_alone_f_ids)) =  2;
-prt_fstat_img(in_brain(evc_gtr_err_jnt_f_ids)) = 2;
-prt_fstat_img(in_brain(evc_lss_err_jnt_f_ids)) = 1;%4
-prt_fstat_nii = build_nii_from_gm_mask(prt_fstat_img(in_brain),gm_nii,in_brain);
-save_untouch_nii(prt_fstat_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'prt_fstat_',affect_name,'.nii']);
-
-%% ------------------------------------------------------------
-%% Queston #2: Compare model fit effects (F-stat) between error and EVC
-%% when restricted to positive and negative effects (Z-stat)
 
 %% ----------------------------------------
-%% Load Z-statistic Maps
-evc_zstat_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'mfc_clust_map_',affect_name,'_evc.nii']);
-evc_zstat_img = vec_img_2d_nii(evc_zstat_nii);
-err_zstat_nii = load_untouch_nii([proj.path.analysis.in_cv_cmb_clust_thresh,'mfc_clust_map_',affect_name,'_err.nii']);
-err_zstat_img = vec_img_2d_nii(err_zstat_nii);
+%% find max ccm at each voxel
+pos_ccms = zeros(numel(unq_pos_ids),1);
+for i=1:numel(unq_pos_ids);
 
-%% Operationss to break up Z-statistics by CCM
-logger(['Operationss to break up Z-statistics by CCM'],proj.path.logfile);
+    % voxel id
+    id = unq_pos_ids(i);
 
-%% ERR vs EVC: Positive effects
-logger(['***Positive effects***'],proj.path.logfile);
-err_pos_z_ids = find(err_zstat_img(in_brain)>0);
-logger(['Num. sign. (+) Error voxels: ',num2str(numel(err_pos_z_ids))],proj.path.logfile);
-evc_pos_z_ids = find(evc_zstat_img(in_brain)>0);
-logger(['Num. sign. (+) EVC voxels: ',num2str(numel(evc_pos_z_ids))],proj.path.logfile);
-jnt_pos_z_ids = intersect(err_pos_z_ids,evc_pos_z_ids);
-logger(['Num. sign. (+) Joint voxels: ',num2str(numel(jnt_pos_z_ids))],proj.path.logfile);
-evc_gtr_jnt_pos_f_ids = find(evc_fstat_img(in_brain(jnt_pos_z_ids))>err_fstat_img(in_brain(jnt_pos_z_ids)));
-logger(['Num. sign. (+) Joint voxels where f(EVC) > f(ERR): ',num2str(numel(evc_gtr_jnt_pos_f_ids))],proj.path.logfile);
-evc_lss_jnt_pos_f_ids = find(evc_fstat_img(in_brain(jnt_pos_z_ids))<err_fstat_img(in_brain(jnt_pos_z_ids)));
-logger(['Num. sign. (+) Joint voxels where f(EVC) < f(ERR): ',num2str(numel(evc_lss_jnt_pos_f_ids))],proj.path.logfile);
+    % extract scores across ccms (w/ pos betas)
+    z_scores = z_imgs(id,:);
+    [vals,idcs] = sort(z_scores);
+    pos_ccms(i) = idcs(Nccm);
 
-logger(['***EVC better than chance?'],proj.path.logfile);
-Nevc_gtr_jnt_pos = numel(evc_gtr_jnt_pos_f_ids);
-Nevc_lss_jnt_pos = numel(evc_lss_jnt_pos_f_ids);
-pevc=Nevc_gtr_jnt_pos/(Nevc_gtr_jnt_pos+Nevc_lss_jnt_pos);
-[phat,pci] = binofit(Nevc_gtr_jnt_pos,(Nevc_gtr_jnt_pos+Nevc_lss_jnt_pos));
-logger(['  -Null distr. of ccm (if coin): [',num2str(pci(1)),', ',num2str(pci(2)),']']);
-logger(['   -EVC prob=',num2str(pevc)],proj.path.logfile);
+end
 
-% Assign winners to voxels for visualization
-pos_zstat_fstat_img = 0*evc_fstat_img;
-pos_zstat_fstat_img(in_brain(err_pos_z_ids)) = 7;
-pos_zstat_fstat_img(in_brain(evc_pos_z_ids)) =  26;
-pos_zstat_fstat_img(in_brain(evc_gtr_jnt_pos_f_ids)) = 26;
-pos_zstat_fstat_img(in_brain(evc_lss_jnt_pos_f_ids)) = 7;
-pos_zstat_fstat_nii = build_nii_from_gm_mask(pos_zstat_fstat_img(in_brain),gm_nii,in_brain);
-save_untouch_nii(pos_zstat_fstat_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'pos_zstat_fstat_',affect_name,'.nii']);
+%% ----------------------------------------
+%% build ccm id labeling of ccms
+ccm_nii = build_nii_from_gm_mask(pos_ccms,gm_nii,unq_pos_ids);
+save_untouch_nii(ccm_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'ccm_',affect_name,'.nii']);
 
-%% ERR vs EVC: Negative effects
-logger(['***Negative effects***'],proj.path.logfile);
-err_neg_z_ids = find(err_zstat_img(in_brain)<0);
-logger(['Num. sign. (-) Error voxels: ',num2str(numel(err_neg_z_ids))],proj.path.logfile);
-evc_neg_z_ids = find(evc_zstat_img(in_brain)<0);
-logger(['Num. sign. (-) EVC voxels: ',num2str(numel(evc_neg_z_ids))],proj.path.logfile);
-jnt_neg_z_ids = intersect(err_neg_z_ids,evc_neg_z_ids);
-logger(['Num. sign. (-) Joint voxels: ',num2str(numel(jnt_neg_z_ids))],proj.path.logfile);
-evc_gtr_jnt_neg_f_ids = find(evc_fstat_img(in_brain(jnt_neg_z_ids))>err_fstat_img(in_brain(jnt_neg_z_ids)));
-logger(['Num. sign. (-) Joint voxels where f(EVC) > f(ERR): ',num2str(numel(evc_gtr_jnt_neg_f_ids))],proj.path.logfile);
-evc_lss_jnt_neg_f_ids = find(evc_fstat_img(in_brain(jnt_neg_z_ids))<err_fstat_img(in_brain(jnt_neg_z_ids)));
-logger(['Num. sign. (-) Joint voxels where f(EVC) < f(ERR): ',num2str(numel(evc_lss_jnt_neg_f_ids))],proj.path.logfile);
 
-logger(['EVC better than chance?'],proj.path.logfile);
-Nevc_gtr_jnt_neg = numel(evc_gtr_jnt_neg_f_ids);
-Nevc_lss_jnt_neg = numel(evc_lss_jnt_neg_f_ids);
-pevc=Nevc_gtr_jnt_neg/(Nevc_gtr_jnt_neg+Nevc_lss_jnt_neg);
-[phat,pci] = binofit(Nevc_gtr_jnt_neg,(Nevc_gtr_jnt_neg+Nevc_lss_jnt_neg));
-logger(['  -Null distr. of ccm (if coin): [',num2str(pci(1)),', ',num2str(pci(2)),']']);
-logger(['   -EVC prob=',num2str(pevc)],proj.path.logfile);
-
-% Assign winners to voxels for visualization
-neg_zstat_fstat_img = 0*evc_fstat_img;
-neg_zstat_fstat_img(in_brain(err_neg_z_ids)) = 7;
-neg_zstat_fstat_img(in_brain(evc_neg_z_ids)) =  26;
-neg_zstat_fstat_img(in_brain(evc_gtr_jnt_neg_f_ids)) = 26;
-neg_zstat_fstat_img(in_brain(evc_lss_jnt_neg_f_ids)) = 7;
-neg_zstat_fstat_nii = build_nii_from_gm_mask(neg_zstat_fstat_img(in_brain),gm_nii,in_brain);
-save_untouch_nii(neg_zstat_fstat_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'neg_zstat_fstat_',affect_name,'.nii']);
+%% ----------------------------------------
+%% build color labeling of ccms
+col_pos_ccms = pos_ccms;
+if(strcmp(affect_name,'v') ~=0)
+    col_pos_ccms = 2*((pos_ccms-min(pos_ccms))/(max(pos_ccms)-min(pos_ccms)))-1+0.01;
+else
+    col_pos_ccms = ((pos_ccms-min(pos_ccms))/(max(pos_ccms)-min(pos_ccms)))-1+0.01;
+end
+ccm_nii = build_nii_from_gm_mask(col_pos_ccms,gm_nii,unq_pos_ids);
+save_untouch_nii(ccm_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'col_ccm_',affect_name,'.nii']);
