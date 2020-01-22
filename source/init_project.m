@@ -278,6 +278,10 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
+%% EVC gridsearch parameters
+proj.param.ctrl.discount_set = [0:.1:1];
+proj.param.ctrl.reward_frac_set = [0:.2:1];
+
 %% Control analysis variable names
 proj.param.ctrl.ccm_names = {'traj','err','pro','evc','cnf','yint'};
 proj.param.ctrl.ccm_z_ids = {7,9,11,13,15,17}; 

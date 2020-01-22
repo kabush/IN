@@ -216,7 +216,6 @@ for i=1:Nrand
         for vv = 1:numel(cv_ids)
             
             jj = cv_ids(vv);
-            jj
             
             %% extract subject info
             cv_subj_study = subjs{jj}.study;
@@ -262,7 +261,7 @@ for i=1:Nrand
                 act_err_sbj = [act_err_sbj; policy-opt_policy];
                 
             catch
-                disp(' CV subject results not found');
+                logger([' CV: ',cv_subj_study,'_',cv_name,' results not found'],proj.path.logfile);
             end
             
         end %jj

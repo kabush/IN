@@ -185,27 +185,29 @@ init_project;
 % %% ------------------------------------------------------------
 % %% STEP 1: Construct cognitive control models (CCMs)  
 % ccm_err_fmri_in_gm;     % error model
-% 
-% %% ************************************
-% %% ********* VERY SLOW BELOW **********
-% 
+
 % % Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
-% % is constructed from Ray, 2013 (emotion ICs, 5 of 20) in which
+% % is constructed from Ray, 2013 (emotion ICs, 18 of 20) in which
 % % mFC has been excluded (mFC will be the CC space).
 % reshape_ica;
-% 
+
+% %% ************************************
+% %% ************************************
+% %% ********* VERY SLOW BELOW **********
+
 % % Conduct grid search of EVC parm space (mix of err/action-cost)
 % ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
 %                                % 2020 ***VERY SLOW***)
 %                                % Need to select best for next
 %                                % step *** TICKET ***
-%                                
+
 % %% ********* VERY SLOW ABOVE **********
 % %% ************************************
+% %% ************************************
 % 
-% %% Select optimal parameters (separately for V & A)w
-% select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
-% 
+%% Select optimal parameters (separately for V & A)
+select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
+
 % %% Compute Q-values (separately for V & A)
 % ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
 % 
@@ -229,10 +231,10 @@ init_project;
 % 
 % %%Compute 3dLME Effects (base with only trajectory)
 % analyze_in_base_fmri_3dlme;
-
-%% Estimate & apply cluster thresholds
-analyze_in_base_clust_thresh_3dlme;
-
+% 
+% %% Estimate & apply cluster thresholds
+% analyze_in_base_clust_thresh_3dlme;
+% 
 % %% ============================================================
 % %% PHASE 4: Secondary Validation of IN
 % %% ============================================================
