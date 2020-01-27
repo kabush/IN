@@ -116,11 +116,14 @@ proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
 
-% secondary replication of SciReports paper
+% secondary replication of Front. in Human Neuro. (2018) paper
+proj.path.mvpa.fmri_ex_gs_vs_gm = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_vs_gm/'];
+
+% secondary replication of SciReports (2018) paper
 proj.path.mvpa.fmri_ex_gm_rgr_scr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_scr/'];
 proj.path.mvpa.fmri_ex_gm_rgr_a = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_a/'];
 
-% secondary replication of Psychophysiology paper
+% secondary replication of Psychophysiology (~2020; under review) paper
 proj.path.mvpa.fmri_ex_gm_rgr_hr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_hr/'];
 proj.path.mvpa.fmri_ex_gm_rgr_v = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_v/'];
 
@@ -135,15 +138,6 @@ proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_
 proj.path.ctrl.in_evc_icv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_icv_mdl/'];
 proj.path.ctrl.in_pro_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_opt_mdl/'];
 
-% TICKET (remove)
-% proj.path.ctrl.in_cnf_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_mdl/'];
-% proj.path.ctrl.in_cnf_alt_mdl = [proj.path.data,proj.path.ctrl.name,'in_cnf_alt_mdl/'];
-% proj.path.ctrl.in_pel_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_mdl/'];
-% proj.path.ctrl.in_pro_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_mdl/'];
-% proj.path.ctrl.in_pel_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pel_opt_mdl/'];
-% proj.path.ctrl.in_evc_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_mdl/'];
-% proj.path.ctrl.in_evc_cv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_cv_mdl/'];
-
 %% Intrinsic (IN) analysis path
 proj.path.analysis.ex_gm_scr_a = [proj.path.data,proj.path.analysis.name,'ex_gm_scr_a/'];
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
@@ -155,15 +149,6 @@ proj.path.analysis.in_base_3dlme = [proj.path.data,proj.path.analysis.name,'in_b
 proj.path.analysis.in_base_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_base_clust_thresh/'];
 proj.path.analysis.in_scr = [proj.path.data,proj.path.analysis.name,'in_scr/'];
 proj.path.analysis.in_emg = [proj.path.data,proj.path.analysis.name,'in_emg/'];
-
-% TICKET (remove)
-% proj.path.analysis.in_3dlme = [proj.path.data,proj.path.analysis.name,'in_3dlme/'];
-% proj.path.analysis.in_cmb_3dlme = [proj.path.data,proj.path.analysis.name,'in_cmb_3dlme/'];
-% proj.path.analysis.in_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_clust_thresh/'];
-% proj.path.analysis.in_ccm_effect = [proj.path.data,proj.path.analysis.name,'in_ccm_effect/'];
-% proj.path.analysis.in_3dlme_a = [proj.path.data,proj.path.analysis.name,'in_3dlme_a/'];
-% proj.path.analysis.dynamics = [proj.path.data,proj.path.analysis.name,'dynamics/'];
-% proj.path.ctrl.in_acc_activ = [proj.path.data,proj.path.ctrl.name,'in_acc_activ/'];
 
 %% ----------------------------------------
 %% Task file nomenclature
@@ -280,7 +265,10 @@ proj.param.mvpa.n_resamp = 30;
 
 %% EVC gridsearch parameters
 proj.param.ctrl.discount_set = [0:.1:1];
-proj.param.ctrl.reward_frac_set = [0:.2:1];
+proj.param.ctrl.reward_frac_set = [0:.2:0.4];
+% the full frac_set [0:0.2:1.0] was previously run (Jan 27, 2020)
+% and no change in parames exists above 0.2.  Running 0-0.4 for
+% completeness (both Valence and Arousal)
 
 %% Control analysis variable names
 proj.param.ctrl.ccm_names = {'traj','err','pro','evc','cnf','yint'};

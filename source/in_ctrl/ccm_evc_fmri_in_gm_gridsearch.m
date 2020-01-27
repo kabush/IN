@@ -48,11 +48,11 @@ rand_subj_ids = 1:numel(subjs);
 
 % Meta RL Parameter search *** TICKET *** hardcoded below (put in proj)
 discount_set = proj.param.ctrl.discount_set; % raw discount value used in Q-function update
-reward_act_set = proj.param.ctrl.reward_act_set; % balance between reward/action
+reward_frac_set = proj.param.ctrl.reward_frac_set; % balance between reward/action
 
 % Calculate set-sizes
 Ndsct = numel(discount_set);
-Nfrac = numel(reward_act_set);
+Nfrac = numel(reward_frac_set);
 
 % %% ----------------------------------------
 % %% ----------------------------------------
@@ -79,7 +79,7 @@ Nfrac = numel(reward_act_set);
 % 
 % 
 %         gamma = discount_set(a);
-%         rwrd_act_f = reward_act_set(b);
+%         rwrd_act_f = reward_frac_set(b);
 % 
 %         logger(['gamma: ',num2str(gamma),', frac: ',num2str(rwrd_act_f)],proj.path.logfile);
 % 
@@ -132,12 +132,12 @@ grp_err_std = err_std_a;
 act_5part = act_5part_a;
 affect_name = 'a';
 
-for a=1:Ndsct
+for b=1:Nfrca
 
-    for b=1:Nfrac
+    for a=1:Ndsct
 
         gamma = discount_set(a);
-        rwrd_act_f = reward_act_set(b);
+        rwrd_act_f = reward_frac_set(b);
 
         logger(['gamma: ',num2str(gamma),', frac: ',num2str(rwrd_act_f)],proj.path.logfile);
 

@@ -37,13 +37,16 @@ for i=1:Nccm;
     N_jnt_ccm = numel(jnt_ccm_ids);
 
     frac = N_jnt_ccm/N_v_ccm; %valence is the less well-represented system
-    % frac = N_jnt_ccm/N_a_ccm;
 
-    logger(['    ',num2str(N_v_ccm),' valence voxels'],proj.path.logfile);
-    logger(['    ',num2str(N_a_ccm),' arousal voxels'],proj.path.logfile);
-    logger(['    ',num2str(N_jnt_ccm),' joint voxels'],proj.path.logfile);
-    logger(['    [',num2str(frac),'% preserved]'],proj.path.logfile);
-    
+    if(isnan(frac))
+        logger(['    [0 valence voxels]'],proj.path.logfile);
+    else
+        logger(['    ',num2str(N_v_ccm),' valence voxels'],proj.path.logfile);
+        logger(['    ',num2str(N_a_ccm),' arousal voxels'],proj.path.logfile);
+        logger(['    ',num2str(N_jnt_ccm),' joint voxels'],proj.path.logfile);
+        % logger(['    [',num2str(frac*100),'preserved]'],proj.path.logfile);
+    end
+
 end
 
 

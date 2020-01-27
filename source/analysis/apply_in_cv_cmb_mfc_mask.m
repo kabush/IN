@@ -71,13 +71,6 @@ for i=1:numel(var_names)
     disp(cmd);
     eval(cmd);
 
-%     %% move
-%     cmd = ['! mv ',proj.path.code,'tmp/mfc_clust_map_',...
-%            affect_name,'_',name,'+tlrc.* ',...
-%            proj.path.analysis.in_cv_cmb_clust_thresh];
-%     disp(cmd);
-%     eval(cmd);
-    
     %% clean-up
     eval(['! rm ',proj.path.code,'tmp/*']);
     

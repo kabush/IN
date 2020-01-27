@@ -11,6 +11,14 @@
 %% Load in path data
 load('proj.mat');
 
+%% Set-up Directory Structure for fMRI betas
+if(proj.flag.clean_build)
+    disp(['Removing ',proj.path.analysis.fmri_ex_gs_vs_gm]);
+    eval(['! rm -rf ',proj.path.analysis.fmri_ex_gs_vs_gm]);
+    disp(['Creating ',proj.path.analysis.fmri_ex_gs_vs_gm]);
+    eval(['! mkdir ',proj.path.analysis.fmri_ex_gs_vs_gm]);
+end
+
 %% Initialize log section
 logger(['*********************************************'],proj.path.logfile);
 logger(['Analyzing MVPA GS vs GM                      '],proj.path.logfile);
@@ -106,6 +114,9 @@ if(fe_v_re.pValue<0.05);
 else
     logger('   random effects DO NOT matter',proj.path.logfile);
 end
+
+%% Save out model
+save([proj.path.analysis.fmri_ex_gs_vs_gm,'mdl.mat'],'mdl');
 
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
