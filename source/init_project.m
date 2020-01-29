@@ -139,6 +139,7 @@ proj.path.ctrl.in_evc_icv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_icv_
 proj.path.ctrl.in_pro_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_opt_mdl/'];
 
 %% Intrinsic (IN) analysis path
+proj.path.analysis.ex_gs_vs_gm = [proj.path.data,proj.path.analysis.name,'ex_gs_vs_gm/'];
 proj.path.analysis.ex_gm_scr_a = [proj.path.data,proj.path.analysis.name,'ex_gm_scr_a/'];
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];

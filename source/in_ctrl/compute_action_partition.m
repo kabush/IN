@@ -13,6 +13,15 @@
 
 function [act_5part] = compute_action_partition(proj,affect_name)
 
+%% Initialize log section
+logger(['*************************************************'],proj.path.logfile);
+if(strcmp(affect_name,'v'))
+    logger(['Computing Action Partition (VALENCE)'],proj.path.logfile);
+else
+    logger(['Computing Action Partition (AROUSAL)'],proj.path.logfile);
+end
+logger(['*************************************************'],proj.path.logfile);
+
 %% load subjs
 subjs = load_subjs(proj);
 

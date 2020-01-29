@@ -13,10 +13,10 @@ load('proj.mat');
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.analysis.fmri_ex_gs_vs_gm]);
-    eval(['! rm -rf ',proj.path.analysis.fmri_ex_gs_vs_gm]);
-    disp(['Creating ',proj.path.analysis.fmri_ex_gs_vs_gm]);
-    eval(['! mkdir ',proj.path.analysis.fmri_ex_gs_vs_gm]);
+    disp(['Removing ',proj.path.analysis.ex_gs_vs_gm]);
+    eval(['! rm -rf ',proj.path.analysis.ex_gs_vs_gm]);
+    disp(['Creating ',proj.path.analysis.ex_gs_vs_gm]);
+    eval(['! mkdir ',proj.path.analysis.ex_gs_vs_gm]);
 end
 
 %% Initialize log section
@@ -116,7 +116,7 @@ else
 end
 
 %% Save out model
-save([proj.path.analysis.fmri_ex_gs_vs_gm,'mdl.mat'],'mdl');
+save([proj.path.analysis.ex_gs_vs_gm,'v_mdl.mat'],'mdl');
 
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);
@@ -191,6 +191,9 @@ if(fe_a_re.pValue<0.05);
 else
     logger('   random effects DO NOT matter',proj.path.logfile);
 end
+
+%% Save out model
+save([proj.path.analysis.ex_gs_vs_gm,'a_mdl.mat'],'mdl');
 
 %% Examine Main Effect
 [~,~,FE] = fixedEffects(mdl);

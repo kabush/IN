@@ -10,6 +10,16 @@
 
 function [act_mu,act_std,err_mu,err_std] = compute_dsc_act_err_stats(proj,affect_name,act_5part)
 
+%% Initialize log section
+logger(['*************************************************'],proj.path.logfile);
+if(strcmp(affect_name,'v'))
+    logger(['Computing Discrete Actions (VALENCE)'],proj.path.logfile);
+else
+    logger(['Computing Discrete Actions (AROUSAL)'],proj.path.logfile);
+end
+logger(['*************************************************'],proj.path.logfile);
+
+
 subjs = load_subjs(proj);
 
 dsc_act_all = [];
