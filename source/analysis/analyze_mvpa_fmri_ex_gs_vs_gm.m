@@ -137,7 +137,7 @@ figure(1)
 set(gcf,'color','w');
 scatter(v_predictors,v_measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
+        proj.param.plot.light_grey);
 hold on;
 
 
@@ -216,7 +216,7 @@ figure(2)
 set(gcf,'color','w');
 scatter(a_predictors,a_measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
+        proj.param.plot.light_grey);
 hold on;
 
 
@@ -242,7 +242,8 @@ ylabel('GM-based MVPA Predictions');
 export_fig 'EX_mvpa_gs_vs_gm_aro_summary.png' -r300  
 eval(['! mv ',proj.path.code,'EX_mvpa_gs_vs_gm_aro_summary.png ',proj.path.fig]);
 
-
+%% clean up
+close all;
 
 
 

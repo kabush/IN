@@ -141,9 +141,9 @@ set(gcf,'color','w');
 
 %% ----------------------------------------
 %% plot all the datapoints
-scatter(predictors,measures,60,'MarkerFaceColor', ...
+scatter(predictors,measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.dark_grey);
+        proj.param.plot.light_grey);
 hold on;
 
 %% ----------------------------------------
@@ -157,7 +157,7 @@ xmax = 2;
 %% overlay the group VR skill plot
 vseq = linspace(xmin,xmax);
 y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
-plot(vseq,y_hat,'k-','LineWidth',6);
+plot(vseq,y_hat,'r-','LineWidth',3);
 
 xlim([xmin,xmax]);
 ylim([ymin,ymax]);
@@ -171,6 +171,9 @@ ax.FontSize = proj.param.plot.axisLabelFontSize;
 %% explot hi-resolution figure
 export_fig 'IN_emg_zygo_summary.png' -r300  
 eval(['! mv ',proj.path.code,'IN_emg_zygo_summary.png ',proj.path.fig]);
+
+%% clean up
+close all;
 
 logger('----------------------------------------',proj.path.logfile);
 logger(' CORRUGATOR ANALYSIS                    ',proj.path.logfile);
@@ -228,9 +231,9 @@ set(gcf,'color','w');
 
 %% ----------------------------------------
 %% plot all the datapoints
-scatter(predictors,measures,60,'MarkerFaceColor', ...
+scatter(predictors,measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.dark_grey);
+        proj.param.plot.light_grey);
 hold on;
 
 %% ----------------------------------------
@@ -244,7 +247,7 @@ xmax = 2;
 %% overlay the group VR skill plot
 vseq = linspace(xmin,xmax);
 y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
-plot(vseq,y_hat,'k-','LineWidth',6);
+plot(vseq,y_hat,'r-','LineWidth',3);
 
 xlim([xmin,xmax]);
 ylim([ymin,ymax]);
@@ -257,4 +260,8 @@ ax.FontSize = proj.param.plot.axisLabelFontSize;
 %% ----------------------------------------
 %% explot hi-resolution figure
 export_fig 'IN_emg_corr_summary.png' -r300  
-eval(['! mv ',proj.path.code,'IN_emg_corr_summary.png ',proj.path.fig]);
+eval(['! mv ',proj.path.code,'IN_emg_corr_summary.png ', ...
+      proj.path.fig]);
+
+%% clean up
+close all;

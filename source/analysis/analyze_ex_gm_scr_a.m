@@ -140,7 +140,7 @@ set(gcf,'color','w');
 %% plot all the datapoints
 scatter(predictors,measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
-        proj.param.plot.very_light_grey);
+        proj.param.plot.light_grey);
 hold on;
 
 %% ----------------------------------------
@@ -171,3 +171,6 @@ ylabel('Normative Arousal Scores');
 %% explot hi-resolution figure
 export_fig 'EX_scr_summary.png' -r300  
 eval(['! mv ',proj.path.code,'EX_scr_summary.png ',proj.path.fig]);
+
+% clean up
+close all;
