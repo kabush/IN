@@ -70,9 +70,15 @@ save_untouch_nii(ccm_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'ccm_',affect_
 %% build color labeling of ccms
 col_pos_ccms = pos_ccms;
 if(strcmp(affect_name,'v') ~=0)
+    min(pos_ccms)
+    unique(pos_ccms)
     col_pos_ccms = 2*((pos_ccms-min(pos_ccms))/(max(pos_ccms)-min(pos_ccms)))-1+0.01;
 else
-    col_pos_ccms = ((pos_ccms-min(pos_ccms))/(max(pos_ccms)-min(pos_ccms)))-1+0.01;
+    aff_ids = find(pos_ccms==1);
+    pos_ccms(aff_ids)=4;
+    min(pos_ccms)
+    unique(pos_ccms)
+    col_pos_ccms = 2*((pos_ccms-min(pos_ccms))/(max(pos_ccms)-min(pos_ccms)))-1+0.01;
 end
 ccm_nii = build_nii_from_gm_mask(col_pos_ccms,gm_nii,unq_pos_ids);
 save_untouch_nii(ccm_nii,[proj.path.analysis.in_cv_cmb_ccm_effect,'col_ccm_',affect_name,'.nii']);

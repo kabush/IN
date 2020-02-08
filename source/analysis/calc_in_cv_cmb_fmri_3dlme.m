@@ -22,6 +22,7 @@ all_pro = [];
 all_cnf = [];
 all_evc = [];
 all_traj = [];
+all_aff = [];
 
 %% ----------------------------------------
 %% Transform beta-series into affect series {v,a}
@@ -42,6 +43,9 @@ for i = 1:numel(subjs)
     try
 
         % load dynamics
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);
+
+        % load errors
         load([proj.path.ctrl.in_err_mdl,subj_study,'_',name,'_mdls.mat']);
         
         %% Data is present
@@ -99,6 +103,11 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% Load additional effects
 
+        % affect
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name,'_prds.mat']);        
+        aff_box = eval(['prds.',affect_name,'_dcmp.feel']);
+        aff = reshape(aff_box',1,prod(size(aff_box)))';
+
         % Order of observations
         traj_box = repmat([1:4],numel(err)/4,1);
         traj = reshape(traj_box',1,prod(size(traj_box)))';
@@ -114,6 +123,7 @@ for i = 1:numel(subjs)
         %% Scale all fixed effects
 
         % gather group level information (z-score within subject)
+        all_aff = [all_aff;zscore(aff)];
         all_err = [all_err;zscore(err)];
         all_pro = [all_pro;zscore(pro)];
         all_evc = [all_evc;zscore(evc)];
@@ -132,6 +142,7 @@ for i = 1:numel(subjs)
 end
 
 % Grand mean center all (already zscored within subject)
+all_aff = all_aff-mean(all_aff);
 all_err = all_err-mean(all_err);
 all_pro = all_pro-mean(all_pro);
 all_cnf = all_cnf-mean(all_cnf);
@@ -144,26 +155,28 @@ fprintf(fid,'#! /bin/csh\n');
 fprintf(fid,'\n');
 fprintf(fid,['3dLME -prefix lme_',affect_name,'_cv_cmb -jobs 16   \\ ']);
 fprintf(fid,['      -resid lme_',affect_name,'_cv_cmb_resid       \\ ']);
-fprintf(fid,['      -model ''traj+err+pro+evc+cnf''       \\']);
-fprintf(fid,['      -qVars ''traj,err,pro,evc,cnf''       \\ ']);
-fprintf(fid,'       -qVarCenters ''0,0,0,0,0''       \\ ');
-fprintf(fid,['      -ranEff ''~1+traj'' \\ ']); 
+fprintf(fid,['      -model ''aff+traj+err+pro+evc+cnf''       \\']);
+fprintf(fid,['      -qVars ''aff,traj,err,pro,evc,cnf''       \\ ']);
+fprintf(fid,'       -qVarCenters ''0,0,0,0,0,0''       \\ ');
+fprintf(fid,['      -ranEff ''~1+aff'' \\ ']); 
 fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
-fprintf(fid,'       -num_glt 6                      \\ ');
-fprintf(fid,['      -gltLabel 1  traj -gltCode  1  ''traj :'' \\']);
-fprintf(fid,['      -gltLabel 2  err  -gltCode  2  ''err :'' \\']);
-fprintf(fid,['      -gltLabel 3  pro  -gltCode  3  ''pro :'' \\']);
-fprintf(fid,['      -gltLabel 4  evc  -gltCode  4  ''evc :'' \\']);
-fprintf(fid,['      -gltLabel 5  cnf  -gltCode  5  ''cnf :'' \\']);
-fprintf(fid,['      -gltLabel 6  y_int -gltCode 6  ''traj : 0'' \\']);
+fprintf(fid,'       -num_glt 7                      \\ ');
+fprintf(fid,['      -gltLabel 1  aff  -gltCode  1  ''aff :'' \\']);
+fprintf(fid,['      -gltLabel 2  traj -gltCode  2  ''traj :'' \\']);
+fprintf(fid,['      -gltLabel 3  err  -gltCode  3  ''err :'' \\']);
+fprintf(fid,['      -gltLabel 4  pro  -gltCode  4  ''pro :'' \\']);
+fprintf(fid,['      -gltLabel 5  evc  -gltCode  5  ''evc :'' \\']);
+fprintf(fid,['      -gltLabel 6  cnf  -gltCode  6  ''cnf :'' \\']);
+fprintf(fid,['      -gltLabel 7  y_int -gltCode 7  ''traj : 0'' \\']);
 fprintf(fid,'       -dataTable                       \\ ');
-fprintf(fid,[' Subj traj err pro evc cnf InputFile   \\ ']);
+fprintf(fid,[' Subj aff traj err pro evc cnf InputFile   \\ ']);
 
 % Write out datatable
 Nrows = size(all_err,1); 
 for i = 1:(Nrows-1)
-    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %s   \\',...
+    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s   \\',...
             all_subjs{i},...
+            all_aff(i),...
             all_traj(i),...
             all_err(i),...
             all_pro(i),...
@@ -171,9 +184,11 @@ for i = 1:(Nrows-1)
             all_cnf(i),...
             all_path{i});
 end
+
 i=Nrows;
-    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %s \n  \\',...
+    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \n  \\',...
             all_subjs{i},...
+            all_aff(i),...
             all_traj(i),...
             all_err(i),...
             all_pro(i),...

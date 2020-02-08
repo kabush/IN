@@ -17,6 +17,7 @@ subjs = load_subjs(proj);
 %% Storage for analysis
 all_subjs = [];
 all_path = [];
+all_aff = [];
 all_traj = [];
 
 %% ----------------------------------------
@@ -63,6 +64,12 @@ for i = 1:numel(subjs)
         %% ----------------------------------------
         %% Load additional effects
 
+        % Affect
+        load([proj.path.ctrl.in_dyn,subj_study,'_',name, ...
+              '_prds.mat']);
+        aff_box = eval(['prds.',affect_name,'_dcmp.feel']);
+        aff = reshape(aff_box',1,prod(size(aff_box)))';
+
         % Order of observations
         traj_box = repmat([1:4],numel(err)/4,1);
         traj = reshape(traj_box',1,prod(size(traj_box)))';
@@ -78,6 +85,7 @@ for i = 1:numel(subjs)
         %% Scale all fixed effects
 
         % gather group level information (z-score within subject)
+        all_aff = [all_aff;zscore(aff)];
         all_traj = [all_traj;traj];
 
         % gather the path information (indices select correct volume)
@@ -92,6 +100,7 @@ for i = 1:numel(subjs)
 end
 
 % Grand mean center all (already zscored within subject)
+all_aff = all_aff-mean(all_aff);
 all_traj = all_traj-mean(all_traj);
 
 % Build script
@@ -100,28 +109,31 @@ fprintf(fid,'#! /bin/csh\n');
 fprintf(fid,'\n');
 fprintf(fid,['3dLME -prefix lme_',affect_name,'_base -jobs 16   \\ ']);
 fprintf(fid,['      -resid lme_',affect_name,'_base_resid       \\ ']);
-fprintf(fid,['      -model ''traj''       \\']);
-fprintf(fid,['      -qVars ''traj''       \\ ']);
-fprintf(fid,'       -qVarCenters ''0''       \\ ');
-fprintf(fid,['      -ranEff ''~1+traj'' \\ ']); 
+fprintf(fid,['      -model ''aff+traj''       \\']);
+fprintf(fid,['      -qVars ''aff,traj''       \\ ']);
+fprintf(fid,'       -qVarCenters ''0,0''       \\ ');
+fprintf(fid,['      -ranEff ''~1+aff'' \\ ']); 
 fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
-fprintf(fid,'       -num_glt 2                      \\ ');
-fprintf(fid,['      -gltLabel 1  traj -gltCode  1  ''traj :'' \\']);
-fprintf(fid,['      -gltLabel 2  y_int -gltCode 2  ''traj : 0'' \\']);
+fprintf(fid,'       -num_glt 3                      \\ ');
+fprintf(fid,['      -gltLabel 1  aff -gltCode  1  ''aff :'' \\']);
+fprintf(fid,['      -gltLabel 2  traj -gltCode  2  ''traj :'' \\']);
+fprintf(fid,['      -gltLabel 3  y_int -gltCode 3  ''traj : 0'' \\']);
 fprintf(fid,'       -dataTable                       \\ ');
-fprintf(fid,[' Subj traj InputFile   \\ ']);
+fprintf(fid,[' Subj aff traj InputFile   \\ ']);
 
 % Write out datatable
 Nrows = size(all_traj,1); 
 for i = 1:(Nrows-1)
-    fprintf(fid,' %s %1.3f %s   \\',...
+    fprintf(fid,' %s %1.3f %1.3f %s   \\',...
             all_subjs{i},...
+            all_aff(i),...
             all_traj(i),...
             all_path{i});
 end
 i=Nrows;
-    fprintf(fid,' %s %1.3f %s \n  \\',...
+    fprintf(fid,' %s %1.3f %1.3f %s \n  \\',...
             all_subjs{i},...
+            all_aff(i),...
             all_traj(i),...
             all_path{i});
 fclose(fid);

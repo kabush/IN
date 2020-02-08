@@ -272,12 +272,12 @@ proj.param.ctrl.reward_frac_set = [0:.2:0.4];
 % completeness (both Valence and Arousal)
 
 %% Control analysis variable names
-proj.param.ctrl.ccm_names = {'traj','err','pro','evc','cnf','yint'};
-proj.param.ctrl.ccm_z_ids = {7,9,11,13,15,17}; 
-proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,0};
-proj.param.ctrl.base_names = {'traj','yint'};
-proj.param.ctrl.base_z_ids = {3,5};
-proj.param.ctrl.base_f_ids = {1,0};
+proj.param.ctrl.ccm_names = {'aff','traj','err','pro','evc','cnf','yint'};
+proj.param.ctrl.ccm_z_ids = {8,10,12,14,16,18,20}; 
+proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,0};
+proj.param.ctrl.base_names = {'aff','traj','yint'};
+proj.param.ctrl.base_z_ids = {4,6,8};
+proj.param.ctrl.base_f_ids = {1,2,0};
 proj.param.ctrl.ica_ids = 1:18; %%Ray (2013) ICAs to be used
 
 %% Haufe parameters

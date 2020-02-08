@@ -232,7 +232,7 @@ analyze_in_cv_cmb_ccm_effect;
 
 %%Compute 3dLME Effects (base with only trajectory)
 analyze_in_base_fmri_3dlme;
-
+ 
 %% Estimate & apply cluster thresholds
 analyze_in_base_clust_thresh_3dlme;
 
