@@ -103,11 +103,11 @@ for i = 1:numel(subjs)
                 
                 %% valence
                 [tst_predict,hd] = predict(v_model,subj_img(j,:));
-                prds.v_hd(j) = hd(2);
+                prds.v_hd(j) = 1./(1+exp(-hd(2)));
                 
                 %% arousal
                 [tst_predict,hd] = predict(a_model,subj_img(j,:));
-                prds.a_hd(j) = hd(2);
+                prds.a_hd(j) = 1./(1+exp(-hd(2)));
                 
             end
             
@@ -142,3 +142,6 @@ for i = 1:numel(subjs)
     end
     
 end
+
+%% clean up
+close all;

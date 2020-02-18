@@ -116,6 +116,12 @@ proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
 
+%validation 
+proj.path.mvpa.fmri_ex_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_via_ex_gm_mdl/'];
+proj.path.mvpa.fmri_in_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_in_via_ex_gm_mdl/'];
+proj.path.mvpa.fmri_rest_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_rest_via_ex_gm_mdl/'];
+proj.path.analysis.fmri_rest_entrain = [proj.path.data,proj.path.analysis.name,'fmri_rest_entrain/'];
+
 % secondary replication of Front. in Human Neuro. (2018) paper
 proj.path.mvpa.fmri_ex_gs_vs_gm = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_vs_gm/'];
 
@@ -172,7 +178,7 @@ proj.param.mri.do_epi = 'yes';
 proj.param.mri.FD_thresh = 0.5;
 proj.param.mri.FD_bad_frac = 0.5;
 
-proj.param.mri.tasks = 'identify'; %rest modulate 
+proj.param.mri.tasks = 'identify rest'; % modulate 
 proj.param.mri.scans = 'run1 run2';
 proj.param.mri.rest_scans = 'run1';
 
@@ -264,6 +270,12 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
+%% REST parameters (for validation)
+proj.param.rest.n_pseudo = 100;
+proj.param.rest.n_resample = 30;
+proj.param.rest.n_trs_trans = 5;
+proj.param.rest.n_trs_tail = 10;
+
 %% EVC gridsearch parameters
 proj.param.ctrl.discount_set = [0:.1:1];
 proj.param.ctrl.reward_frac_set = [0:.2:0.4];
@@ -272,13 +284,18 @@ proj.param.ctrl.reward_frac_set = [0:.2:0.4];
 % completeness (both Valence and Arousal)
 
 %% Control analysis variable names
-proj.param.ctrl.ccm_names = {'aff','traj','err','pro','evc','cnf','yint'};
-proj.param.ctrl.ccm_z_ids = {8,10,12,14,16,18,20}; 
-proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,0};
-proj.param.ctrl.base_names = {'aff','traj','yint'};
-proj.param.ctrl.base_z_ids = {4,6,8};
-proj.param.ctrl.base_f_ids = {1,2,0};
+proj.param.ctrl.ccm_names = {'aff','traj','err','pro','evc','cnf','age','yint',...
+                    'aff_sex','traj_sex','err_sex','pro_sex','evc_sex','cnf_sex',...
+                    'age_sex','yint_sex'}
+proj.param.ctrl.ccm_z_ids = {9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39}; 
+proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,7,0};
+
+proj.param.ctrl.base_names = {'aff','traj','age','yint','aff_sex','traj_sex','age_sex','yint_sex'};
+proj.param.ctrl.base_z_ids = {5,7,9,11,13,15,17,19};
+proj.param.ctrl.base_f_ids = {1,2,3,0};
 proj.param.ctrl.ica_ids = 1:18; %%Ray (2013) ICAs to be used
+
+
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

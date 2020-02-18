@@ -21,7 +21,7 @@ all_err = [];
 all_pro = [];
 all_cnf = [];
 all_evc = [];
-all_traj = [];
+all_trj = [];
 all_aff = [];
 
 %% ----------------------------------------
@@ -128,72 +128,117 @@ for i = 1:numel(subjs)
         all_pro = [all_pro;zscore(pro)];
         all_evc = [all_evc;zscore(evc)];
         all_cnf = [all_cnf;zscore(cnf)];
-        all_traj = [all_traj;traj];
+        all_trj = [all_trj;traj];
 
         % gather the path information (indices select correct volume)
         for j = 1:numel(indx)
+
             data_cnt = data_cnt + 1;
+
+            % Load path to beta-series
             all_path{data_cnt} = [proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii''[',num2str(indx(j)),']'''];
             all_subjs{data_cnt} = [subj_study,'_',name];
+
+            % Load subject's sex & age
+            demo = readtable([proj.path.raw_data,proj.path.demo,'/',subj_study,'.csv']);
+            id = find(strcmp(demo.ID,name)~=0);
+            sex_code = demo.Type(id);
+            age = demo.Age(id);
+            all_age_cell{data_cnt} = age;
+            sex='N';
+            if(sex_code==1)
+                all_sex_cell{data_cnt} = 1;
+                sex='M';
+            else
+                all_sex_cell{data_cnt} = -1; 
+                sex='F';
+            end
+            all_sex_code{data_cnt} = sex;
+            
         end
 
     end
   
 end
 
-% Grand mean center all (already zscored within subject)
+% Convert age to matlab array
+all_age = cell2mat(all_age_cell);
+
+%% ----------------------------------------
+%% base model variables
 all_aff = all_aff-mean(all_aff);
+all_trj = all_trj-mean(all_trj);
 all_err = all_err-mean(all_err);
 all_pro = all_pro-mean(all_pro);
 all_cnf = all_cnf-mean(all_cnf);
 all_evc = all_evc-mean(all_evc);
-all_traj = all_traj-mean(all_traj);
+all_age = all_age-mean(all_age);
 
 % Build script
 fid = fopen(['./lme_',affect_name,'_cv_cmb_script'],'w');
 fprintf(fid,'#! /bin/csh\n');
 fprintf(fid,'\n');
-fprintf(fid,['3dLME -prefix lme_',affect_name,'_cv_cmb -jobs 16   \\ ']);
-fprintf(fid,['      -resid lme_',affect_name,'_cv_cmb_resid       \\ ']);
-fprintf(fid,['      -model ''aff+traj+err+pro+evc+cnf''       \\']);
-fprintf(fid,['      -qVars ''aff,traj,err,pro,evc,cnf''       \\ ']);
-fprintf(fid,'       -qVarCenters ''0,0,0,0,0,0''       \\ ');
-fprintf(fid,['      -ranEff ''~1+aff'' \\ ']); 
-fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
-fprintf(fid,'       -num_glt 7                      \\ ');
-fprintf(fid,['      -gltLabel 1  aff  -gltCode  1  ''aff :'' \\']);
-fprintf(fid,['      -gltLabel 2  traj -gltCode  2  ''traj :'' \\']);
-fprintf(fid,['      -gltLabel 3  err  -gltCode  3  ''err :'' \\']);
-fprintf(fid,['      -gltLabel 4  pro  -gltCode  4  ''pro :'' \\']);
-fprintf(fid,['      -gltLabel 5  evc  -gltCode  5  ''evc :'' \\']);
-fprintf(fid,['      -gltLabel 6  cnf  -gltCode  6  ''cnf :'' \\']);
-fprintf(fid,['      -gltLabel 7  y_int -gltCode 7  ''traj : 0'' \\']);
-fprintf(fid,'       -dataTable                       \\ ');
-fprintf(fid,[' Subj aff traj err pro evc cnf InputFile   \\ ']);
+fprintf(fid,['3dLME -prefix lme_',affect_name,'_cv_cmb -jobs 16 \\']);
+fprintf(fid,['      -resid lme_',affect_name,'_cv_cmb_resid \\']);
 
-% Write out datatable
+%% with just sex & age & (
+fprintf(fid,['      -model ''aff*sex*age+trj*sex*age+err*sex*age+pro*sex*age+cnf*sex*age+evc*sex*age'' \\']);
+fprintf(fid,['      -qVars ''aff,trj,err,pro,cnf,evc,age'' \\']);
+fprintf(fid,['      -qVarCenters ''0,0,0,0,0,0,0'' \\']);
+
+fprintf(fid,['      -ranEff ''~1'' \\ ']); 
+fprintf(fid,'       -mask %s \\ ',[proj.path.mri.gm_mask,'group_gm_mask.nii']);
+
+fprintf(fid,'       -num_glt 15 \\ ');
+
+fprintf(fid,['      -gltLabel  1  aff  -gltCode  1  ''aff :'' \\']);
+fprintf(fid,['      -gltLabel  2  trj  -gltCode  2  ''trj :'' \\']);
+fprintf(fid,['      -gltLabel  3  err  -gltCode  3  ''err :'' \\']);
+fprintf(fid,['      -gltLabel  4  pro  -gltCode  4  ''pro :'' \\']);
+fprintf(fid,['      -gltLabel  5  cnf  -gltCode  5  ''cnf :'' \\']);
+fprintf(fid,['      -gltLabel  6  evc  -gltCode  6  ''evc :'' \\']);
+fprintf(fid,['      -gltLabel  7  age  -gltCode  7  ''age :'' \\']);
+fprintf(fid,['      -gltLabel  8  sex  -gltCode  8  ''sex : 1*M -1*F'' \\']);
+fprintf(fid,['      -gltLabel  9  yint -gltCode  9  ''aff : 0'' \\']);
+fprintf(fid,['      -gltLabel 10  aff_sex  -gltCode 10  ''sex : 1*M -1*F aff :'' \\']);
+fprintf(fid,['      -gltLabel 11  trj_sex  -gltCode 11  ''sex : 1*M -1*F trj :'' \\']);
+fprintf(fid,['      -gltLabel 12  err_sex  -gltCode 12  ''sex : 1*M -1*F err :'' \\']);
+fprintf(fid,['      -gltLabel 13  pro_sex  -gltCode 13  ''sex : 1*M -1*F pro :'' \\']);
+fprintf(fid,['      -gltLabel 14  cnf_sex  -gltCode 14  ''sex : 1*M -1*F cnf :'' \\']);
+fprintf(fid,['      -gltLabel 15  evc_sex  -gltCode 15  ''sex : 1*M -1*F evc :'' \\']);
+
+fprintf(fid,'       -dataTable \\ ');
+
+%% headers
+fprintf(fid,[' Subj sex age aff trj err pro cnf evc InputFile \\ ']); ...
+
+%% Write out datatable
 Nrows = size(all_err,1); 
 for i = 1:(Nrows-1)
-    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s   \\',...
+    fprintf(fid,[' %s %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \\'],...
             all_subjs{i},...
+            all_sex_code{i},...
+            all_age(i),...
             all_aff(i),...
-            all_traj(i),...
+            all_trj(i),...
             all_err(i),...
             all_pro(i),...
-            all_evc(i),...
             all_cnf(i),...
+            all_evc(i),...
             all_path{i});
 end
 
-i=Nrows;
-    fprintf(fid,' %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \n  \\',...
+i = Nrows;
+    fprintf(fid,[' %s %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \n \\'],...
             all_subjs{i},...
+            all_sex_code{i},...
+            all_age(i),...
             all_aff(i),...
-            all_traj(i),...
+            all_trj(i),...
             all_err(i),...
             all_pro(i),...
-            all_evc(i),...
             all_cnf(i),...
+            all_evc(i),...
             all_path{i});
 fclose(fid);
 

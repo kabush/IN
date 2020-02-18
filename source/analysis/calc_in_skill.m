@@ -74,9 +74,12 @@ for i = 1:numel(subjs)
             feel_form = reshape(feel_box',1,prod(size(feel_box)))';
             traj_form = reshape(traj_box',1,prod(size(traj_box)))';
 
+            stim_form = zscore(stim_form);
+            feel_form = zscore(feel_form);
+
             %% build data for group GLMM
-            predictors = [predictors;stim_form]; %double(stim_clean)];
-            measures = [measures;feel_form]; %double(feel_clean)];
+            predictors = [predictors;stim_form]; 
+            measures = [measures;feel_form];
             subjects = [subjects;repmat(i,numel(stim_form),1)];
             trajs = [trajs;traj_form];
 
@@ -96,7 +99,7 @@ for i = 1:numel(subjs)
             %% Extract Fixed effects
             [~,~,FE] = fixedEffects(sbj_mdl_fe);
 
-            subj.stim = stim_kpt;
+            subj.stim = zscore(stim_kpt);
             subj.b1 = FE.Estimate(2); % slope
             subj.b0 = FE.Estimate(1); % intercept
             subj.p1 = FE.pValue(2); %slope
@@ -132,6 +135,11 @@ save([proj.path.analysis.vr_skill,var_name,'_non_subjs.mat'],'non_subjs');
 %% ----------------------------------------
 %% ----------------------------------------
 %% Group GLMM fit
+measures = double(measures-mean(measures));
+predictors = double(predictors-mean(predictors));
+trajs = double(trajs-mean(trajs));
+
+
 tbl = table(measures,predictors,trajs,subjects,'VariableNames', ...
             {'measures','predictors','trajs','subjects'});
 

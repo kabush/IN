@@ -89,6 +89,3 @@ logger(['*************************************************'],proj.path.logfile);
 logger(['Apply 3dLME cluster & mFC Mask to FSTAT (AROUSAL)'],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_clust_dacc_mask_2fstat(proj,'a');
-
-
-

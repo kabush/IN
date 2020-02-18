@@ -13,7 +13,7 @@ function [] = apply_in_cv_cmb_clust_mfc_mask_2fstat(proj,affect_name)
 var_names = proj.param.ctrl.ccm_names; 
 var_ids = proj.param.ctrl.ccm_f_ids;
 
-for i=1:numel(var_names)
+for i=1:numel(var_ids)
 
     name = var_names{i};
     id = var_ids{i};
