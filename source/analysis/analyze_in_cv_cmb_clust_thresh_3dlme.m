@@ -26,23 +26,9 @@ logger(['*************************************************'],proj.path.logfile);
 calc_in_cv_cmb_clust_thresh(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['3dLME cluster threshold estimation (AROUSAL)     '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-calc_in_cv_cmb_clust_thresh(proj,'a');
-
-%% ****************************************
-
-logger(['*************************************************'],proj.path.logfile);
 logger(['Apply 3dLME cluster threshold (VALENCE)   '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_clust_thresh(proj,'v');
-
-logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster threshold (AROUSAL)  '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_in_cv_cmb_clust_thresh(proj,'a');
-
-%% ****************************************
 
 logger(['*************************************************'],proj.path.logfile);
 logger(['Apply mFC Mask (VALENCE)   '],proj.path.logfile);
@@ -50,23 +36,9 @@ logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_mfc_mask(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Apply mFC Mask (AROUSAL)   '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_in_cv_cmb_mfc_mask(proj,'a');
-
-%% ****************************************
-
-logger(['*************************************************'],proj.path.logfile);
 logger(['Apply 3dLME cluster & mFC Mask to FSTAT (VALENCE)'],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_clust_mfc_mask_2fstat(proj,'v');
-
-logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster & mFC Mask to FSTAT (AROUSAL)'],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_in_cv_cmb_clust_mfc_mask_2fstat(proj,'a');
-
-%% ****************************************
 
 logger(['*************************************************'],proj.path.logfile);
 logger(['Apply dACC Mask (VALENCE)   '],proj.path.logfile);
@@ -74,18 +46,38 @@ logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_dacc_mask(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Apply dACC Mask (AROUSAL)   '],proj.path.logfile);
+logger(['Apply dACC Mask to FSTAT (VALENCE)'],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-apply_in_cv_cmb_dacc_mask(proj,'a');
+apply_in_cv_cmb_clust_dacc_mask_2fstat(proj,'v');
 
 %% ****************************************
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster & mFC Mask to FSTAT (VALENCE)'],proj.path.logfile);
+logger(['3dLME cluster threshold estimation (AROUSAL)     '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-apply_in_cv_cmb_clust_dacc_mask_2fstat(proj,'v');
+calc_in_cv_cmb_clust_thresh(proj,'a');
+
+logger(['*************************************************'],proj.path.logfile);
+logger(['Apply 3dLME cluster threshold (AROUSAL)  '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+apply_in_cv_cmb_clust_thresh(proj,'a');
+
+logger(['*************************************************'],proj.path.logfile);
+logger(['Apply mFC Mask (AROUSAL)   '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+apply_in_cv_cmb_mfc_mask(proj,'a');
 
 logger(['*************************************************'],proj.path.logfile);
 logger(['Apply 3dLME cluster & mFC Mask to FSTAT (AROUSAL)'],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+apply_in_cv_cmb_clust_mfc_mask_2fstat(proj,'a');
+
+logger(['*************************************************'],proj.path.logfile);
+logger(['Apply dACC Mask (AROUSAL)   '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+apply_in_cv_cmb_dacc_mask(proj,'a');
+
+logger(['*************************************************'],proj.path.logfile);
+logger(['Apply dACC Mask to FSTAT (AROUSAL)'],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 apply_in_cv_cmb_clust_dacc_mask_2fstat(proj,'a');

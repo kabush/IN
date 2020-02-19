@@ -11,7 +11,7 @@
 
 function [] = apply_in_base_clust_thresh(proj,affect_name)
 
-var_names = proj.param.ctrl.base_names; 
+var_names = proj.param.ctrl.base_z_names; 
 var_ids = proj.param.ctrl.base_z_ids;
 
 for i=1:numel(var_names)

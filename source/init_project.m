@@ -270,7 +270,7 @@ proj.param.physio.emg.filt_high = 10.0; %% reference???
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
 
-%% REST parameters (for validation)
+%% REST parameters (for entrainment calcs)
 proj.param.rest.n_pseudo = 100;
 proj.param.rest.n_resample = 30;
 proj.param.rest.n_trs_trans = 5;
@@ -284,18 +284,24 @@ proj.param.ctrl.reward_frac_set = [0:.2:0.4];
 % completeness (both Valence and Arousal)
 
 %% Control analysis variable names
-proj.param.ctrl.ccm_names = {'aff','traj','err','pro','evc','cnf','age','yint',...
-                    'aff_sex','traj_sex','err_sex','pro_sex','evc_sex','cnf_sex',...
-                    'age_sex','yint_sex'}
-proj.param.ctrl.ccm_z_ids = {9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39}; 
-proj.param.ctrl.ccm_f_ids = {1,2,3,4,5,6,7,0};
+proj.param.ctrl.ccm_z_names = {'aff','traj','err','pro','cnf','evc','age','sex','yint',...
+                    'aff_sex','traj_sex','err_sex','pro_sex','cnf_sex','evc_sex'};
+proj.param.ctrl.ccm_z_ids = {29,31,33,35,37,39,41,43,45,47,49,51,53,55,57}; 
 
-proj.param.ctrl.base_names = {'aff','traj','age','yint','aff_sex','traj_sex','age_sex','yint_sex'};
-proj.param.ctrl.base_z_ids = {5,7,9,11,13,15,17,19};
-proj.param.ctrl.base_f_ids = {1,2,3,0};
+proj.param.ctrl.ccm_f_names = {'aff','traj','err','pro','cnf','evc','age','sex','yint',...
+                    'aff_sex','traj_sex','err_sex','pro_sex','cnf_sex','evc_sex',...
+                    'aff_age','traj_age','err_age','pro_age','cnf_age','evc_age',...
+                    'sex_age','aff_sex_age','traj_sex_age','err_sex_age','pro_sex_age',...
+                    'cnf_sex_age','evc_sex_age'};
+proj.param.ctrl.ccm_f_ids = {1,4,5,6,7,8,3,2,0,9,12,14,16,18,20,10,13,15,17,19,21,11,22,23,24,25,26,27};
+
+proj.param.ctrl.base_z_names = {'aff','traj','yint','age','sex','aff_sex','traj_sex'};
+proj.param.ctrl.base_z_ids = {13,15,17,19,21,23,25};
+
+proj.param.ctrl.base_f_names = {'aff','traj','yint','age','sex','aff_sex','traj_sex',...
+                   'aff_age','traj_age','sex_age','aff_sex_age','traj_sex_age'};
+proj.param.ctrl.base_f_ids = {1,4,0,3,2,5,8,6,9,7,10,11};
 proj.param.ctrl.ica_ids = 1:18; %%Ray (2013) ICAs to be used
-
-
 
 %% Haufe parameters
 proj.param.haufe.npermute = 1000;

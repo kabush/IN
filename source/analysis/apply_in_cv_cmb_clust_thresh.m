@@ -10,7 +10,7 @@
 
 function [] = apply_in_cv_cmb_clust_thresh(proj,affect_name)
 
-var_names = proj.param.ctrl.ccm_names; 
+var_names = proj.param.ctrl.ccm_z_names; 
 var_ids = proj.param.ctrl.ccm_z_ids;
 
 for i=1:numel(var_names)

@@ -26,29 +26,27 @@ logger(['*************************************************'],proj.path.logfile);
 calc_in_base_clust_thresh(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['3dLME cluster threshold estimation (AROUSAL)     '],proj.path.logfile);
+logger(['Apply 3dLME cluster threshold z-tests (VALENCE)   '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-calc_in_base_clust_thresh(proj,'a');
- 
+apply_in_base_clust_thresh(proj,'v');
+
+logger(['*************************************************'],proj.path.logfile);
+logger(['Apply mFC Mask z-tests (VALENCE)   '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+apply_in_base_mfc_mask(proj,'v');
+
 %% ****************************************
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Apply 3dLME cluster threshold (VALENCE)   '],proj.path.logfile);
+logger(['3dLME cluster threshold estimation (AROUSAL)     '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
-apply_in_base_clust_thresh(proj,'v');
+calc_in_base_clust_thresh(proj,'a');
 
 logger(['*************************************************'],proj.path.logfile);
 logger(['Apply 3dLME cluster threshold (AROUSAL)  '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 apply_in_base_clust_thresh(proj,'a');
  
-%% ****************************************
-
-logger(['*************************************************'],proj.path.logfile);
-logger(['Apply mFC Mask (VALENCE)   '],proj.path.logfile);
-logger(['*************************************************'],proj.path.logfile);
-apply_in_base_mfc_mask(proj,'v');
-
 logger(['*************************************************'],proj.path.logfile);
 logger(['Apply mFC Mask (AROUSAL)   '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
