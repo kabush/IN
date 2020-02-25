@@ -30,7 +30,7 @@ non_cnt = 1;
 
 b_all = []; %% for power
 
-for i = [1:2,6:11] %numel(subjs)
+for i = 1:numel(subjs)
 
     %% extract subject info
     subj_study = subjs{i}.study;
@@ -60,63 +60,71 @@ for i = [1:2,6:11] %numel(subjs)
 
         stim_ids = randsample(1:numel(rest_ids),proj.param.rest.n_resample)';
         stim_val = data(stim_ids);
+        
 
-        stim_box = repmat(stim_val,1,4);
-        feel_box = [data(stim_ids+2),data(stim_ids+3),data(stim_ids+4),data(stim_ids+5)];
-        traj_box = repmat(1:4,proj.param.rest.n_resample,1);
 
-        %% reformat
-        stim_form = reshape(stim_box',1,prod(size(stim_box)))';
-        feel_form = reshape(feel_box',1,prod(size(feel_box)))';
-        traj_form = reshape(traj_box',1,prod(size(traj_box)))';
-        stim_form = zscore(stim_form);
-        feel_form = zscore(feel_form);
+        if(sum(isnan(data))==0)
+
+            stim_box = repmat(stim_val,1,4);
+            feel_box = [data(stim_ids+2),data(stim_ids+3),data(stim_ids+4),data(stim_ids+5)];
+            traj_box = repmat(1:4,proj.param.rest.n_resample,1);
+            
+            %% reformat
+            stim_form = reshape(stim_box',1,prod(size(stim_box)))';
+            feel_form = reshape(feel_box',1,prod(size(feel_box)))';
+            traj_form = reshape(traj_box',1,prod(size(traj_box)))';
+            stim_form = zscore(stim_form);
+            feel_form = zscore(feel_form);
+            
+            %% build data for group GLMM
+            predictors = [predictors;stim_form]; 
+            measures = [measures;feel_form];
+            subjects = [subjects;repmat(i,numel(stim_form),1)];
+            trajs = [trajs;traj_form];
+            
+            
+            %% ----------------------------------------
+            %% Quality control below
+            
+            %% build individual subject structures
+            subj = struct();
+            subj.study = subj_study;
+            subj.name = name;
+            
+            tbl = table(feel_form,stim_form,traj_form,'VariableNames', ...
+                        {'feel','stim','traj'});
+            
+            sbj_mdl_fe = fitlme(tbl,['feel ~ 1 + stim + traj']);
+            
+            %% Extract Fixed effects
+            [~,~,FE] = fixedEffects(sbj_mdl_fe);
+            
+            subj.stim = zscore(stim_val)
+            subj.b1 = FE.Estimate(2); % slope
+            subj.b0 = FE.Estimate(1); % intercept
+            subj.p1 = FE.pValue(2); %slope
+            subj.p0 = FE.pValue(1); %intercept
+            
+            %% sort subjects by significance
+            if(subj.p1<0.05)
+                sig_subjs{sig_cnt} = subj;
+                sig_cnt = sig_cnt + 1;
+            else
+                non_subjs{non_cnt} = subj;
+                non_cnt = non_cnt + 1;
+            end
         
-        %% build data for group GLMM
-        predictors = [predictors;stim_form]; 
-        measures = [measures;feel_form];
-        subjects = [subjects;repmat(i,numel(stim_form),1)];
-        trajs = [trajs;traj_form];
-        
-        %% ----------------------------------------
-        %% Quality control below
-        
-        %% build individual subject structures
-        subj = struct();
-        subj.study = subj_study;
-        subj.name = name;
-        
-        tbl = table(feel_form,stim_form,traj_form,'VariableNames', ...
-                    {'feel','stim','traj'});
-        
-        sbj_mdl_fe = fitlme(tbl,['feel ~ 1 + stim + traj']);
-        
-        %% Extract Fixed effects
-        [~,~,FE] = fixedEffects(sbj_mdl_fe);
-        
-        subj.stim = zscore(stim_val)
-        subj.b1 = FE.Estimate(2); % slope
-        subj.b0 = FE.Estimate(1); % intercept
-        subj.p1 = FE.pValue(2); %slope
-        subj.p0 = FE.pValue(1); %intercept
-        
-        %% sort subjects by significance
-        if(subj.p1<0.05)
-            sig_subjs{sig_cnt} = subj;
-            sig_cnt = sig_cnt + 1;
         else
-            non_subjs{non_cnt} = subj;
-            non_cnt = non_cnt + 1;
+            logger(['  -Rst contains NaNs: ',subj_study,'_',name],proj.path.logfile);
         end
-
+        
     catch
         % do nothing
         logger(['  -Could not find/load prds for: ',subj_study,'_', ...
                 name],proj.path.logfile);
     end
-
+        
 end
-
 
 %% ----------------------------------------
 %% save out subject groups
@@ -286,8 +294,8 @@ logger(['  Ranksum(IN_beta vs RST_beta), p=',num2str(p)],proj.path.logfile);
 figure(1)
 set(gcf,'color','w');
 hold on;
-h1 = histogram(in_b); 
-h2 = histogram(rest_b,'FaceColor','red');
+h1 = histogram(in_b,'BinWidth',0.1); 
+h2 = histogram(rest_b,'BinWidth',0.1,'FaceColor','red');
 hold off;
 
 fig = gcf;

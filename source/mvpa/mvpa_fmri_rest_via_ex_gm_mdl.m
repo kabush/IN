@@ -50,16 +50,28 @@ for i = 1:numel(subjs)
         censor_name = [subj_study,'.',name,'.rest.run1.censor.1D'];
         censor = load([rest_path,censor_name]);
 
-        % Test for models
-        cv_svm_path = [proj.path.mvpa.fmri_ex_gm_mdl];
-        cv_v_svm_name = [subj_study,'_',name,'_v_model.mat'];
-        cv_a_svm_name = [subj_study,'_',name,'_a_model.mat'];
-        v_model = load([cv_svm_path,cv_v_svm_name]);
-        a_model = load([cv_svm_path,cv_a_svm_name]);
+        %% if there is enough usable data
+        sum_censor = sum(censor);
+        if(sum_censor>proj.param.rest.n_pseudo+29) % *** TICKET ***
+                                                   % hardcoded 29
+                                                   % baseline params
+            
+            % Test for models
+            cv_svm_path = [proj.path.mvpa.fmri_ex_gm_mdl];
+            cv_v_svm_name = [subj_study,'_',name,'_v_model.mat'];
+            cv_a_svm_name = [subj_study,'_',name,'_a_model.mat'];
+            v_model = load([cv_svm_path,cv_v_svm_name]);
+            a_model = load([cv_svm_path,cv_a_svm_name]);
+            
+            cnt = cnt + 1;
+            good_subjs{cnt} = subjs{i};
         
-        cnt = cnt + 1;
-        good_subjs{cnt} = subjs{i};
-        
+        else
+
+            logger(['*** Too censored to run REST ***: ',subj_study,'_',name],proj.path.logfile);
+
+        end
+
     catch
         disp(['   ',subj_study,':',name,', Model error']);
     end
@@ -67,16 +79,13 @@ for i = 1:numel(subjs)
 end
 subjs = good_subjs; %%Subjects are now correctly sized
 
-subjs
-
 figure(1)
 hold on;
 
 %% ----------------------------------------
 %% iterate over study subjects
 
-for i = numel(subjs)
-    % for i = [1:2,6:11] %numel(subjs)
+for i = 1:numel(subjs)
 
     %% extract subject info
     subj_study = subjs{i}.study;

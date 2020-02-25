@@ -1,0 +1,245 @@
+*************************************************
+Analyzing REST Entrain (VALENCE)          
+*************************************************
+CTM_080
+CTM_081
+CTM_034
+CTM_035
+  -Rst contains NaNs: CTM_035
+CTM_060
+  -Could not find/load prds for: CTM_060
+CTM_066
+  -Rst contains NaNs: CTM_066
+CTM_070
+  -Rst contains NaNs: CTM_070
+CTM_001
+CTM_003
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+  -Rst contains NaNs: CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+  -Rst contains NaNs: CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+  -Rst contains NaNs: CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+CTM_036
+CTM_039
+CTM_040
+  -Could not find/load prds for: CTM_040
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+  -Rst contains NaNs: CTM_057
+CTM_058
+  -Rst contains NaNs: CTM_058
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+  -Could not find/load prds for: CTM_068
+CTM_069
+CTM_072
+  -Could not find/load prds for: CTM_072
+CTM_073
+  -Could not find/load prds for: CTM_073
+CTM_074
+  -Could not find/load prds for: CTM_074
+CTM_075
+  -Could not find/load prds for: CTM_075
+CTM_076
+  -Could not find/load prds for: CTM_076
+CTM_077
+  -Could not find/load prds for: CTM_077
+CTM_078
+  -Could not find/load prds for: CTM_078
+INCA_003
+  -Could not find/load prds for: INCA_003
+INCA_006
+  -Could not find/load prds for: INCA_006
+INCA_007
+  -Could not find/load prds for: INCA_007
+INCA_010
+  -Could not find/load prds for: INCA_010
+INCA_012
+  -Could not find/load prds for: INCA_012
+INCA_013
+  -Could not find/load prds for: INCA_013
+INCA_014
+  -Could not find/load prds for: INCA_014
+INCA_016
+  -Could not find/load prds for: INCA_016
+INCA_017
+  -Could not find/load prds for: INCA_017
+INCA_018
+  -Could not find/load prds for: INCA_018
+INCA_020
+  -Could not find/load prds for: INCA_020
+INCA_021
+  -Could not find/load prds for: INCA_021
+INCA_019
+  -Could not find/load prds for: INCA_019
+INCA_023
+  -Could not find/load prds for: INCA_023
+INCA_024
+  -Could not find/load prds for: INCA_024
+INCA_031
+  -Could not find/load prds for: INCA_031
+INCA_033
+  -Could not find/load prds for: INCA_033
+INCA_035
+  -Could not find/load prds for: INCA_035
+INCA_037
+  -Could not find/load prds for: INCA_037
+  ---Random effects matter
+Rsqr_adj=0.041326
+Fsqr=0.043107
+*************************************
+Comparison of IN ctrl to REST entrain
+  Median IN beta: 0.39303
+  Median RST beta: 0.18698
+  Ranksum(IN_beta vs RST_beta), p=7.5597e-09
+*************************************************
+Analyzing REST Entrain (AROUSAL)          
+*************************************************
+CTM_080
+CTM_081
+CTM_034
+CTM_035
+  -Rst contains NaNs: CTM_035
+CTM_060
+  -Could not find/load prds for: CTM_060
+CTM_066
+  -Rst contains NaNs: CTM_066
+CTM_070
+  -Rst contains NaNs: CTM_070
+CTM_001
+CTM_003
+CTM_004
+CTM_007
+CTM_008
+CTM_009
+CTM_010
+CTM_012
+  -Rst contains NaNs: CTM_012
+CTM_013
+CTM_014
+CTM_018
+CTM_021
+CTM_022
+  -Rst contains NaNs: CTM_022
+CTM_023
+CTM_024
+CTM_026
+CTM_028
+  -Rst contains NaNs: CTM_028
+CTM_029
+CTM_030
+CTM_031
+CTM_033
+CTM_036
+CTM_039
+CTM_040
+CTM_042
+CTM_043
+CTM_044
+CTM_045
+CTM_046
+CTM_047
+CTM_050
+CTM_051
+CTM_055
+CTM_056
+CTM_057
+  -Rst contains NaNs: CTM_057
+CTM_058
+  -Rst contains NaNs: CTM_058
+CTM_062
+CTM_063
+CTM_064
+CTM_067
+CTM_068
+  -Could not find/load prds for: CTM_068
+CTM_069
+CTM_072
+  -Could not find/load prds for: CTM_072
+CTM_073
+  -Could not find/load prds for: CTM_073
+CTM_074
+  -Could not find/load prds for: CTM_074
+CTM_075
+  -Could not find/load prds for: CTM_075
+CTM_076
+  -Could not find/load prds for: CTM_076
+CTM_077
+  -Could not find/load prds for: CTM_077
+CTM_078
+  -Could not find/load prds for: CTM_078
+INCA_003
+  -Could not find/load prds for: INCA_003
+INCA_006
+  -Could not find/load prds for: INCA_006
+INCA_007
+  -Could not find/load prds for: INCA_007
+INCA_010
+  -Could not find/load prds for: INCA_010
+INCA_012
+  -Could not find/load prds for: INCA_012
+INCA_013
+  -Could not find/load prds for: INCA_013
+INCA_014
+  -Could not find/load prds for: INCA_014
+INCA_016
+  -Could not find/load prds for: INCA_016
+INCA_017
+  -Could not find/load prds for: INCA_017
+INCA_018
+  -Could not find/load prds for: INCA_018
+INCA_020
+  -Could not find/load prds for: INCA_020
+INCA_021
+  -Could not find/load prds for: INCA_021
+INCA_019
+  -Could not find/load prds for: INCA_019
+INCA_023
+  -Could not find/load prds for: INCA_023
+INCA_024
+  -Could not find/load prds for: INCA_024
+INCA_031
+  -Could not find/load prds for: INCA_031
+INCA_033
+  -Could not find/load prds for: INCA_033
+INCA_035
+  -Could not find/load prds for: INCA_035
+INCA_037
+  -Could not find/load prds for: INCA_037
+  ---Random effects matter
+Rsqr_adj=0.043541
+Fsqr=0.045523
+*************************************
+Comparison of IN ctrl to REST entrain
+  Median IN beta: 0.31059
+  Median RST beta: 0.11629
+  Ranksum(IN_beta vs RST_beta), p=4.5198e-06
