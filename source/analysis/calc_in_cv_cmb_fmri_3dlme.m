@@ -83,8 +83,6 @@ for i = 1:numel(subjs)
         end
         evc_box = evc_box/sum(Q_cv(i,:));
         evc = reshape(evc_box',1,prod(size(evc_box)))';
-        evc = -evc; %%originally coded in ML format (error and
-                    %%effort is negative).
 
         % conflict (based on Q-values, 1st vs 2nd best Q-values)
         load([proj.path.ctrl.in_evc_icv_mdl,'Q_cnf_',affect_name,'.mat']); 

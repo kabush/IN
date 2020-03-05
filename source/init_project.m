@@ -106,6 +106,7 @@ proj.path.betas.scr_in_beta = [proj.path.data,proj.path.betas.name,'scr_in_beta/
 %% EMG paths
 proj.path.physio.emg_clean = [proj.path.data,proj.path.physio.name,'emg_clean/'];
 proj.path.betas.emg_in_beta = [proj.path.data,proj.path.betas.name,'emg_in_beta/'];
+proj.path.betas.emg_rest_beta = [proj.path.data,proj.path.betas.name,'emg_rest_beta/'];
 
 %% Target paths
 proj.path.trg.ex = [proj.path.data,proj.path.trg.name,'target_ex/'];
@@ -120,7 +121,8 @@ proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_
 proj.path.mvpa.fmri_ex_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_via_ex_gm_mdl/'];
 proj.path.mvpa.fmri_in_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_in_via_ex_gm_mdl/'];
 proj.path.mvpa.fmri_rest_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_rest_via_ex_gm_mdl/'];
-proj.path.analysis.fmri_rest_entrain = [proj.path.data,proj.path.analysis.name,'fmri_rest_entrain/'];
+proj.path.analysis.fmri_rest_entrain = [proj.path.data,proj.path.analysis.name,'fmri_rest_entrain/']
+proj.path.analysis.emg_rest_entrain = [proj.path.data,proj.path.analysis.name,'emg_rest_entrain/'];
 
 % secondary replication of Front. in Human Neuro. (2018) paper
 proj.path.mvpa.fmri_ex_gs_vs_gm = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_vs_gm/'];

@@ -51,9 +51,7 @@ for i=1:numel(subjs) % only CTM has EMG recordings that are valid
     subj_study = subjs{i}.study;
     name = subjs{i}.name;
 
-    if(strcmp(subj_study,'CTM') ~= 0 | strcmp(subj_study,'CTER') ~= ...
-       0)
-        
+    if(strcmp(subj_study,'CTM') ~= 0 | strcmp(subj_study,'CTER') ~= 0)
         
         %% debug
         logger([subj_study,':',name],proj.path.logfile);

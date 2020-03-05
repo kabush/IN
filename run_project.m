@@ -157,11 +157,6 @@ init_project;
 % %% fMRI data
 % calc_fmri_in_beta;
 % 
-% %% Physio data
-% calc_scr_in_beta;
-% calc_emg_in_beta;
-% % - calc_hr_in_beta (TBD);
-% 
 % %% ----------------------------------------
 % %% STEP 3: Run quality check (system) on beta-series
 % % (TBD)
@@ -186,77 +181,89 @@ init_project;
 % %% ----------------------------------------
 % %% STEP 8: Predict REST affect entrainment
 % 
-% % Predict REST affect
+% % Predict fMRI REST affect
 % mvpa_fmri_rest_via_ex_gm_mdl;
+% % 
+% % Analyze fMRI REST entrainment (compare to IN)
+% analyze_fmri_rest_entrain;
+
+% %% ============================================================
+% %% PHASE 3: Characterizing mFC function
+% %% ============================================================
 % 
-% % Analyze REST entrainment (compare to IN)
-% analyze_rest_entrain;
+% %% ------------------------------------------------------------
+% %% STEP 1: Construct cognitive control models (CCMs)  
+% ccm_err_fmri_in_gm;  % error model (used in evc,cnf,&pro)
 % 
-%% ============================================================
-%% PHASE 3: Characterizing mFC function
-%% ============================================================
+% % Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
+% % is constructed from Ray, 2013 (emotion ICs, 18 of 20) in which
+% % mFC has been excluded (mFC will be the CC space).
+% reshape_ica;
+% 
+% %% ************************************
+% %% ************************************
+% %% ********* VERY SLOW BELOW **********
+% 
+% % Conduct grid search of EVC parm space (mix of err/action-cost)
+% ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
+%                                % 2020 ***VERY SLOW***)
+%                                % Need to select best for next
+%                                % step *** TICKET ***
+% 
+% %% ********* VERY SLOW ABOVE **********
+% %% ************************************
+% %% ************************************
+% 
+% %% Select optimal parameters (separately for V & A)
+% select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
+%                                 % using CV
+%  
+% %% Compute Q-values (separately for V & A)
+% ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
+% 
+% %% Compute PRO-values
+% ccm_pro_opt_cv_fmri_in_gm;
+% 
+% %% ------------------------------------------------------------
+% %% STEP 2: Identify (and compare) CCM neural correlates
+%  
+% %% Compute 3dLME Effects (full model with ccms)
+% analyze_in_cv_cmb_fmri_3dlme;
+%  
+% %% Estimate & apply cluster thresholds
+% analyze_in_cv_cmb_clust_thresh_3dlme;
+% 
+% %%%% %% Estimate CCM Effects
+% %%%% analyze_in_cv_cmb_ccm_effect;
+% 
+% %% ------------------------------------------------------------
+% %% STEP 3: Identify BASE TASK neural correlates
+% 
+% %%Compute 3dLME Effects (base with only trajectory)
+% analyze_in_base_fmri_3dlme;
+%  
+% %% Estimate & apply cluster thresholds
+% analyze_in_base_clust_thresh_3dlme;
+% 
+% %% ============================================================
+% %% PHASE 4: Secondary Validation of IN
+% %% ============================================================
+% 
+% %% Calculate IN Physio data
+% calc_scr_in_beta;
+% calc_emg_in_beta;
+% % - calc_hr_in_beta (TBD);
+%
+% %% Calculate REST Physio data
+% calc_scr_rest_data;
+% calc_emg_rest_beta;
 
-%% ------------------------------------------------------------
-%% STEP 1: Construct cognitive control models (CCMs)  
-ccm_err_fmri_in_gm;  % error model (used in evc,cnf,&pro)
-
-% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
-% is constructed from Ray, 2013 (emotion ICs, 18 of 20) in which
-% mFC has been excluded (mFC will be the CC space).
-reshape_ica;
-
-%% ************************************
-%% ************************************
-%% ********* VERY SLOW BELOW **********
-
-% Conduct grid search of EVC parm space (mix of err/action-cost)
-ccm_evc_fmri_in_gm_gridsearch; % Q-func. param gridsearch (CNS
-                               % 2020 ***VERY SLOW***)
-                               % Need to select best for next
-                               % step *** TICKET ***
-
-%% ********* VERY SLOW ABOVE **********
-%% ************************************
-%% ************************************
-
-%% Select optimal parameters (separately for V & A)
-select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
-                                % using CV
- 
-%% Compute Q-values (separately for V & A)
-ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
-
-%% Compute PRO-values
-ccm_pro_opt_cv_fmri_in_gm;
-
-%% ------------------------------------------------------------
-%% STEP 2: Identify (and compare) CCM neural correlates
- 
-%% Compute 3dLME Effects (full model with ccms)
-analyze_in_cv_cmb_fmri_3dlme;
- 
-%% Estimate & apply cluster thresholds
-analyze_in_cv_cmb_clust_thresh_3dlme;
-
-%%%% %% Estimate CCM Effects
-%%%% analyze_in_cv_cmb_ccm_effect;
-
-%% ------------------------------------------------------------
-%% STEP 3: Identify BASE TASK neural correlates
-
-%%Compute 3dLME Effects (base with only trajectory)
-analyze_in_base_fmri_3dlme;
- 
-%% Estimate & apply cluster thresholds
-analyze_in_base_clust_thresh_3dlme;
-
-%% ============================================================
-%% PHASE 4: Secondary Validation of IN
-%% ============================================================
-
-%% ------------------------------------------------------------ 
-%% STEP 1: Validation of volitional affect induction
-analyze_in_scr;
-analyze_in_emg;
+% %% Validation of volitional affect induction
+% analyze_in_scr;
+% analyze_in_emg;
+% 
+% %% Control for entrainment effects (REST vs IN)
+% analyze_rest_scr_entrain;
+% analyze_rest_emg_entrain;
 
 toc
