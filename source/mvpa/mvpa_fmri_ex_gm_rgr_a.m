@@ -44,6 +44,9 @@ measures = [];
 predictors = [];
 subjects = [];
 
+sig_cnt = 1;
+non_cnt = 1;
+
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -86,12 +89,37 @@ for i = 1:numel(subjs)
             %% ----------------------------------------
             %% Train ARO
             
-            %% Fit model
-            [out,trg,mdl,stats] = regress_intra_loocv(ex_img,a_score,proj.param.mvpa.kernel);
+            %% Fit model (labels already z-scored)
+            [out,trg,mdl,stats] = regress_intra_loocv(zscore(ex_img),a_score,...
+                                                      proj.param.mvpa.kernel);
 
             measures = [measures;trg];
             predictors = [predictors;out];
             subjects = [subjects;repmat(i,numel(out),1)];
+
+            % ----------------------------------------
+            % Quality control below
+            
+            % build individual subject structures
+            subj = struct();
+            subj.study = subj_study;
+            subj.name = name;
+            
+            [b stat] = robustfit(out,trg);
+            subj.stim = out;
+            subj.b1 = b(2); % slope
+            subj.b0 = b(1); % intercept
+            subj.p1 = stat.p(2); %slope
+            subj.p0 = stat.p(1); %intercept
+
+            %% sort subjects by significance
+            if(subj.p1<0.05)
+                sig_subjs{sig_cnt} = subj;
+                sig_cnt = sig_cnt + 1;
+            else
+                non_subjs{non_cnt} = subj;
+                non_cnt = non_cnt + 1;
+            end
             
         end
         
@@ -99,6 +127,18 @@ for i = 1:numel(subjs)
         disp(['   MVPA Error: possible missing beta series']);
     end
 
+end
+
+
+%% ----------------------------------------
+%% save out subject groups
+
+if(exist('sig_subjs'))
+    save([proj.path.mvpa.fmri_ex_gm_rgr_a,'sig_subjs.mat'],'sig_subjs');
+end
+
+if(exist('non_subjs'))
+    save([proj.path.mvpa.fmri_ex_gm_rgr_a,'non_subjs.mat'],'non_subjs');
 end
 
 
@@ -156,9 +196,27 @@ scatter(predictors,measures,10,'MarkerFaceColor', ...
 hold on;
 
 %% ----------------------------------------
+%% overlay the individual plots
+if(exist('non_subjs'))
+    for i =1:numel(non_subjs)
+        plot(non_subjs{i}.stim,non_subjs{i}.stim*non_subjs{i}.b1+ ...
+             non_subjs{i}.b0,'Color',proj.param.plot.light_grey, ...
+             'LineWidth',1);
+    end
+end
+
+if(exist('sig_subjs'))
+    for i =1:numel(sig_subjs)
+        plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
+             sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey, ...
+             'LineWidth',2);
+    end
+end
+
+%% ----------------------------------------
 %% format figure
-ymin = -3;
-ymax = 3;
+ymin = -2.5;
+ymax = 2;
 xmin = -3;
 xmax = 3;
 

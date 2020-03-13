@@ -28,12 +28,16 @@ logger(['*********************************************'],proj.path.logfile);
 %% load subjs
 subjs = load_subjs(proj);
 
+
 %% ----------------------------------------
 %% scatter the underlying stim and feel
 measures = [];
 predictors = [];
 subjects = [];
 trajs = [];
+
+sig_cnt = 1;
+non_cnt = 1;
 
 for i = 1:numel(subjs)
 
@@ -42,109 +46,159 @@ for i = 1:numel(subjs)
     name = subjs{i}.name;
     id = subjs{i}.id;
 
-    % debug
+    % log analysis of subject
     logger([subj_study,'_',name],proj.path.logfile);
 
     try
+
         load([proj.path.betas.scr_in_beta,subj_study,'_',name,'_in_betas.mat']);
         load([proj.path.betas.scr_in_beta,subj_study,'_',name,'_feel_betas.mat']);
+        
+        % Construct EMG of stimulus
+        in_scr = eval(['[in_betas.id1,in_betas.id2]']);;
+        in_box = repmat(in_scr',1,4);
+        feel_box = eval(['[feel_betas.id1;feel_betas.id2]']);
+        traj_box = repmat(1:4,numel(in_scr),1);
+        
+        % Create symmetric boxes
+        in_form = zscore(reshape(in_box',prod(size(in_box)),1));
+        feel_form = zscore(reshape(feel_box',prod(size(feel_box)),1));
+        traj_form = reshape(traj_box',prod(size(traj_box)),1);
+        
+        % Build data for group GLMM
+        predictors = [predictors;in_form];
+        measures = [measures;feel_form];
+        subjects = [subjects;repmat(i,numel(in_form),1)];
+        trajs = [trajs;traj_form];
+        
+        % ----------------------------------------
+        % Quality control below
+        
+        % build individual subject structures
+        subj = struct();
+        subj.study = subj_study;
+        subj.name = name;
+        
+        tbl = table(feel_form,in_form,traj_form,'VariableNames', ...
+                    {'feel','stim','traj'});
+        
+        sbj_mdl_fe = fitlme(tbl,['feel ~ 1 + stim + traj']);
+        
+        %% Extract Fixed effects
+        [~,~,FE] = fixedEffects(sbj_mdl_fe);
+        
+        subj.stim = in_form;
+        subj.b1 = FE.Estimate(2); % slope
+        subj.b0 = FE.Estimate(1); % intercept
+        subj.p1 = FE.pValue(2); %slope
+        subj.p0 = FE.pValue(1); %intercept
+         
+        %% sort subjects by significance
+        if(subj.p1<0.05)
+            sig_subjs{sig_cnt} = subj;
+            sig_cnt = sig_cnt + 1;
+        else
+            non_subjs{non_cnt} = subj;
+            non_cnt = non_cnt + 1;
+        end
+        
     catch
         logger('    Could not find scr beta file for processing.',proj.path.logfile);
     end
-
-    scr_in_betas = [in_betas.id1,in_betas.id2];
-    scr_feel_betas = [feel_betas.id1;feel_betas.id2];
     
-    % vectorize stimulus measures
-    in_box = repmat(scr_in_betas',1,4);
-    in_betas_tmp = reshape(in_box',prod(size(in_box)),1);
+    
+end
 
-    % vectorize feel measures
-    feel_betas_tmp = reshape(scr_feel_betas',prod(size(scr_feel_betas)),1);
+%% ----------------------------------------
+%% save out subject groups
+if(exist('sig_subjs'))
+    save([proj.path.analysis.in_scr,'scr_sig_subjs.mat'],'sig_subjs');
+end
 
-    % build trajectory measure of time
-    traj_box = repmat(1:4,numel(scr_in_betas),1);
-    traj = reshape(traj_box',prod(size(traj_box)),1);
-
-
-    if(~isempty(in_betas_tmp))
-
-        measures = [measures;zscore(feel_betas_tmp)];
-        predictors = [predictors;zscore(in_betas_tmp)];
-        subjects = [subjects;repmat(i,numel(feel_betas_tmp),1)];
-        trajs = [trajs;zscore(traj)];
-
-    end
-
+if(exist('non_subjs'))
+    save([proj.path.analysis.in_scr,'scr_non_subjs.mat'],'non_subjs');
 end
 
 %% ----------------------------------------
 %% Group GLMM fit
-measures = double(measures);
+measures = double(measures-mean(measures));
 predictors = double(predictors-mean(predictors));
-trajs = double(trajs);
-subjects = double(subjects);
+trajs = double(trajs-mean(trajs));
 
-tbl = table(measures,predictors,trajs,subjects,'VariableNames',{'trg', ...
-                    'pred','traj','subj'});
 
-mdl_fe = fitlme(tbl,['trg ~ 1 + pred + traj']);
-mdl_re= fitlme(tbl,['trg ~ 1 + pred + traj + (1+pred|subj) + (1+traj|subj)']);
+tbl = table(measures,predictors,trajs,subjects,'VariableNames', ...
+            {'measures','predictors','trajs','subjects'});
 
-%%Explore random effects across model types
-fe_v_re = compare(mdl_fe,mdl_re);
+mdl_fe = fitlme(tbl,['measures ~ 1 + predictors + trajs']);
+mdl_re = fitlme(tbl,['measures ~ 1 + predictors + trajs + (predictors|subjects)']);
+
+fe_vs_re = compare(mdl_fe,mdl_re);
 
 mdl = mdl_fe;
-if(fe_v_re.pValue<0.05);
-    logger('  random effects matter',proj.path.logfile);
-    mdl = mdl_re;
-else
-    logger('  random effects DO NOT matter',proj.path.logfile);
+if(fe_vs_re.pValue<0.05);
+    mdl=mdl_re;
+    logger('  ---Random effects matter',proj.path.logfile);
 end
-logger(' ',proj.path.logfile);
 
-% save out the fit
-save([proj.path.analysis.in_scr,'scr_mdl.mat'],'mdl');
-
-%% ----------------------------------------
-%% Examine Main Effect
+%% Extract Fixed effects
 [~,~,FE] = fixedEffects(mdl);
-if(FE.pValue(2)<0.05)
-    logger('Fixed Effects are significant',proj.path.logfile);
-    logger(['  p=',num2str(FE.pValue(2))],proj.path.logfile);
-end
 
-%% ----------------------------------------
-%% compute effect size
+%% Compute effect size
 Rsqr = mdl.Rsquared.Adjusted;
 Fsqr = Rsqr/(1-Rsqr);
-logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
-logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-logger(' ',proj.path.logfile);
+logger(['Rsqr_adj=',num2str(Rsqr)],proj.path.logfile);
+logger(['Fsqr=',num2str(Fsqr)],proj.path.logfile);
+
+%% Save out model;
+save([proj.path.analysis.in_scr,'in_scr_mdl.mat'],'mdl');
+
+%% ----------------------------------------
+%% Plotting
 
 figure(1)
 set(gcf,'color','w');
+hold on;
 
-%% ----------------------------------------
-%% plot all the datapoints
+%% scatter raw data
 scatter(predictors,measures,10,'MarkerFaceColor', ...
         proj.param.plot.white,'MarkerEdgeColor', ...
         proj.param.plot.light_grey);
-hold on;
+
+%% ----------------------------------------
+%% overlay the individual entrain plots
+if(exist('non_subjs'))
+    for i =1:numel(non_subjs)
+        plot(non_subjs{i}.stim,non_subjs{i}.stim*non_subjs{i}.b1+ ...
+             non_subjs{i}.b0,'Color',proj.param.plot.light_grey, ...
+             'LineWidth',1);
+    end
+end
+
+if(exist('sig_subjs'))
+    for i =1:numel(sig_subjs)
+        plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
+             sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey, ...
+             'LineWidth',2);
+    end
+end
+
+%% ----------------------------------------
+%% identify max/min x-range|y-rang
+%%
+%% TICKET (automate this decision)
+xmin = -3;
+xmax = 3;
+ymin = -3;
+ymax = 3;
+
+%% ----------------------------------------
+%% overlay the group entrain plot
+xseq = linspace(xmin,xmax);
+y_hat = FE.Estimate(1) + FE.Estimate(2)*xseq;
+plot(xseq,y_hat,'r-','LineWidth',3);
 
 %% ----------------------------------------
 %% format figure
-ymin = -3; %-2.88;
-ymax = 3; %3.63;
-xmin = -3; %-3.24;
-xmax = 3; %3.61;
-
-%% ----------------------------------------
-%% overlay the group VR skill plot
-vseq = linspace(xmin,xmax);
-y_hat = FE.Estimate(1) + FE.Estimate(2)*vseq;
-plot(vseq,y_hat,'r-','LineWidth',3);
-
 xlim([xmin,xmax]);
 ylim([ymin,ymax]);
 
@@ -153,13 +207,10 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-% xlabel('VR(cue) SCR responses');
-% ylabel('VR(modulate) SCR responses');
-
 %% ----------------------------------------
-%% explot hi-resolution figure
-export_fig 'IN_scr_summary.png' -r300  
-eval(['! mv ',proj.path.code,'IN_scr_summary.png ',proj.path.fig]);
+%% export hi-resolution figure
+export_fig in_scr_summary.png -r300  
+eval(['! mv ',proj.path.code,'in_scr_summary.png ',proj.path.fig,'IN_scr_summary.png']);
 
-%% clean up
+% clean-up
 close all;

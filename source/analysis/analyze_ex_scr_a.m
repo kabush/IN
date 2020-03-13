@@ -13,10 +13,10 @@ load('proj.mat');
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.analysis.ex_gm_scr_a]);
-    eval(['! rm -rf ',proj.path.analysis.ex_gm_scr_a]);
-    disp(['Creating ',proj.path.analysis.ex_gm_scr_a]);
-    eval(['! mkdir ',proj.path.analysis.ex_gm_scr_a]);
+    disp(['Removing ',proj.path.analysis.ex_scr_a]);
+    eval(['! rm -rf ',proj.path.analysis.ex_scr_a]);
+    disp(['Creating ',proj.path.analysis.ex_scr_a]);
+    eval(['! mkdir ',proj.path.analysis.ex_scr_a]);
 end
 
 %% Initialize log section
@@ -42,6 +42,10 @@ a_score = zscore(a_score);
 measures = [];
 predictors = [];
 subjects = [];
+
+sig_cnt = 1;
+non_cnt = 1;
+
 
 for i = 1:numel(subjs)
 
@@ -86,8 +90,44 @@ for i = 1:numel(subjs)
         predictors = [predictors;scr_betas'];
         subjects = [subjects;repmat(i,numel(scr_betas),1)];
 
+        % ----------------------------------------
+        % Quality control below
+        
+        % build individual subject structures
+        subj = struct();
+        subj.study = subj_study;
+        subj.name = name;
+        
+        [b stat] = robustfit(scr_betas,scr_a_score);
+        subj.stim = scr_betas;
+        subj.b1 = b(2); % slope
+        subj.b0 = b(1); % intercept
+        subj.p1 = stat.p(2); %slope
+        subj.p0 = stat.p(1); %intercept
+        
+        %% sort subjects by significance
+        if(subj.p1<0.05)
+            sig_subjs{sig_cnt} = subj;
+            sig_cnt = sig_cnt + 1;
+        else
+            non_subjs{non_cnt} = subj;
+            non_cnt = non_cnt + 1;
+        end
+
+
     end
 
+end
+
+%% ----------------------------------------
+%% save out subject groups
+
+if(exist('sig_subjs'))
+    save([proj.path.analysis.ex_scr_a,'sig_subjs.mat'],'sig_subjs');
+end
+
+if(exist('non_subjs'))
+    save([proj.path.analysis.ex_scr_a,'non_subjs.mat'],'non_subjs');
 end
 
 %% ----------------------------------------
@@ -115,7 +155,7 @@ end
 logger(' ',proj.path.logfile);
 
 %save out the model
-save([proj.path.analysis.ex_gm_scr_a,'ex_gm_scr_a_mdl.mat'],'mdl');
+save([proj.path.analysis.ex_scr_a,'ex_scr_a_mdl.mat'],'mdl');
 
 %% ----------------------------------------
 %% Examine Main Effect
@@ -144,9 +184,27 @@ scatter(predictors,measures,10,'MarkerFaceColor', ...
 hold on;
 
 %% ----------------------------------------
+%% overlay the individual plots
+if(exist('non_subjs'))
+    for i =1:numel(non_subjs)
+        plot(non_subjs{i}.stim,non_subjs{i}.stim*non_subjs{i}.b1+ ...
+             non_subjs{i}.b0,'Color',proj.param.plot.light_grey, ...
+             'LineWidth',1);
+    end
+end
+
+if(exist('sig_subjs'))
+    for i =1:numel(sig_subjs)
+        plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
+             sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey, ...
+             'LineWidth',2);
+    end
+end
+
+%% ----------------------------------------
 %% format figure
-ymin = -3;
-ymax = 3;
+ymin = -2.5;
+ymax = 2;
 xmin = -3;
 xmax = 3;
 

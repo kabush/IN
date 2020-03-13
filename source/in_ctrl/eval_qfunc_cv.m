@@ -8,7 +8,7 @@
 %%========================================
 %%========================================
 
-function [Q_cv,Q_traj_cv,Q_rand_cv,Q_cnf_cv,act_err_cv] = ...
+function [Q_cv,Q_traj_cv,Q_rand_cv,Q_bst_cv,Q_cnf_cv,act_err_cv] = ...
         eval_qfunc_cv(proj, ...
                       act_5part, ...
                       grp_act_mu, ...
@@ -180,6 +180,7 @@ end
 Q_cv = zeros(Nsubj,Nsubj);
 Q_traj_cv = zeros(Nsubj,Nsubj,30,4);
 Q_rand_cv = zeros(Nsubj,Nsubj,30,4);
+Q_bst_cv = zeros(Nsubj,Nsubj,30,4);
 Q_cnf_cv = zeros(Nsubj,Nsubj,30,4);
 act_err_cv = zeros(Nsubj,Nsubj,30,4);
 
@@ -224,6 +225,7 @@ for i=1:Nsubj
             cv_name = subjs{jj}.name;
 
             Q_traj = zeros(120,1);
+            Q_bst = zeros(120,1);
             Q_cnf = zeros(120,1); % Create a true conflict measure
                                   % (2nd best action)
             Q_rand = zeros(120,1);
@@ -242,7 +244,7 @@ for i=1:Nsubj
                     u = find(this_U(k)==cfg.U);
                     q = rtenspred(this_reg{u},this_X(k,:));
                     policy(k)= this_U(k);
-                    Q_traj(k) = q; 
+                    Q_traj(k) = q;   % on-policy Q
                     
                     %% Compute the random action as the average                            
                     Naction=numel(unique(U));
@@ -256,15 +258,16 @@ for i=1:Nsubj
                         Q_run = Q_run + pu*q;
                     end
                     [sQvals,iQvals] = sort(Q_values); %ascend. order
-                    Q_cnf(k) = sQvals(Naction-1); %2nd best
+                    Q_bst(k) = sQvals(Naction);   %best value
+                    Q_cnf(k) = sQvals(Naction-1); %2nd best value
                     icv_policy(k) = U(iQvals(Naction)); % best action                    
-                    %icv_policy(k) = U(find(Q_values==max(Q_values)));
                     Q_rand(k) = Q_run; 
 
                     % % debug 
                     % Q_values
                     % sQvals
                     % iQvals
+                    % Q_bst(k)
                     % Q_cnf(k)
                     % icv_policy(k)
                     % Q_rand(k)
@@ -280,8 +283,10 @@ for i=1:Nsubj
             Q_cv(i,jj,:,:) = good_cv;
             Q_traj_cv(i,jj,:,:) = reshape(Q_traj,4,30)';
             Q_rand_cv(i,jj,:,:) = reshape(Q_rand,4,30)';
+            Q_bst_cv(i,jj,:,:) = reshape(Q_bst,4,30)';
             Q_cnf_cv(i,jj,:,:) = reshape(Q_cnf,4,30)';
             act_err_cv(i,jj,:,:) = reshape(policy-icv_policy,4,30)';                    
+
         end %jj
 
     catch

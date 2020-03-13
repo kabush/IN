@@ -300,7 +300,7 @@ end
 %% ----------------------------------------
 %% format figure (probabilities)
 ymin = 0;
-ymax = 1;
+ymax = .85;
 xmin = 0;
 xmax = 1;
 
@@ -397,7 +397,7 @@ end
 %% ----------------------------------------
 %% format figure (probabilities)
 ymin = 0;
-ymax = 1;
+ymax = .85;
 xmin = 0;
 xmax = 1;
 

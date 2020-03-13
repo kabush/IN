@@ -14,12 +14,9 @@ function calc_in_emg(proj,var_name)
 %% load subjs
 subjs = load_subjs(proj);
 
-figure(1)
-set(gcf,'color','w');
-hold on;
-
 %% ----------------------------------------
 %% scatter the underlying stim and feel
+
 predictors = [];
 trajs = [];
 measures = [];
@@ -27,8 +24,6 @@ subjects = [];
 
 sig_cnt = 1;
 non_cnt = 1;
-
-b_all = []; %% for power
 
 for i = 1:numel(subjs)
 
@@ -62,7 +57,6 @@ for i = 1:numel(subjs)
        subjects = [subjects;repmat(i,numel(in_form),1)];
        trajs = [trajs;traj_form];
 
-       
        % ----------------------------------------
        % Quality control below
             
@@ -79,7 +73,7 @@ for i = 1:numel(subjs)
        %% Extract Fixed effects
        [~,~,FE] = fixedEffects(sbj_mdl_fe);
        
-       subj.stim = zscore(in_emg)
+       subj.stim = zscore(in_emg);
        subj.b1 = FE.Estimate(2); % slope
        subj.b0 = FE.Estimate(1); % intercept
        subj.p1 = FE.pValue(2); %slope
@@ -101,9 +95,9 @@ for i = 1:numel(subjs)
 
 end
 
-
 %% ----------------------------------------
 %% save out subject groups
+
 if(exist('sig_subjs'))
     save([proj.path.analysis.in_emg,var_name,'_sig_subjs.mat'],'sig_subjs');
 end
@@ -113,8 +107,8 @@ if(exist('non_subjs'))
 end
 
 %% ----------------------------------------
-%% ----------------------------------------
 %% Group GLMM fit
+
 measures = double(measures-mean(measures));
 predictors = double(predictors-mean(predictors));
 trajs = double(trajs-mean(trajs));
@@ -147,8 +141,11 @@ logger(['Fsqr=',num2str(Fsqr)],proj.path.logfile);
 save([proj.path.analysis.in_emg,var_name,'_in_emg_mdl.mat'],'mdl');
 
 %% ----------------------------------------
-%% ----------------------------------------
 %% Plotting
+
+figure(1)
+set(gcf,'color','w');
+hold on;
 
 %% scatter raw data
 scatter(predictors,measures,10,'MarkerFaceColor', ...
@@ -182,21 +179,11 @@ xmax = 2;
 ymin = -2;
 ymax = 2;
 
-% %% ----------------------------------------
-% %% overlay VR goal
-% xseq = linspace(xmin,xmax);
-% plot(xseq,xseq,'k:','LineWidth',2)
-
 %% ----------------------------------------
 %% overlay the group entrain plot
 xseq = linspace(xmin,xmax);
 y_hat = FE.Estimate(1) + FE.Estimate(2)*xseq;
 plot(xseq,y_hat,'r-','LineWidth',3);
-
-% %% ----------------------------------------
-% %% indicate goal
-% text(1.8,1.7,'\itgoal','FontSize', ...
-%      proj.param.plot.axisLabelFontSize-3);
 
 %% ----------------------------------------
 %% format figure

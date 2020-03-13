@@ -33,6 +33,9 @@ addpath(genpath(proj.path.tools.nifti));
 proj.path.tools.approxrl = '/home/kabush/lib/approxrl/';
 addpath(genpath(proj.path.tools.approxrl));
 
+proj.path.tools.noboxplot = '/home/kabush/lib/noboxplot/';
+addpath(genpath(proj.path.tools.noboxplot));
+
 %% ----------------------------------------
 %% Project Flag Definitions
 proj.flag.clean_build = 1;
@@ -99,12 +102,14 @@ proj.path.betas.fmri_in_beta = [proj.path.data,proj.path.betas.name,'fmri_in_bet
 proj.path.physio.scr_clean = [proj.path.data,proj.path.physio.name,'scr_clean/'];
 proj.path.betas.scr_ex_beta = [proj.path.data,proj.path.betas.name,'scr_ex_beta/'];
 proj.path.betas.scr_in_beta = [proj.path.data,proj.path.betas.name,'scr_in_beta/'];
+proj.path.betas.scr_rest_beta = [proj.path.data,proj.path.betas.name,'scr_rest_beta/'];
 
 %% HR paths 
 % Under development within project http://github.com/kabush/HR
 
 %% EMG paths
 proj.path.physio.emg_clean = [proj.path.data,proj.path.physio.name,'emg_clean/'];
+proj.path.betas.emg_ex_beta = [proj.path.data,proj.path.betas.name,'emg_ex_beta/'];
 proj.path.betas.emg_in_beta = [proj.path.data,proj.path.betas.name,'emg_in_beta/'];
 proj.path.betas.emg_rest_beta = [proj.path.data,proj.path.betas.name,'emg_rest_beta/'];
 
@@ -117,19 +122,27 @@ proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
 
-%validation 
+%% Applying EX models to IN and REST components of the experiment
 proj.path.mvpa.fmri_ex_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_via_ex_gm_mdl/'];
 proj.path.mvpa.fmri_in_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_in_via_ex_gm_mdl/'];
 proj.path.mvpa.fmri_rest_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_rest_via_ex_gm_mdl/'];
+
+%% Measure affect entrainment at rest by physio and fMRI
 proj.path.analysis.fmri_rest_entrain = [proj.path.data,proj.path.analysis.name,'fmri_rest_entrain/']
 proj.path.analysis.emg_rest_entrain = [proj.path.data,proj.path.analysis.name,'emg_rest_entrain/'];
+proj.path.analysis.scr_rest_entrain = [proj.path.data,proj.path.analysis.name,'scr_rest_entrain/'];
 
+%% Secondary replication paths
 % secondary replication of Front. in Human Neuro. (2018) paper
 proj.path.mvpa.fmri_ex_gs_vs_gm = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_vs_gm/'];
 
 % secondary replication of SciReports (2018) paper
 proj.path.mvpa.fmri_ex_gm_rgr_scr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_scr/'];
 proj.path.mvpa.fmri_ex_gm_rgr_a = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_a/'];
+
+% secondary replication (not previously reported)
+proj.path.mvpa.fmri_ex_gm_rgr_zygo = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_zygo/'];
+proj.path.mvpa.fmri_ex_gm_rgr_corr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_corr/'];
 
 % secondary replication of Psychophysiology (~2020; under review) paper
 proj.path.mvpa.fmri_ex_gm_rgr_hr = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_rgr_hr/'];
@@ -146,10 +159,13 @@ proj.path.ctrl.in_evc_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_opt_
 proj.path.ctrl.in_evc_icv_mdl = [proj.path.data,proj.path.ctrl.name,'in_evc_icv_mdl/'];
 proj.path.ctrl.in_pro_opt_mdl = [proj.path.data,proj.path.ctrl.name,'in_pro_opt_mdl/'];
 
-%% Intrinsic (IN) analysis path
-proj.path.analysis.ex_gs_vs_gm = [proj.path.data,proj.path.analysis.name,'ex_gs_vs_gm/'];
-proj.path.analysis.ex_gm_scr_a = [proj.path.data,proj.path.analysis.name,'ex_gm_scr_a/'];
+%% Extrinsic (EX) analysis path
 proj.path.analysis.gs_cls_refit = [proj.path.data,proj.path.analysis.name,'gs_cls_refit/'];
+proj.path.analysis.ex_gs_vs_gm = [proj.path.data,proj.path.analysis.name,'ex_gs_vs_gm/'];
+proj.path.analysis.ex_scr_a = [proj.path.data,proj.path.analysis.name,'ex_scr_a/'];
+proj.path.analysis.ex_emg_v = [proj.path.data,proj.path.analysis.name,'ex_emg_v/'];
+
+%% Intrinsic (IN) analysis path
 proj.path.analysis.vr_skill = [proj.path.data,proj.path.analysis.name,'vr_skill/'];
 proj.path.analysis.in_cv_cmb_3dlme = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_3dlme/'];
 proj.path.analysis.in_cv_cmb_clust_thresh = [proj.path.data,proj.path.analysis.name,'in_cv_cmb_clust_thresh/'];
@@ -286,17 +302,17 @@ proj.param.ctrl.reward_frac_set = [0:.2:0.4];
 % completeness (both Valence and Arousal)
 
 %% Control analysis variable names
-proj.param.ctrl.ccm_z_names = {'aff','traj','err','pro','cnf','evc','age','sex','yint',...
-                    'aff_sex','traj_sex','err_sex','pro_sex','cnf_sex','evc_sex'};
-proj.param.ctrl.ccm_z_ids = {29,31,33,35,37,39,41,43,45,47,49,51,53,55,57}; 
+proj.param.ctrl.ccm_z_names = {'aff','traj','err','pro','evc','age','sex','yint',...
+                    'aff_sex','traj_sex','err_sex','pro_sex','evc_sex'};
+proj.param.ctrl.ccm_z_ids = {25,27,29,31,33,35,37,39,41,43,45,47,49};
 
-proj.param.ctrl.ccm_f_names = {'aff','traj','err','pro','cnf','evc','age','sex','yint',...
-                    'aff_sex','traj_sex','err_sex','pro_sex','cnf_sex','evc_sex',...
-                    'aff_age','traj_age','err_age','pro_age','cnf_age','evc_age',...
-                    'sex_age','aff_sex_age','traj_sex_age','err_sex_age','pro_sex_age',...
-                    'cnf_sex_age','evc_sex_age'};
-proj.param.ctrl.ccm_f_ids = {1,4,5,6,7,8,3,2,0,9,12,14,16,18,20,10,13,15,17,19,21,11,22,23,24,25,26,27};
+proj.param.ctrl.ccm_f_names = {'yint','aff','sex','age','traj','err','pro','evc',...
+                    'aff_sex','aff_age','sex_age','sex_traj','age_traj','sex_err',...
+                    'age_err','sex_pro','age_pro','sex_evc','age_evc','aff_sex_age',...
+                    'traj_sex_age','err_sex_age','pro_sex_age','evc_sex_age'};
+proj.param.ctrl.ccm_f_ids = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
 
+%% Base analysis variable names
 proj.param.ctrl.base_z_names = {'aff','traj','yint','age','sex','aff_sex','traj_sex'};
 proj.param.ctrl.base_z_ids = {13,15,17,19,21,23,25};
 

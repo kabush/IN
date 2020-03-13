@@ -39,6 +39,9 @@ measures = [];
 predictors = [];
 subjects = [];
 
+sig_cnt = 1;
+non_cnt = 1;
+
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -98,25 +101,63 @@ for i = 1:numel(subjs)
             end
 
             %% Fit model
-            [out,trg,mdl,stats] = regress_intra_loocv(scr_ex_img,scr_ex_betas,proj.param.mvpa.kernel);
+            [out,trg,mdl,stats] = regress_intra_loocv(zscore(scr_ex_img),zscore(scr_ex_betas),...
+                                                      proj.param.mvpa.kernel);
 
             measures = [measures;trg];
             predictors = [predictors;out];
             subjects = [subjects;repmat(i,numel(out),1)];
             
             %% Fit model
-            scr_model = fitrsvm(scr_ex_img,scr_ex_betas,'KernelFunction',proj.param.mvpa.kernel);
+            scr_model = fitrsvm(zscore(scr_ex_img),zscore(scr_ex_betas),...
+                                'KernelFunction',proj.param.mvpa.kernel);
             
             %% Save model
             save([proj.path.mvpa.fmri_ex_gm_rgr_scr,subj_study,'_', ...
                   name,'_ex_gm_rgr_scr_model.mat'],'scr_model');
+
+            % ----------------------------------------
+            % Quality control below
             
+            % build individual subject structures
+            subj = struct();
+            subj.study = subj_study;
+            subj.name = name;
+            
+            [b stat] = robustfit(out,trg);
+            subj.stim = out;
+            subj.b1 = b(2); % slope
+            subj.b0 = b(1); % intercept
+            subj.p1 = stat.p(2); %slope
+            subj.p0 = stat.p(1); %intercept
+
+            % sort subjects by significance
+            if(subj.p1<0.05)
+                sig_subjs{sig_cnt} = subj;
+                sig_cnt = sig_cnt + 1;
+            else
+                non_subjs{non_cnt} = subj;
+                non_cnt = non_cnt + 1;
+            end
+
         end
         
     catch
         disp(['   MVPA Error: possible missing beta series']);
     end
 
+end
+
+
+%% ----------------------------------------
+%% save out subject groups
+
+if(exist('sig_subjs'))
+    save([proj.path.mvpa.fmri_ex_gm_rgr_scr,'sig_subjs.mat'],'sig_subjs');
+end
+
+if(exist('non_subjs'))
+    save([proj.path.mvpa.fmri_ex_gm_rgr_scr,'non_subjs.mat'],'non_subjs');
 end
 
 
@@ -174,7 +215,25 @@ scatter(predictors,measures,10,'MarkerFaceColor', ...
 hold on;
 
 %% ----------------------------------------
-%% format figure
+%% overlay the individual plots
+if(exist('non_subjs'))
+    for i =1:numel(non_subjs)
+        plot(non_subjs{i}.stim,non_subjs{i}.stim*non_subjs{i}.b1+ ...
+             non_subjs{i}.b0,'Color',proj.param.plot.light_grey, ...
+             'LineWidth',1);
+    end
+end
+
+if(exist('sig_subjs'))
+    for i =1:numel(sig_subjs)
+        plot(sig_subjs{i}.stim,sig_subjs{i}.stim*sig_subjs{i}.b1+ ...
+             sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey, ...
+             'LineWidth',2);
+    end
+end
+
+%% ----------------------------------------
+%% Format figure
 ymin = -3;
 ymax = 3;
 xmin = -3;

@@ -208,11 +208,11 @@ plot(xseq,xseq,'k:','LineWidth',2)
 y_hat = FE.Estimate(1) + FE.Estimate(2)*xseq;
 plot(xseq,y_hat,'r-','LineWidth',3);
 
-
-%% ----------------------------------------
-%% indicate goal
-text(1.8,1.7,'\itgoal','FontSize', ...
-     proj.param.plot.axisLabelFontSize-3);
+% No longer plot this b/c position move
+% %% ----------------------------------------
+% %% indicate goal
+% text(1.8,1.7,'\itgoal','FontSize', ...
+%      proj.param.plot.axisLabelFontSize-3);
 
 %% ----------------------------------------
 %% format figure

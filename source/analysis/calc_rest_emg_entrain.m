@@ -28,8 +28,6 @@ subjects = [];
 sig_cnt = 1;
 non_cnt = 1;
 
-b_all = []; %% for power
-
 for i = 1:numel(subjs)
 
     %% extract subject info
@@ -84,7 +82,7 @@ for i = 1:numel(subjs)
         %% Extract Fixed effects
         [~,~,FE] = fixedEffects(sbj_mdl_fe);
         
-        subj.stim = zscore(stim_form)
+        subj.stim = zscore(stim_form);
         subj.b1 = FE.Estimate(2); % slope
         subj.b0 = FE.Estimate(1); % intercept
         subj.p1 = FE.pValue(2); %slope
@@ -183,10 +181,10 @@ end
 %% identify max/min x-range|y-rang
 %%
 %% TICKET (automate this decision)
-xmin = -3;
-xmax = 3;
-ymin = -2;
-ymax = 2;
+xmin = -2.5;
+xmax = 2.5;
+ymin = -2.5;
+ymax = 2.5;
 
 %% ----------------------------------------
 %% overlay the group entrain plot
@@ -216,19 +214,30 @@ close all;
 %% ----------------------------------------
 %% Compare REST vs IN
 
-rest_b = [];
-in_b = [];
+rest_cnt = 1;
 
 % gather REST fits
 if(exist('non_subjs'))
     for i =1:numel(non_subjs)
-        rest_b = [rest_b,non_subjs{i}.b1];
+
+        subj = struct();
+        subj.study = non_subjs{i}.study;
+        subj.name = non_subjs{i}.name;
+        subj.b1 = non_subjs{i}.b1;
+        rest_subjs{rest_cnt} = subj;
+        rest_cnt = rest_cnt + 1;
     end
 end
 
 if(exist('sig_subjs'))
     for i =1:numel(sig_subjs)
-        rest_b = [rest_b,sig_subjs{i}.b1];
+
+        subj = struct();
+        subj.study = sig_subjs{i}.study;
+        subj.name = sig_subjs{i}.name;
+        subj.b1 = sig_subjs{i}.b1;
+        rest_subjs{rest_cnt} = subj;
+        rest_cnt = rest_cnt + 1;
     end
 end
 
@@ -240,44 +249,122 @@ clear sig_subjs;
 load([proj.path.analysis.in_emg,var_name,'_sig_subjs.mat']);
 load([proj.path.analysis.in_emg,var_name,'_non_subjs.mat']);
 
+cmp_b = [];
+
 if(exist('non_subjs'))
     for i =1:numel(non_subjs)
-        in_b = [in_b,non_subjs{i}.b1];
+        for j=1:numel(rest_subjs)
+            if(strcmp(rest_subjs{j}.study,non_subjs{i}.study) & strcmp(rest_subjs{j}.name,non_subjs{i}.name))
+                cmp_b = [cmp_b,rest_subjs{j}.b1-non_subjs{i}.b1];
+            end
+        end
     end
 end
 
 if(exist('sig_subjs'))
     for i =1:numel(sig_subjs)
-        in_b = [in_b,sig_subjs{i}.b1];
+        for j=1:numel(rest_subjs)
+            if(strcmp(rest_subjs{j}.study,sig_subjs{i}.study) & strcmp(rest_subjs{j}.name,sig_subjs{i}.name))
+                cmp_b = [cmp_b,sig_subjs{i}.b1-rest_subjs{j}.b1];
+            end
+        end
     end
 end
 
 % analysis
 logger(['*************************************'],proj.path.logfile);
 logger(['Comparison of IN ctrl to REST entrain'],proj.path.logfile);
-logger(['  Median IN beta: ',num2str(median(in_b))],proj.path.logfile);
-logger(['  Median RST beta: ',num2str(median(rest_b))],proj.path.logfile);
-[p h] = ranksum(in_b,rest_b);
-logger(['  Ranksum(IN_beta vs RST_beta), p=',num2str(p)],proj.path.logfile);
+logger(['  Median cmp_beta: ',num2str(median(cmp_b))],proj.path.logfile);
+[p h] = signrank(cmp_b);
+logger(['  Signrank cmp_beta, p=',num2str(p)],proj.path.logfile);
 
 % plot effect
-
 figure(1)
 set(gcf,'color','w');
 hold on;
-h1 = histogram(in_b,'BinWidth',0.1); 
-h2 = histogram(rest_b,'BinWidth',0.1,'FaceColor','red');
-hold off;
+
+colors = [1.0,0.0,0.0;
+          0.8,0.8,0.8];
+
+x = [cmp_b'];
+g = repmat(1,numel(cmp_b),1);
+g_labels = {' '};
+kabBoxPlot(x,g,g_labels,colors,0.4)
 
 fig = gcf;
 ax = fig.CurrentAxes;
-ax.FontSize = proj.param.plot.axisLabelFontSize;
+ax.FontSize = 22; %proj.param.plot.axisLabelFontSize;
+set(gcf,'position',[0,0,300,600]);
 
 export_fig entrain_hist.png -r300  
-eval(['! mv ',proj.path.code,'entrain_hist.png ',proj.path.fig,'REST_vs_IN_',var_name,'_emg_hist.png']);
+eval(['! mv ',proj.path.code,'entrain_hist.png ',proj.path.fig,'REST_vs_IN_',var_name,'_hist.png']);
 
 % clean-up
 close all;
+
+
+% rest_b = [];
+% in_b = [];
+% 
+% % gather REST fits
+% if(exist('non_subjs'))
+%     for i =1:numel(non_subjs)
+%         rest_b = [rest_b,non_subjs{i}.b1];
+%     end
+% end
+% 
+% if(exist('sig_subjs'))
+%     for i =1:numel(sig_subjs)
+%         rest_b = [rest_b,sig_subjs{i}.b1];
+%     end
+% end
+% 
+% % clean up
+% clear non_subjs;
+% clear sig_subjs;
+% 
+% % gather IN fits
+% load([proj.path.analysis.in_emg,var_name,'_sig_subjs.mat']);
+% load([proj.path.analysis.in_emg,var_name,'_non_subjs.mat']);
+% 
+% if(exist('non_subjs'))
+%     for i =1:numel(non_subjs)
+%         in_b = [in_b,non_subjs{i}.b1];
+%     end
+% end
+% 
+% if(exist('sig_subjs'))
+%     for i =1:numel(sig_subjs)
+%         in_b = [in_b,sig_subjs{i}.b1];
+%     end
+% end
+% 
+% % analysis
+% logger(['*************************************'],proj.path.logfile);
+% logger(['Comparison of IN ctrl to REST entrain'],proj.path.logfile);
+% logger(['  Median IN beta: ',num2str(median(in_b))],proj.path.logfile);
+% logger(['  Median RST beta: ',num2str(median(rest_b))],proj.path.logfile);
+% [p h] = ranksum(in_b,rest_b);
+% logger(['  Ranksum(IN_beta vs RST_beta), p=',num2str(p)],proj.path.logfile);
+% 
+% % plot effect
+% 
+% figure(1)
+% set(gcf,'color','w');
+% hold on;
+% h1 = histogram(in_b,'BinWidth',0.1); 
+% h2 = histogram(rest_b,'BinWidth',0.1,'FaceColor','red');
+% hold off;
+% 
+% fig = gcf;
+% ax = fig.CurrentAxes;
+% ax.FontSize = proj.param.plot.axisLabelFontSize;
+% 
+% export_fig entrain_hist.png -r300  
+% eval(['! mv ',proj.path.code,'entrain_hist.png ',proj.path.fig,'REST_vs_IN_',var_name,'_emg_hist.png']);
+% 
+% % clean-up
+% close all;
 
 
 
