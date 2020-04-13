@@ -30,14 +30,18 @@ subjs = proj.process.subjs;
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
+
 v_predictors = [];
 v_measures = [];
+v_sig_cnt = 1;
+v_non_cnt = 1;
 
 a_predictors = [];
 a_measures = [];
+a_sig_cnt = 1;
+a_non_cnt = 1;
 
 subjects = [];
-
 
 cnt = 0;
 for i = 1:numel(subjs)
@@ -52,24 +56,82 @@ for i = 1:numel(subjs)
 
     try
 
-        %% Load IN trajectory structures
+        %% Load EX predictionsry structures
         load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
         gs_prds = prds;
         
         load([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_prds.mat']);
         gm_prds = prds;
 
-        v_predictors = [v_predictors;mean(gs_prds.v_cls_hd,1)'];
-        v_measures = [v_measures;mean(gm_prds.v_cls_hd,1)'];
+        %% ----------------------------------------
+        v_predictors = [v_predictors;zscore(mean(gs_prds.v_cls_hd,1))'];
+        v_measures = [v_measures;zscore(mean(gm_prds.v_cls_hd,1))'];
 
-        a_predictors = [a_predictors;mean(gs_prds.a_cls_hd,1)'];
-        a_measures = [a_measures;mean(gm_prds.a_cls_hd,1)'];
+        % model subject level
+        subj = struct();
+        subj.study = subj_study;
+        subj.name = name;
         
+        pred = double(zscore(mean(gs_prds.v_cls_hd,1))');
+        trg = double(zscore(mean(gm_prds.v_cls_hd,1))');
+        tbl = table(pred,trg,'VariableNames',{'pred','trg'});
+
+        sbj_mdl_fe = fitlme(tbl,['trg ~ 1 + pred']);
+ 
+        % extract fixed effects
+        [~,~,FE] = fixedEffects(sbj_mdl_fe);
+
+        subj.stim = pred;
+        subj.b1 = FE.Estimate(2);
+        subj.b0 = FE.Estimate(1);
+        subj.p1 = FE.pValue(2);
+        subj.p0 = FE.pValue(1);
+
+        if(subj.p1<0.05)
+            v_sig_subjs{v_sig_cnt} = subj;
+            v_sig_cnt = v_sig_cnt + 1;
+        else
+            v_non_subjs{v_non_cnt} = subj;
+            v_non_cnt = v_non_cnt +1;
+        end
+
+
+        %% ----------------------------------------
+        a_predictors = [a_predictors;zscore(mean(gs_prds.a_cls_hd,1))'];
+        a_measures = [a_measures;zscore(mean(gm_prds.a_cls_hd,1))'];
+
+        % model subject level
+        subj = struct();
+        subj.study = subj_study;
+        subj.name = name;
+        
+        pred = double(zscore(mean(gs_prds.a_cls_hd,1))');
+        trg = double(zscore(mean(gm_prds.a_cls_hd,1))');
+        tbl = table(pred,trg,'VariableNames',{'pred','trg'});
+
+        sbj_mdl_fe = fitlme(tbl,['trg ~ 1 + pred']);
+ 
+        % extract fixed effects
+        [~,~,FE] = fixedEffects(sbj_mdl_fe);
+
+        subj.stim = pred;
+        subj.b1 = FE.Estimate(2);
+        subj.b0 = FE.Estimate(1);
+        subj.p1 = FE.pValue(2);
+        subj.p0 = FE.pValue(1);
+
+        if(subj.p1<0.05)
+            a_sig_subjs{a_sig_cnt} = subj;
+            a_sig_cnt = a_sig_cnt + 1;
+        else
+            a_non_subjs{a_non_cnt} = subj;
+            a_non_cnt = a_non_cnt +1;
+        end
+
+        % ----------------------------------------
         cnt = cnt + 1;
         subjects = [subjects;repmat(cnt,length(gs_prds.v_cls_hd), ...
                                     1)];
-        
-        
     catch
         % do nothing
         logger(['  -Could not find/load prds for: ',subj_study,'_', ...
@@ -83,7 +145,6 @@ ymin = -3;
 ymax = 3;
 xmin = -3;
 xmax = 3;
-
 
 %% ========================================
 %% ========================================
@@ -140,6 +201,20 @@ scatter(v_predictors,v_measures,10,'MarkerFaceColor', ...
         proj.param.plot.light_grey);
 hold on;
 
+%% Individual plots
+if(v_sig_cnt>1)
+for i=1:numel(v_non_subjs)
+    plot(v_non_subjs{i}.stim,v_non_subjs{i}.stim*v_non_subjs{i}.b1+ ...
+         v_non_subjs{i}.b0,'Color',proj.param.plot.light_grey,'LineWidth',1);
+end
+end
+
+if(v_non_cnt>1)
+for i=1:numel(v_sig_subjs)
+    plot(v_sig_subjs{i}.stim,v_sig_subjs{i}.stim*v_sig_subjs{i}.b1+ ...
+         v_sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
+end
+end
 
 %% overlay the group fixed effect plot
 vseq = linspace(xmin,xmax);
@@ -219,6 +294,20 @@ scatter(a_predictors,a_measures,10,'MarkerFaceColor', ...
         proj.param.plot.light_grey);
 hold on;
 
+%% Individual plots
+if(a_non_cnt>1)
+    for i=1:numel(v_non_subjs)
+        plot(a_non_subjs{i}.stim,a_non_subjs{i}.stim*a_non_subjs{i}.b1+ ...
+             a_non_subjs{i}.b0,'Color',proj.param.plot.light_grey,'LineWidth',1);
+    end
+end
+
+if(a_sig_cnt>1)
+    for i=1:numel(v_sig_subjs)
+        plot(a_sig_subjs{i}.stim,a_sig_subjs{i}.stim*a_sig_subjs{i}.b1+ ...
+             a_sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
+    end
+end
 
 %% ----------------------------------------
 %% overlay the group fixed effect plot
@@ -244,10 +333,4 @@ eval(['! mv ',proj.path.code,'EX_mvpa_gs_vs_gm_aro_summary.png ',proj.path.fig])
 
 %% clean up
 close all;
-
-
-
-
-
-
 

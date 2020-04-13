@@ -54,7 +54,9 @@ for i = 1:numel(subjs)
         
         % Identify usable ids
         good_ids = setdiff(ex_id,subjs{i}.beta.mri_ex_id.nan_ids);
-        % disp(['Nids: ',num2str(numel(good_ids))]);
+        %% good_ids = ex_id;  %% ***TICKET*** used during restart
+        %% to debug
+        % disp(['Nids: ',num2str(numel(goo_ids_ids))]);
 
         % Extract mean accuracy for this subject on usable ids
         acc_v = zeros(1,N_ex)-1;
@@ -189,9 +191,14 @@ end
 %% ----------------------------------------
 %% Valence output
 
+% conf interval of refit
+[h p ci stats] = ttest(grp_v_corr_perf);
+
 logger(['Grp VAL accuracy, pre-refit=', ...
         num2str(mean(mean(all_raw_acc_v,2))), ', post-refit=', ...
-        num2str(mean(grp_v_corr_perf))],proj.path.logfile);
+        num2str(mean(grp_v_corr_perf)), ', CI=[',...
+        num2str(ci(1)),', ',num2str(ci(2)),']'],...
+        proj.path.logfile);
       
 ncorr = numel(corr_ids_v);
 [a b] = binofit(ncorr/2,ncorr,0.05);
@@ -202,9 +209,15 @@ logger(['Sing. Subj VAL significant post-refit=',num2str(sscnt_v), ...
 
 %% ----------------------------------------
 %% Arousal output
+
+% conf interval of refit
+[h p ci stats] = ttest(grp_a_corr_perf);
+
 logger(['Grp ARO accuracy, pre-refit=', ...
         num2str(mean(mean(all_raw_acc_a,2))), ', post-refit=', ...
-        num2str(mean(grp_a_corr_perf))],proj.path.logfile);
+        num2str(mean(grp_a_corr_perf)), ', CI=[',...
+        num2str(ci(1)),', ',num2str(ci(2)),']'],...
+       proj.path.logfile);
       
 ncorr = numel(corr_ids_a);
 [a b] = binofit(ncorr/2,ncorr,0.05);
