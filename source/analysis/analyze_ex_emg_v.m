@@ -20,11 +20,11 @@ if(proj.flag.clean_build)
 end
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Analyzing IN (Zygomaticus)          '],proj.path.logfile);
+logger(['Analyzing EX (Zygomaticus)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 calc_ex_emg_v(proj,'zygo');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['Analyzing IN (Corrugator)          '],proj.path.logfile);
+logger(['Analyzing EX (Corrugator)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 calc_ex_emg_v(proj,'corr');

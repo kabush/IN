@@ -222,8 +222,8 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('SCR Beta Coefficients');
-ylabel('Normative Arousal Scores');
+% xlabel('SCR Beta Coefficients');
+% ylabel('Normative Arousal Scores');
 
 %% ----------------------------------------
 %% explot hi-resolution figure

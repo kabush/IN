@@ -202,8 +202,8 @@ fig = gcf;
 ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
-xlabel('EMG Beta Coefficients');
-ylabel('Normative Valence Scores');
+% xlabel('EMG Beta Coefficients');
+% ylabel('Normative Valence Scores');
 
 %% ----------------------------------------
 %% explot hi-resolution figure

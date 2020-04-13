@@ -283,6 +283,7 @@ proj.param.physio.scr.filt_type = 2;
 %% EMG analysis parameters
 proj.param.physio.emg.filt_low = 500.0; %% reference???
 proj.param.physio.emg.filt_high = 10.0; %% reference???
+proj.param.physio.emg.filt_type = 2;
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';

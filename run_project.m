@@ -110,7 +110,7 @@ init_project;
 % 
 % %% ----------------------------------------
 % %% STEP 7: compare GS vs GM features (see Frontiers 2018 supplemental)
-analyze_mvpa_fmri_ex_gs_vs_gm;
+% analyze_mvpa_fmri_ex_gs_vs_gm;
 % 
 % %% ----------------------------------------
 % %% STEP 8: Analyze EX Physiology Response (compare to brain state)
@@ -219,7 +219,7 @@ analyze_mvpa_fmri_ex_gs_vs_gm;
 % ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
 % 
 % %% Compute PRO-values
-% ccm_pro_opt_cv_fmri_in_gm;
+ccm_pro_opt_cv_fmri_in_gm;
 % 
 % %% ------------------------------------------------------------
 % %% STEP 2: Identify CCM neural correlates
