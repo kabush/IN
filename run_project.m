@@ -214,12 +214,12 @@ init_project;
 % %% Select optimal parameters (separately for V & A)
 % select_opt_evc_fmri_in_params;  % Find best meta-parameters of RL
 %                                 % using CV
-%  
-% %% Compute Q-values (separately for V & A)
+% 
+% %% Compute Q-values (separately for V & A using best params)
 % ccm_evc_cv_fmri_in_gm; % compute EVC (cross-validated inter-subj)
 % 
 % %% Compute PRO-values
-ccm_pro_opt_cv_fmri_in_gm;
+% ccm_pro_opt_cv_fmri_in_gm;
 % 
 % %% ------------------------------------------------------------
 % %% STEP 2: Identify CCM neural correlates
@@ -259,5 +259,9 @@ ccm_pro_opt_cv_fmri_in_gm;
 % %% Control for physio entrainment effects (REST vs IN)
 % analyze_rest_scr_entrain;
 % analyze_rest_emg_entrain;
+
+% %% Display IN norm affect scores, and IAPS IDs
+analyze_in_stim;
+
 
 toc

@@ -334,6 +334,8 @@ proj.param.plot.very_light_grey = [.9,.9,.9];
 proj.param.plot.light_grey = [.8,.8,.8];
 proj.param.plot.dark_grey = [.6,.6,.6];
 proj.param.plot.axis_nudge = 0.1;
+proj.param.plot.blue = [0,0,1];
+proj.param.plot.red = [1,0,0];
 
 %% ----------------------------------------
 %% Processing progress and quality control

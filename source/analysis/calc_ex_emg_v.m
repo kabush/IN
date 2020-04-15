@@ -8,7 +8,7 @@
 %%========================================
 %%========================================
 
-function calc_ex_emg_v(proj,var_name)
+function calc_ex_emg_v(proj,var_name,fstd)
 
 %% ----------------------------------------
 %% load subjs
@@ -21,6 +21,10 @@ v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
 
 %% Adjust for extrinsic presentations
 v_score = v_score(find(label_id==proj.param.trg.ex_id));
+
+%% Adjust for thresholding
+v_score = v_score-mean(v_score);
+v_std = std(v_score);
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
@@ -51,8 +55,10 @@ for i = 1:numel(subjs)
     emg_betas = [eval(['ex_betas.',var_name,'.id1']);...
                  eval(['ex_betas.',var_name,'.id2'])];
 
-    emg_betas = zscore(emg_betas);
-    emg_v_score = zscore(v_score);
+    
+    keep_ids = find(abs(v_score)>fstd*v_std);
+    emg_betas = zscore(emg_betas(keep_ids));
+    emg_v_score = zscore(v_score(keep_ids));
 
     %% ****************************************
     %% Remove hardcoding of the indices covered
