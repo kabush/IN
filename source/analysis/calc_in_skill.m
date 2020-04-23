@@ -139,7 +139,6 @@ measures = double(measures-mean(measures));
 predictors = double(predictors-mean(predictors));
 trajs = double(trajs-mean(trajs));
 
-
 tbl = table(measures,predictors,trajs,subjects,'VariableNames', ...
             {'measures','predictors','trajs','subjects'});
 

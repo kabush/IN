@@ -103,12 +103,10 @@ for j=1:numel(fstd_seq)
     
     mdl = mdl_fe;
     if(fe_v_re.pValue<0.05);
-        %        logger('   random effects matter',proj.path.logfile);
         mdl = mdl_re;
     else
-        %        logger('   random effects DO NOT matter',proj.path.logfile);
+        % nothing
     end
-    %     logger(' ',proj.path.logfile);
     
     %% ----------------------------------------
     %% Examine Main Effect
@@ -122,9 +120,6 @@ for j=1:numel(fstd_seq)
     %% compute effect size
     Rsqr = mdl.Rsquared.Adjusted;
     Fsqr = Rsqr/(1-Rsqr);
-    % logger(['  Rsqr=',num2str(Rsqr)],proj.path.logfile);
-    % logger(['  Fsqr=',num2str(Fsqr)],proj.path.logfile);
-    % disp(' ');
     
 
     fstd = [fstd,this_fstd];

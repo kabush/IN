@@ -90,6 +90,7 @@ coef = 0.05;
 
 xlim([xmin-coef*xrng,xmax+coef*xrng]);
 ylim([ymin-coef*yrng,ymax+coef*yrng]);
+box off;
 
 % export hi-def figure
 export_fig emg_sensitivity.png -r300
@@ -112,6 +113,7 @@ ax = fig.CurrentAxes;
 ax.FontSize = proj.param.plot.axisLabelFontSize;
 
 xlim([xmin-coef*xrng,xmax+coef*xrng]);
+box off;
 
 % export hi-def figure
 export_fig emg_stimset_size.png -r300

@@ -22,6 +22,7 @@ all_pro = [];
 all_evc = [];
 all_trj = [];
 all_aff = [];
+all_sbj_id = [];
 
 %% ----------------------------------------
 %% Transform beta-series into affect series {v,a}
@@ -87,7 +88,6 @@ for i = 1:numel(subjs)
         % i.e., error)
         evc = -evc;  % by default EVC codes for value instead of cost
 
-
         %% ----------------------------------------
         %% Load additional effects
 
@@ -116,6 +116,7 @@ for i = 1:numel(subjs)
         all_pro = [all_pro;zscore(pro)];
         all_evc = [all_evc;zscore(evc)];
         all_trj = [all_trj;traj];
+        all_sbj_id = [all_sbj_id;repmat(i,numel(traj),1)];
 
         % gather the path information (indices select correct volume)
         for j = 1:numel(indx)
@@ -159,6 +160,50 @@ all_err = all_err-mean(all_err);
 all_pro = all_pro-mean(all_pro);
 all_evc = all_evc-mean(all_evc);
 all_age = all_age-mean(all_age);
+
+%% check regressor relationships
+tbl = table(all_evc,all_pro,all_sbj_id,'VariableNames',{'pred','trg','sbj'});
+mdl = fitlme(tbl,['trg ~ 1 + pred + (pred|sbj)']);
+[~,~,FE] = fixedEffects(mdl);
+evc_vs_pro_r2 = mdl.Rsquared.Adjusted;
+evc_vs_pro_beta = FE.Estimate(2);
+evc_vs_pro_p = FE.pValue(2);
+[evc_vs_pro_rho evc_vs_pro_rhop] = corr(all_evc,all_pro);
+
+tbl = table(all_evc,all_err,all_sbj_id,'VariableNames',{'pred','trg','sbj'});
+mdl = fitlme(tbl,['trg ~ 1 + pred + (pred|sbj)']);
+[~,~,FE] = fixedEffects(mdl);
+evc_vs_err_r2 = mdl.Rsquared.Adjusted;
+evc_vs_err_beta = FE.Estimate(2);
+evc_vs_err_p = FE.pValue(2);
+[evc_vs_err_rho evc_vs_err_rhop] = corr(all_evc,all_err);
+
+tbl = table(all_pro,all_err,all_sbj_id,'VariableNames',{'pred','trg','sbj'});
+mdl = fitlme(tbl,['trg ~ 1 + pred + (pred|sbj)']);
+[~,~,FE] = fixedEffects(mdl);
+pro_vs_err_r2 = mdl.Rsquared.Adjusted;
+pro_vs_err_beta = FE.Estimate(2);
+pro_vs_err_p = FE.pValue(2);
+[pro_vs_err_rho pro_vs_err_rhop] = corr(all_pro,all_err);
+
+logger('**REGRESSOR Relationships***',proj.path.logfile);
+logger(['-EVC vs PRO: r2=',num2str(evc_vs_pro_r2),...
+        ', beta=',num2str(evc_vs_pro_beta),...
+        ', p=', num2str(evc_vs_pro_p),...
+        ', rho=', num2str(evc_vs_pro_rho),...
+        ', rho_p=', num2str(evc_vs_pro_rhop)],proj.path.logfile);
+
+logger(['-EVC vs ERR: r2=',num2str(evc_vs_err_r2),...
+        ', beta=',num2str(evc_vs_err_beta),...
+        ', p=', num2str(evc_vs_err_p),...
+        ', rho=', num2str(evc_vs_err_rho),...
+        ', rho_p=', num2str(evc_vs_err_rhop)],proj.path.logfile);
+
+logger(['PRO vs ERR: r2=',num2str(pro_vs_err_r2),...
+        ', beta=',num2str(pro_vs_err_beta),...
+        ', p=', num2str(pro_vs_err_p),...
+        ', rho=', num2str(pro_vs_err_rho),...
+        ', rho_p=', num2str(pro_vs_err_rhop)],proj.path.logfile);
 
 % Build script
 fid = fopen(['./lme_',affect_name,'_cv_cmb_script'],'w');
@@ -222,16 +267,6 @@ i = Nrows;
             all_pro(i),...
             all_evc(i),...
             all_path{i});
-%     fprintf(fid,[' %s %s %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %s \n \\'],...
-%             all_subjs{i},...
-%             all_sex_code{i},...
-%             all_age(i),...
-%             all_aff(i),...
-%             all_trj(i),...
-%             all_err(i),...
-%             all_pro(i),...
-%             all_evc(i),...
-%             all_path{i});
 fclose(fid);
 
 % Execute the script
