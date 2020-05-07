@@ -140,11 +140,21 @@ for i = 1:numel(subjs)
 
 end
 
+if(v_sig_cnt>1)
+    save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'v_sig_subjs');
+end
 
-save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'v_sig_subjs');
-save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'v_non_subjs');
-save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'a_sig_subjs');
-save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'a_non_subjs');
+if(v_non_cnt>1)
+    save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'v_non_subjs');
+end
+
+if(a_sig_cnt>1)
+    save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'a_sig_subjs');
+end
+
+if(a_non_cnt>1)
+    save([proj.path.analysis.ex_gs_vs_gm,'v_sig_subjs.mat'],'a_non_subjs');
+end
 
 %% format figure axes
 ymin = -3;

@@ -288,8 +288,10 @@ end
 logger(['*************************************'],proj.path.logfile);
 logger(['Comparison of IN ctrl to REST entrain'],proj.path.logfile);
 logger(['  Median cmp_beta: ',num2str(median(cmp_b))],proj.path.logfile);
-[p h] = signrank(cmp_b);
+[p,h,stats] = signrank(cmp_b);
 logger(['  Signrank cmp_beta, p=',num2str(p)],proj.path.logfile);
+r = stats.zval/sqrt(numel(cmp_b));
+logger(['  ***EFFECT*** r(z/sqrt(n))=',num2str(r)],proj.path.logfile);
 
 % plot effect
 figure(1)
