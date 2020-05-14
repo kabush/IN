@@ -31,6 +31,8 @@ trajs = [];
 measures = [];
 subjects = [];
 
+clear non_subjs;
+clear sig_subjs;
 sig_cnt = 1;
 non_cnt = 1;
 
@@ -260,11 +262,8 @@ cmp_b = [];
 
 if(exist('non_subjs'))
     for i =1:numel(non_subjs)
-        % in_b = [in_b,non_subjs{i}.b1];
         for j=1:numel(rest_subjs)
-            %disp([non_subjs{i}.study,'_',non_subjs{i}.name,':',rest_subjs{j}.study,'_',rest_subjs{j}.name]);
             if(strcmp(rest_subjs{j}.study,non_subjs{i}.study) & strcmp(rest_subjs{j}.name,non_subjs{i}.name))
-                %   disp(['   match**********']);
                 cmp_b = [cmp_b,rest_subjs{j}.b1-non_subjs{i}.b1];
             end
         end
@@ -273,11 +272,8 @@ end
 
 if(exist('sig_subjs'))
     for i =1:numel(sig_subjs)
-        % in_b = [in_b,non_subjs{i}.b1];
         for j=1:numel(rest_subjs)
-            %     disp([sig_subjs{i}.study,'_',sig_subjs{i}.name,':',rest_subjs{j}.study,'_',rest_subjs{j}.name]);
             if(strcmp(rest_subjs{j}.study,sig_subjs{i}.study) & strcmp(rest_subjs{j}.name,sig_subjs{i}.name))
-                % disp(['   match**********']);
                 cmp_b = [cmp_b,sig_subjs{i}.b1-rest_subjs{j}.b1];
             end
         end

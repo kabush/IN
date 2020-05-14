@@ -50,6 +50,11 @@ all_a_trgs = [];
 all_a_prds = [];
 all_a_sbjs = [];
 
+clear v_sig_subjs;
+clear a_sig_subjs;
+clear v_non_subjs;
+clear a_non_subjs;
+
 v_sig_cnt = 1;
 v_non_cnt = 1;
 a_sig_cnt = 1;

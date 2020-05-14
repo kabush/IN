@@ -28,7 +28,6 @@ logger(['*********************************************'],proj.path.logfile);
 %% load subjs
 subjs = load_subjs(proj);
 
-
 %% ----------------------------------------
 %% scatter the underlying stim and feel
 measures = [];
@@ -36,6 +35,8 @@ predictors = [];
 subjects = [];
 trajs = [];
 
+clear sig_subjs;
+clear non_subjs;
 sig_cnt = 1;
 non_cnt = 1;
 
@@ -96,16 +97,15 @@ for i = 1:numel(subjs)
         %% sort subjects by significance
         if(subj.p1<0.05)
             sig_subjs{sig_cnt} = subj;
-            sig_cnt = sig_cnt + 1;
+            sig_cnt = sig_cnt + 1
         else
             non_subjs{non_cnt} = subj;
-            non_cnt = non_cnt + 1;
+            non_cnt = non_cnt + 1
         end
         
     catch
         logger('    Could not find scr beta file for processing.',proj.path.logfile);
     end
-    
     
 end
 
