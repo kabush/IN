@@ -27,6 +27,6 @@ logger(['*************************************************'],proj.path.logfile);
 calc_in_cv_cmb_fmri_3dlme(proj,'v');
 
 logger(['*************************************************'],proj.path.logfile);
-logger(['3dLME detection of Cog Ctrl Voxels (AROUSAL)      '],proj.path.logfile);
+logger(['3dLME detection of Cog Ctrl Voxels (AROUSAL)     '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 calc_in_cv_cmb_fmri_3dlme(proj,'a');
