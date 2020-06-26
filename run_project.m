@@ -44,18 +44,12 @@ preprocess_mask;
 %% Physio data
 preprocess_scr; 
 preprocess_emg;
-% - preprocess_hr (TBD); 
-
-%% Cognitive data
-% - preprocess_cog (TBD);
 
 %% ----------------------------------------
 %% STEP 4: Run quality check (system) on preprocessing outcomes
 check_mri;
 check_scr;
-% - check_hr; (TBD)
 check_emg;
-% - check_cog (TBD)
 
 %% ============================================================
 %% PHASE 1: Modeling Affective Brain States
@@ -74,15 +68,11 @@ calc_fmri_ex_beta;
 %% Physio data
 calc_scr_ex_beta;
 calc_emg_ex_beta;
-% - calc_hr_ex_beta (TBD);
 
 %% ----------------------------------------
 %% STEP 3: Run quality check (system) on ex_beta series
 check_mri_ex_beta;
 check_scr_ex_beta;
-% - check_hr_ex_beta (TBD);
-% - check_emg_ex_beta (TBD);
-% - project_summary; %% master summary 
 
 %% ----------------------------------------
 %% STEP 4: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -118,15 +108,13 @@ analyze_mvpa_fmri_ex_gs_vs_gm;
 %% Analyze SCR (see SciReports 2018 paper)
 analyze_ex_scr_a;        % predicting arousal from scr 
 mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
-% mvpa_fmri_ex_gm_rgr_a; % predicting aro from brain state (regr)
+mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
 
 %% Analyze EMG (not before published)
 analyze_ex_emg_v;
 
-% Analyze HR deceleration (see K. Wilson et al. [2019] paper, in review)
-% - analyze_ex_gm_hr_v; (TBD)
-% - mvpa_fmri_ex_gm_rgr_hr; (TBD)
-% - mvpa_fmri_ex_gm_rgr_v; (TBD)
+%%  Analyze HR deceleration (see SciReports 2020 paper)
+% (see github.com/kabush/HR for code)
 
 %% ************************************
 %% ************************************
@@ -134,8 +122,6 @@ analyze_ex_emg_v;
 
 %% ----------------------------------------
 %% STEP 9: Hyperplane encoding analysis (see SciReports 2018 paper)
-
-% % Encodings of Haufe-transformed hyperplanes
 % haufe_fmri_ex_gm; % (global permuation test null hypothesis)
 
 %% ----------------------------------------
@@ -246,7 +232,6 @@ analyze_in_base_clust_thresh_3dlme;
 %% Calculate IN Physio data
 calc_scr_in_beta;
 calc_emg_in_beta;
-% - calc_hr_in_beta (TBD);
 
 %% Validation of IN induction via physio
 analyze_in_scr;
