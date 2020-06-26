@@ -200,7 +200,7 @@ foreach subj (${subjs})
 	    echo "****************************************************************"
 	    rm ${study}.${subj}.anat.sksp_MNI+tlrc*
 	    rm ${study}.${subj}.anat.mask*
-	    @auto_tlrc -no_ss -suffix _MNI -rmode quintic -base MNI152_T1_2009c+tlrc -input ${study}.${subj}.anat.sksp+orig
+	    @auto_tlrc -no_ss -suffix _MNI -rmode quintic -base TT_icbm452+tlrc -input ${study}.${subj}.anat.sksp+orig
 
 	    3dAutomask -prefix ${study}.${subj}.anat.mask ${study}.${subj}.anat.sksp_MNI+tlrc
 
