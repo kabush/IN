@@ -51,8 +51,9 @@ all_a_prds = [];
 all_a_sbjs = [];
 
 clear v_sig_subjs;
-clear a_sig_subjs;
 clear v_non_subjs;
+
+clear a_sig_subjs;
 clear a_non_subjs;
 
 v_sig_cnt = 1;
@@ -103,8 +104,8 @@ for i = 1:numel(subjs)
         in_img = subj_img(in_id_good,:);
         in_subj_id = subj_id(in_id_good,1);
         in_v_label = v_label(in_id_good,1);
-        in_a_label = a_label(in_id_good,1);
         in_v_score = v_score(in_id_good,1);
+        in_a_label = a_label(in_id_good,1);
         in_a_score = a_score(in_id_good,1);
 
         %% Peform quality check of generated features
@@ -300,7 +301,6 @@ if(exist('v_sig_subjs'))
              v_sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
     end
 end
-
 
 %% ----------------------------------------
 %% format figure (probabilities)
