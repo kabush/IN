@@ -312,14 +312,14 @@ hold on;
 
 %% Individual plots
 if(a_non_cnt>1)
-    for i=1:numel(v_non_subjs)
+    for i=1:numel(a_non_subjs)
         plot(a_non_subjs{i}.stim,a_non_subjs{i}.stim*a_non_subjs{i}.b1+ ...
              a_non_subjs{i}.b0,'Color',proj.param.plot.light_grey,'LineWidth',1);
     end
 end
 
 if(a_sig_cnt>1)
-    for i=1:numel(v_sig_subjs)
+    for i=1:numel(a_sig_subjs)
         plot(a_sig_subjs{i}.stim,a_sig_subjs{i}.stim*a_sig_subjs{i}.b1+ ...
              a_sig_subjs{i}.b0,'Color',proj.param.plot.dark_grey,'LineWidth',2);
     end

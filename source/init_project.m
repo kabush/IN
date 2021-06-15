@@ -121,6 +121,7 @@ proj.path.trg.in = [proj.path.data,proj.path.trg.name,'target_in/'];
 proj.path.mvpa.fmri_ex_gs_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_cls/'];
 proj.path.mvpa.fmri_ex_gm_cls = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_cls/'];
 proj.path.mvpa.fmri_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gm_mdl/'];
+proj.path.mvpa.fmri_ex_gs_perm = [proj.path.data,proj.path.mvpa.name,'fmri_ex_gs_perm/'];
 
 %% Applying EX models to IN and REST components of the experiment
 proj.path.mvpa.fmri_ex_via_ex_gm_mdl = [proj.path.data,proj.path.mvpa.name,'fmri_ex_via_ex_gm_mdl/'];
@@ -288,6 +289,7 @@ proj.param.physio.emg.filt_type = 2;
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
 proj.param.mvpa.n_resamp = 30; 
+proj.param.mvpa.n_perm = 1000;
 
 %% REST parameters (for entrainment calcs)
 proj.param.rest.n_pseudo = 100;
