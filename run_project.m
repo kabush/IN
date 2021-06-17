@@ -98,29 +98,29 @@ init_project;
 % mvpa_fmri_ex_gs_perm; % Permutation testing of GS MVPA classification
 
 %% analysis code here to correct
+analyze_mvpa_fmri_ex_gs_cls_refit_perm;
 
+%% ----------------------------------------
+%% STEP 7: Run quality check (system) on mpva
+check_mvpa_ex_gs_cls;
+check_mvpa_ex_gm_cls;
+check_mvpa_ex_gm_mdl;
 
-% %% ----------------------------------------
-% %% STEP 7: Run quality check (system) on mpva
-% check_mvpa_ex_gs_cls;
-% check_mvpa_ex_gm_cls;
-% check_mvpa_ex_gm_mdl;
-% 
 %% ----------------------------------------
 %% STEP 8: compare GS vs GM features (see Frontiers 2018 supplemental)
 analyze_mvpa_fmri_ex_gs_vs_gm;
-% 
-% %% ----------------------------------------
-% %% STEP 9: Analyze EX Physiology Response (compare to brain state)
-% 
-% %% Analyze SCR (see SciReports 2018 paper)
-% analyze_ex_scr_a;        % predicting arousal from scr 
-% mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
-% mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
-% 
-% %% Analyze EMG (not before published)
-% analyze_ex_emg_v;
-% 
+
+%% ----------------------------------------
+%% STEP 9: Analyze EX Physiology Response (compare to brain state)
+
+%% Analyze SCR (see SciReports 2018 paper)
+analyze_ex_scr_a;        % predicting arousal from scr 
+mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
+mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
+
+%% Analyze EMG (see SciReports 2020 paper)
+analyze_ex_emg_v;
+ 
 % %%  Analyze HR deceleration (see SciReports 2020 paper)
 % % (see github.com/kabush/HR for code)
 % 
@@ -130,11 +130,7 @@ analyze_mvpa_fmri_ex_gs_vs_gm;
 % 
 % %% ----------------------------------------
 % %% STEP 10: Hyperplane encoding analysis (see SciReports 2018 paper)
-% % haufe_fmri_ex_gm; % (global permuation test null hypothesis)
-% 
-% %% ----------------------------------------
-% %% STEP 11: V vs A hyperplane cosine sim (see SciReports 2018 paper)
-% % (TBD)
+% haufe_fmri_ex_gm; % (global permuation test null hypothesis)
 % 
 % %% ********* VERY SLOW ABOVE ***********
 % %% *************************************

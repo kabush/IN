@@ -43,7 +43,7 @@ all_a_cls_acc = [];
 
 %% ----------------------------------------
 %% iterate over study subjects
-for i = 1:1 %numel(subjs)
+for i = 1:numel(subjs)
 
     %% extract subject info
     subj_study = subjs{i}.study;

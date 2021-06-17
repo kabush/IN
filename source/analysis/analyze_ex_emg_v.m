@@ -26,10 +26,26 @@ logger(['Searching EX (Zygomaticus)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 [fstd,fstim,z_mdl_fe,z_mdl_r2,z_mdl_p] = search_ex_emg_v(proj,'zygo');
 
+z_emg_search = struct;
+z_emg_search.fstd = fstd;
+z_emg_search.fstim = fstim;
+z_emg_search.z_mdl_fe = z_mdl_fe;
+z_emg_search.z_mdl_r2 = z_mdl_r2;
+z_emg_search.z_mdl_p = z_mdl_p;
+save([proj.path.analysis.ex_emg_v,'z_emg_search.mat'],'z_emg_search');
+
 logger(['*************************************************'],proj.path.logfile);
 logger(['Searching EX (Corrugator)          '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 [fstd,fstim,c_mdl_fe,c_mdl_r2,c_mdl_p] = search_ex_emg_v(proj,'corr');
+
+c_emg_search = struct;
+c_emg_search.fstd = fstd;
+c_emg_search.fstim = fstim;
+c_emg_search.c_mdl_fe = c_mdl_fe;
+c_emg_search.c_mdl_r2 = c_mdl_r2;
+c_emg_search.c_mdl_p = c_mdl_p;
+save([proj.path.analysis.ex_emg_v,'c_emg_search.mat'],'c_emg_search');
 
 %% ----------------------------------------
 %% Find minimum threshold of  sig. sensitivity
