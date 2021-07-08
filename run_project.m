@@ -91,36 +91,36 @@ init_project;
 % %% ----------------------------------------
 % %% STEP 5: Data-driven Analysis of Classification (see Frontiers 2018 paper)
 % analyze_mvpa_fmri_ex_gs_cls_refit;
-
+% 
 % %% ----------------------------------------
 % %% STEP 6: Permutation Analysis of Classification (see biorXiv 2021 revision).
 % %% Data-driven Analysis of Classification (see Frontiers 2018 paper)
 % mvpa_fmri_ex_gs_perm; % Permutation testing of GS MVPA classification
-
-%% analysis code here to correct
-analyze_mvpa_fmri_ex_gs_cls_refit_perm;
-
-%% ----------------------------------------
-%% STEP 7: Run quality check (system) on mpva
-check_mvpa_ex_gs_cls;
-check_mvpa_ex_gm_cls;
-check_mvpa_ex_gm_mdl;
-
-%% ----------------------------------------
-%% STEP 8: compare GS vs GM features (see Frontiers 2018 supplemental)
-analyze_mvpa_fmri_ex_gs_vs_gm;
-
-%% ----------------------------------------
-%% STEP 9: Analyze EX Physiology Response (compare to brain state)
-
-%% Analyze SCR (see SciReports 2018 paper)
-analyze_ex_scr_a;        % predicting arousal from scr 
-mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
-mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
-
-%% Analyze EMG (see SciReports 2020 paper)
-analyze_ex_emg_v;
- 
+% 
+% %% analysis code here to correct
+% analyze_mvpa_fmri_ex_gs_cls_refit_perm;
+% 
+% %% ----------------------------------------
+% %% STEP 7: Run quality check (system) on mpva
+% check_mvpa_ex_gs_cls;
+% check_mvpa_ex_gm_cls;
+% check_mvpa_ex_gm_mdl;
+% 
+% %% ----------------------------------------
+% %% STEP 8: compare GS vs GM features (see Frontiers 2018 supplemental)
+% analyze_mvpa_fmri_ex_gs_vs_gm;
+% 
+% %% ----------------------------------------
+% %% STEP 9: Analyze EX Physiology Response (compare to brain state)
+% 
+% %% Analyze SCR (see SciReports 2018 paper)
+% analyze_ex_scr_a;        % predicting arousal from scr 
+% mvpa_fmri_ex_gm_rgr_scr; % predicting scr from brain state
+% mvpa_fmri_ex_gm_rgr_a;   % predicting aro from brain state (regr)
+% 
+% %% Analyze EMG (see SciReports 2020 paper)
+% analyze_ex_emg_v;
+%  
 % %%  Analyze HR deceleration (see SciReports 2020 paper)
 % % (see github.com/kabush/HR for code)
 % 
@@ -172,6 +172,7 @@ analyze_ex_emg_v;
 % %% Analyze fMRI REST entrainment (compare to IN)
 % analyze_fmri_rest_entrain;
 % 
+% 
 % %% ============================================================
 % %% PHASE 3: Characterizing mFC function
 % %% ============================================================
@@ -181,12 +182,12 @@ analyze_ex_emg_v;
 % 
 % %% error model (used in evc, cnf & pro)
 % ccm_err_fmri_in_gm;  
-% 
+
 % %% Construct Reinforcement Learning (i.e. EVC) CCM.  State-space
 % %% is constructed from Ray, 2013 (emotion ICs, 18 of 20) in which
 % %% mFC has been excluded (mFC will be the CC space).
-% reshape_ica;
-% 
+reshape_ica;
+
 % %% ************************************
 % %% ************************************
 % %% ********* VERY SLOW BELOW **********

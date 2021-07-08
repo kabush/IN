@@ -53,8 +53,8 @@ for i = 1:numel(subjs)
         load([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat']);
         
         % Identify usable ids
-        good_ids = setdiff(ex_id,subjs{i}.beta.mri_ex_id.nan_ids);
-        %% good_ids = ex_id;  %% ***TICKET*** used during restart
+        %% good_ids = setdiff(ex_id,subjs{i}.beta.mri_ex_id.nan_ids);
+        good_ids = ex_id;  %% ***TICKET*** used during restart
         %% to debug
         % disp(['Nids: ',num2str(numel(goo_ids_ids))]);
 
