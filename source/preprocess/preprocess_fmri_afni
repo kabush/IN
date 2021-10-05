@@ -1,0 +1,691 @@
+#! /bin/csh
+
+# ========================================
+# BUILD PATHS
+# ========================================
+
+## Pull information from the command line
+set cmdpth = $1 
+set project = $2
+
+echo ${cmdpth} # debug
+echo ${project} # debug
+
+## Strip trailing forward slash from homepath
+echo ${cmdpth} | rev | cut -c 2- | rev > ./home_path.txt
+set homepth = `cat ./home_path.txt`
+rm ./home_path.txt
+echo ${homepth} # debug
+
+## Construct tmp path from comand line
+set tmppth = ${homepth}/code/${project}/tmp
+echo ${tmppth} # debug
+
+## Access temp directory
+cd ${tmppth} 
+
+## Load and fix the raw data source path
+set base_rawpth = `cat ./raw_path.txt`
+echo ${base_rawpth} | rev | cut -c 2- | rev > ./fix_raw_path.txt
+set rawpth = `cat ./fix_raw_path.txt`
+echo ${rawpth} # debug
+
+## Load other paths
+set projpth = ${homepth}/code/${project}/
+
+set codepth = ${homepth}/code/${project}/source/preprocess
+set study = `cat ./study.txt`
+set subjs = `cat ./subject.txt`
+
+echo ${projpth} # debug
+echo ${codepth} # debug
+echo ${study} # debug
+echo ${subjs} # debug
+
+## Construct other paths
+set motionpth = ${homepth}/data/motion                 
+set studypth = ${homepth}/data/${project}/mri/mri_clean
+
+echo ${motionpth}
+echo ${studypth}
+
+# ========================================
+# ASSIGN DYNAMIC PARAMETERS
+#
+# Load params from matlab project structure
+#
+# ========================================
+set tasks = (`cat ./tasks.txt`)
+set scans = (`cat ./scans.txt`)
+set rest_scans = (`cat ./rest_scans.txt`)
+set TR = `cat ./tr.txt`
+set slices = `cat ./slices.txt`
+set do_anat = `cat ./do_anat.txt`
+set do_epi = `cat ./do_epi.txt`
+set slice_pattern = `cat ./slice_pattern.txt`
+
+echo ${tasks}
+echo ${scans}
+echo ${rest_scans}
+echo ${TR}  # possible bug? printing 2 instead of 2.0
+echo ${slices}
+echo ${do_anat}
+echo ${do_epi}
+echo ${slice_pattern}
+
+# ========================================
+# COMMENCE PROCESSING
+# ========================================
+
+## Transition to study data directory
+cd ${studypth}
+
+set rootpth = `pwd`
+mkdir regcheck
+
+foreach subj (${subjs})
+
+    mkdir ${rootpth}/${study}_${subj}
+    cd ${rootpth}/${study}_${subj}
+
+	 #copy and rename T1
+	 cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_sT1W_3D_TFE_32chSHC_2_1.nii .
+    mv ${study}_${subj}_sT1W_3D_TFE_32chSHC_2_1.nii ${study}.${subj}.anat.nii
+
+    # ========================================
+    # This mapping from task to raw epi filenames and decision to
+    # copy is hardcoded here.  This is a problem for longterm flexibility.
+    # Need to handle this more flexibly/generically.
+
+    foreach task (${tasks})
+
+	    #copy and rename identify epi
+	    if (${task} == 'identify') then
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Identify1_4_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Identify2_5_1.nii .
+		mv ${study}_${subj}_Identify1_4_1.nii ${study}.${subj}.identify.run1.nii
+		mv ${study}_${subj}_Identify2_5_1.nii ${study}.${subj}.identify.run2.nii
+	    endif
+
+	    #copy and rename rest epi
+	    if (${task} == 'rest') then
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Rest_6_1.nii .
+		mv ${study}_${subj}_Rest_6_1.nii ${study}.${subj}.rest.run1.nii
+	    endif
+
+	    #copy and rename modualte epi
+	    if (${task} == 'modulate') then
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Modulate1_7_1.nii .
+		cp ${rawpth}/${study}/mri/${study}_${subj}/${study}_${subj}_Modulate2_8_1.nii .
+		mv ${study}_${subj}_Modulate1_7_1.nii ${study}.${subj}.modulate.run1.nii
+		mv ${study}_${subj}_Modulate2_8_1.nii ${study}.${subj}.modulate.run2.nii
+	    endif
+
+    end
+
+	 ## Build file structure and copy files into structure
+    mkdir anat
+    mv ${study}.${subj}.anat.nii ./anat/
+
+    foreach task (${tasks})
+
+	    mkdir ${task}
+	    mv ${study}.${subj}.${task}*.nii ./${task}/
+	    cd ${rootpth}/${study}_${subj}/${task}
+
+	    ##account for different scans for different tasks
+	    set task_scans = (${scans})
+	    if (${task} == 'rest') then
+		set task_scans = ${rest_scans}
+	    endif
+	    echo ${task_scans}
+
+	    ##loop over scans of particular task
+	    foreach scan (${task_scans})
+		mkdir ${scan}
+		mv ${study}.${subj}.${task}.${scan}.nii ./${scan}/
+	    end
+
+	    cd ${rootpth}/${study}_${subj}
+
+    end
+
+    ##back to subj directory
+	 cd ${rootpth}/${study}_${subj}
+
+    #save reference to activeSubject directory
+    set activeSubjDir = `pwd`
+    
+    echo ${do_anat}
+
+   if ( ${do_anat} == 'yes' ) then
+
+	    cd anat	
+	
+	    echo "****************************************************************"
+	    echo " Skull striping for ${study}_${subj}"
+	    echo "****************************************************************"	
+
+	    rm ${study}.${subj}.anat.sksp+orig*
+	    3dSkullStrip -input ${study}.${subj}.anat.nii \
+		-prefix ${study}.${subj}.anat.sksp \
+		-orig_vol \
+		-niter 300
+
+	    #skull strip twice to ensure accuracy of skull removal
+	    rm ${study}.${subj}.anat.sksp1+orig*
+	    3dSkullStrip -input ${study}.${subj}.anat.sksp+orig \
+		-prefix ${study}.${subj}.anat.sksp1 \
+		-orig_vol \
+		-niter 300
+
+	    #removes first skull strip
+	    rm ${study}.${subj}.anat.sksp+orig*
+	    3dcopy ${study}.${subj}.anat.sksp1+orig ${study}.${subj}.anat.sksp
+	    rm ${study}.${subj}.anat.sksp1+orig*
+
+			
+	    echo "****************************************************************"
+	    echo " auto_tlrc T1 for ${study}_${subj}"
+	    echo "****************************************************************"
+	    rm ${study}.${subj}.anat.sksp_MNI+tlrc*
+	    rm ${study}.${subj}.anat.mask*
+	    @auto_tlrc -no_ss -suffix _MNI -rmode quintic \
+		-base /home/kabush/atlas/TT/mni152/MNI152_T1_2009c.nii \
+		-input ${study}.${subj}.anat.sksp+orig
+
+	    3dAutomask -prefix ${study}.${subj}.anat.mask ${study}.${subj}.anat.sksp_MNI+tlrc
+
+	    #copy the normalized anat files to the group and reg check
+	    #directories for future visualization
+	    cp ${study}.${subj}.anat.sksp_MNI+tlrc* ${rootpth}/regcheck
+
+	    echo ""
+	    echo "****************************************************************"
+	    echo " creating an fsl segmentation "
+	    echo "****************************************************************"
+
+	    # convert afni to nifti (previously skull stripped image)
+	    rm ${study}.${subj}.anat.sksp.nii*
+
+	    3dresample \
+		    -orient ASR \
+		    -inset ${study}.${subj}.anat.sksp+orig.HEAD \
+		    -prefix ${study}.${subj}.anat.sksp.nii
+
+	    # do GM,WM,CSF segmentation
+	    fast -t 1 -n 3 -H .5 -B -b --nopve -o ${study}.${subj}.anat ${study}.${subj}.anat.sksp.nii
+
+	    # move back to afni format
+	    # NOTE: order of these commands is important. If you change, test first.
+	    rm ${study}.${subj}.anat.seg.float+orig*
+
+	    #added by jc 9-13-10, because for some reason FSL makes the file a .gz
+	    gunzip ${study}.${subj}.anat_seg.nii.gz
+	    3dcopy -verb ${study}.${subj}.anat_seg.nii ${study}.${subj}.anat.seg.float
+	    3drefit -'anat'  ${study}.${subj}.anat.seg.float+orig
+
+	    # correct the data type from float to short so that downstream calls are not confused
+	    # note this is now given fsl stamp
+	    rm ${study}.${subj}.anat.seg.fsl+orig*
+
+	    3dcalc \
+		-datum short \
+		-a ${study}.${subj}.anat.seg.float+orig \
+		-expr a \
+		-prefix ${study}.${subj}.anat.seg.fsl 
+
+	    # remove intermediates
+	    rm -v ${study}.${subj}.anat.nii
+	    rm -v ${study}.${subj}.anat.seg.float+orig* 
+	    rm -v ${study}.${subj}.anat.sksp.nii 
+	    rm -v ${study}.${subj}.anat_seg.nii 
+
+	    echo "****************************************************************"
+	    echo " warp segmented anat into MNI space"
+	    echo "****************************************************************"
+	    rm ${study}.${subj}.anat.seg.fsl.MNI+tlrc*
+
+	    @auto_tlrc -apar ${study}.${subj}.anat.sksp_MNI+tlrc \
+		-no_ss -suffix .MNI -rmode quintic \
+		-input ${study}.${subj}.anat.seg.fsl+orig
+
+	    cd ..
+
+   endif
+
+   echo ${do_epi}
+
+   if ( ${do_epi} == 'yes' ) then	
+	
+	    foreach task (${tasks})
+
+		cd ${activeSubjDir}/${task}
+
+		##account for different scans for different tasks
+		set task_scans = (${scans})
+		if (${task} == 'rest') then
+		    set task_scans = ${rest_scans}
+		endif
+
+		foreach scan (${task_scans})
+
+		    echo *** ${study}.${subj}.${task}.${scan} ***
+
+
+		    echo ${scan}
+		    cd ${activeSubjDir}/${task}/${scan}
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo despiking
+		    echo -------------------------------------------------------------------------------
+		    rm ${study}.${subj}.${task}.${scan}.DSPK*
+		    3dDespike \
+			    -overwrite \
+			    -prefix ${study}.${subj}.${task}.${scan}.DSPK \
+			    ${study}.${subj}.${task}.${scan}.nii
+
+		    rm ${study}.${subj}.${task}.${scan}.nii
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo 3dTshift 
+		    echo -------------------------------------------------------------------------------
+		    rm ${study}.${subj}.${task}.${scan}.tshft+orig*
+		    3dTshift -ignore 1 \
+			    -tzero 0 \
+			    -TR ${TR} \
+			    -tpattern ${slice_pattern} \
+			    -prefix ${study}.${subj}.${task}.${scan}.tshft \
+			    ${study}.${subj}.${task}.${scan}.DSPK+orig
+
+		    rm ${study}.${subj}.${task}.${scan}.DSPK+orig*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo deobliquing
+		    echo -------------------------------------------------------------------------------
+		    rm ${study}.${subj}.${task}.${scan}.deoblique+orig*
+		    3dWarp -deoblique \
+			    -prefix ${study}.${subj}.${task}.${scan}.deoblique \
+			    ${study}.${subj}.${task}.${scan}.tshft+orig
+			    
+		    rm ${study}.${subj}.${task}.${scan}.tshft+orig*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo motion correction
+		    echo -------------------------------------------------------------------------------
+		    rm ${study}.${subj}.${task}.${scan}.motion+orig*
+		    3dvolreg -verbose \
+			    -zpad 1 \
+			    -base ${study}.${subj}.${task}.${scan}.deoblique+orig'[10]' \
+			    -1Dfile ${study}.${subj}.${task}.${scan}.motion.1D \
+			    -prefix ${study}.${subj}.${task}.${scan}.motion \
+			    ${study}.${subj}.${task}.${scan}.deoblique+orig
+
+		    cp ${study}.${subj}.${task}.${scan}.motion.1D ${rootpth}/motioncheck
+		    rm ${study}.${subj}.${task}.${scan}.deoblique+orig*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo making motion regressors
+		    echo -------------------------------------------------------------------------------
+
+		    cd ${tmppth} 
+		    echo ${study} ${subj} ${task} ${scan} > var_names
+
+		    cd ${codepth}
+		    matlab -nodesktop -nosplash -r "home_path='${projpth}';make_motion_regressors;exit"
+
+		    cd ${activeSubjDir}/${task}/${scan}
+		    
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo warping EPI to anat space and normalizing
+		    echo -------------------------------------------------------------------------------
+
+		    cp ${activeSubjDir}/anat/*sksp* .
+		    rm ${study}.${subj}.${task}.${scan}.motion_shft+orig*
+
+		
+		    rm ${study}.${subj}.${task}.${scan}.motion_py+orig*
+		    rm ${study}.${subj}.${task}.${scan}.motion_shft_tlrc_py+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc*
+
+		    ##
+		    ## ***NOTE***: changed big_move to giant_move
+		    ## 
+ 		    align_epi_anat.py -anat ${study}.${subj}.anat.sksp+orig \
+			    -epi ${study}.${subj}.${task}.${scan}.motion+orig \
+			    -epi_base 6 -epi2anat -suffix _py \
+			    -tlrc_apar ${study}.${subj}.anat.sksp_MNI+tlrc \
+			    -anat_has_skull no -volreg off -tshift off -deoblique off -giant_move
+
+
+		    rm ${study}.${subj}.${task}.${scan}.mean* 
+		    3dTstat -prefix ${study}.${subj}.${task}.${scan}.mean ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc
+
+		    #copy the mean image to reg check directory to
+		    #check alignment and normalization
+		    cp ${study}.${subj}.${task}.${scan}.mean+tlrc* ${rootpth}/regcheck
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo regressing out csf and wm
+		    echo -------------------------------------------------------------------------------	
+		    #first create masks for GM, WM, CSF and global signal
+
+		    cd ${activeSubjDir}/anat/
+
+		    rm ${activeSubjDir}/anat/${study}.${subj}.anat.seg.fsl.MNI.3x3x3+tlrc*
+		    3dfractionize -template ${activeSubjDir}/${task}/${scan}/${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc \
+			-input ${study}.${subj}.anat.seg.fsl.MNI+tlrc \
+			-prefix ${activeSubjDir}/anat/${study}.${subj}.anat.seg.fsl.MNI.3x3x3 \
+			-clip .2 -vote
+
+
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.CSF+tlrc*
+		    3dcalc -overwrite \
+			-a ${study}.${subj}.anat.seg.fsl.MNI.3x3x3+tlrc \
+			-expr 'equals(a,1)' \
+			-prefix ${study}.${subj}.anat.seg.fsl.MNI.CSF
+					    
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.GM+tlrc*
+		    3dcalc -overwrite \
+			-a ${study}.${subj}.anat.seg.fsl.MNI.3x3x3+tlrc \
+			-expr 'equals(a,2)' \
+			-prefix ${study}.${subj}.anat.seg.fsl.MNI.GM
+
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.WM+tlrc*
+		    3dcalc -overwrite \
+			-a ${study}.${subj}.anat.seg.fsl.MNI.3x3x3+tlrc \
+			-expr 'equals(a,3)' \
+			-prefix ${study}.${subj}.anat.seg.fsl.MNI.WM
+
+				
+		    # erode 2 voxels around perimeter of WM mask 
+		    # erode 1 voxel from perimeter of CSF mask
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.CSF.erode2+tlrc*
+
+		    # erode first voxel of WM mask
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.WM.erode1+tlrc*
+		    3dcalc -a ${study}.${subj}.anat.seg.fsl.MNI.WM+tlrc \
+			    -b a+i -c a-i -d a+j -e a-j -f a+k -g a-k \
+			    -expr 'a*(1-amongst(0,b,c,d,e,f,g))' \
+			    -prefix ${study}.${subj}.anat.seg.fsl.MNI.WM.erode1
+
+		    # erode second voxel of WM mask
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.WM.erode2+tlrc*
+		    3dcalc -a ${study}.${subj}.anat.seg.fsl.MNI.WM.erode1+tlrc \
+			    -b a+i -c a-i -d a+j -e a-j -f a+k -g a-k \
+			    -expr 'a*(1-amongst(0,b,c,d,e,f,g))' \
+			    -prefix ${study}.${subj}.anat.seg.fsl.MNI.WM.erode2
+
+		    # erode first voxel in CSF mask
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.CSF.erode1+tlrc*
+		    3dcalc -a ${study}.${subj}.anat.seg.fsl.MNI.CSF+tlrc \
+			    -b a+i -c a-i -d a+j -e a-j -f a+k -g a-k \
+			    -expr 'a*(1-amongst(0,b,c,d,e,f,g))' \
+			    -prefix ${study}.${subj}.anat.seg.fsl.MNI.CSF.erode1
+
+		    #remove pre-erosion masks
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.WM.erode1+tlrc*
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.WM+tlrc*
+		    rm ${study}.${subj}.anat.seg.fsl.MNI.CSF+tlrc*
+
+		    #create Global Signal Mask
+		    cd ${activeSubjDir}/${task}/${scan}
+		    rm ./fullbrainmask+tlrc*
+		    3dAutomask -prefix ./fullbrainmask ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc
+
+		    rm *NOISE_REGRESSOR*
+		    #Extract mean timecourses
+		    # CSF
+		    3dROIstats \
+			-mask ${activeSubjDir}/anat/${study}.${subj}.anat.seg.fsl.MNI.CSF.erode1+tlrc \
+			-quiet \
+			./${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc > ./NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.1D
+
+		    # WM
+		    3dROIstats \
+			-mask ${activeSubjDir}/anat/${study}.${subj}.anat.seg.fsl.MNI.WM.erode2+tlrc \
+			-quiet \
+			./${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc > ./NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.1D
+
+		    # Global Signal
+		    3dROIstats \
+			-mask ./fullbrainmask+tlrc \
+			-quiet \
+			./${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc > ./NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.1D
+
+		    echo -------------------------------------------------------------------------------
+		    echo regressing out motion csf and wm
+		    echo -------------------------------------------------------------------------------
+		
+		    #Calculate Derivatives of new noise regressors
+		    rm NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.derivative.1D
+		    1d_tool.py -infile NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.1D -derivative \
+				-write	NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.derivative.1D
+
+		    rm NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.derivative.1D
+		    1d_tool.py -infile NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.1D -derivative \
+				-write	NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.derivative.1D
+
+		    rm NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.derivative.1D
+		    1d_tool.py -infile NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.1D -derivative \
+				-write	NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.derivative.1D
+
+		    #perform regression of WM, CSF, and motion and
+		    #keep residuals (errts = error timeseries)
+		    rm ${study}.${subj}.${task}.${scan}.motion_tlrc_py.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.motion.resid+tlrc*
+		    rm ${activeSubjDir}/${task}/${scan}/${subj}.${task}.${scan}.resid.xmat.1D
+
+		    ##
+		    ## *** REGRESSION MODEL WITH MEAN GLOBAL SIGNAL: USED FOR REST DATA ***
+		    ##
+		    if ( ${task} == 'rest' ) then
+
+			echo -------------------------------------------------------------------------------
+			echo regressing out mean global signal because rest data
+			echo -------------------------------------------------------------------------------
+
+			3dDeconvolve \
+			    -input ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc \
+			    -polort A \
+			    -nfirst 0 \
+			    -num_stimts 30 \
+			    -stim_file 1 ${study}.${subj}.${task}.${scan}.motion.1D'[0]' -stim_base 1 \
+			    -stim_file 2 ${study}.${subj}.${task}.${scan}.motion.1D'[1]' -stim_base 2 \
+			    -stim_file 3 ${study}.${subj}.${task}.${scan}.motion.1D'[2]' -stim_base 3 \
+			    -stim_file 4 ${study}.${subj}.${task}.${scan}.motion.1D'[3]' -stim_base 4 \
+			    -stim_file 5 ${study}.${subj}.${task}.${scan}.motion.1D'[4]' -stim_base 5 \
+			    -stim_file 6 ${study}.${subj}.${task}.${scan}.motion.1D'[5]' -stim_base 6 \
+			    -stim_file 7 ${study}.${subj}.${task}.${scan}.motion.square.1D'[0]' -stim_base 7 \
+			    -stim_file 8 ${study}.${subj}.${task}.${scan}.motion.square.1D'[1]' -stim_base 8 \
+			    -stim_file 9 ${study}.${subj}.${task}.${scan}.motion.square.1D'[2]' -stim_base 9 \
+			    -stim_file 10 ${study}.${subj}.${task}.${scan}.motion.square.1D'[3]' -stim_base 10 \
+			    -stim_file 11 ${study}.${subj}.${task}.${scan}.motion.square.1D'[4]' -stim_base 11 \
+			    -stim_file 12 ${study}.${subj}.${task}.${scan}.motion.square.1D'[5]' -stim_base 12 \
+			    -stim_file 13 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[0]' -stim_base 13 \
+			    -stim_file 14 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[1]' -stim_base 14 \
+			    -stim_file 15 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[2]' -stim_base 15 \
+			    -stim_file 16 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[3]' -stim_base 16 \
+			    -stim_file 17 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[4]' -stim_base 17 \
+			    -stim_file 18 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[5]' -stim_base 18 \
+			    -stim_file 19 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[0]' -stim_base 19 \
+			    -stim_file 20 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[1]' -stim_base 20 \
+			    -stim_file 21 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[2]' -stim_base 21 \
+			    -stim_file 22 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[3]' -stim_base 22 \
+			    -stim_file 23 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[4]' -stim_base 23 \
+			    -stim_file 24 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[5]' -stim_base 24 \
+			    -stim_file 25 NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.1D'[0]' -stim_base 25 \
+			    -stim_file 26 NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.derivative.1D'[0]' -stim_base 26 \
+			    -stim_file 27 NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.1D'[0]' -stim_base 27 \
+			    -stim_file 28 NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.derivative.1D'[0]' -stim_base 28 \
+			    -stim_file 29 NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.1D'[0]' -stim_base 29 \
+			    -stim_file 30 NOISE_REGRESSOR.${task}.${scan}.mean.global.signal.derivative.1D'[0]' -stim_base 30 \
+			    -x1D ${activeSubjDir}/${task}/${scan}/${subj}.${task}.${scan}.resid.xmat.1D \
+			    -x1D_stop 
+
+		    ##
+		    ## *** REGRESSION MODEL WITHOUT GLOBAL SIGNAL: USED FOR TASK DATA ***
+		    ##
+		    else
+
+			echo -------------------------------------------------------------------------------
+			echo NOT regressing out mean global signal because task data
+			echo -------------------------------------------------------------------------------
+
+			3dDeconvolve \
+			    -input ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc \
+			    -polort A \
+			    -nfirst 0 \
+			    -num_stimts 28 \
+			    -stim_file 1 ${study}.${subj}.${task}.${scan}.motion.1D'[0]' -stim_base 1 \
+			    -stim_file 2 ${study}.${subj}.${task}.${scan}.motion.1D'[1]' -stim_base 2 \
+			    -stim_file 3 ${study}.${subj}.${task}.${scan}.motion.1D'[2]' -stim_base 3 \
+			    -stim_file 4 ${study}.${subj}.${task}.${scan}.motion.1D'[3]' -stim_base 4 \
+			    -stim_file 5 ${study}.${subj}.${task}.${scan}.motion.1D'[4]' -stim_base 5 \
+			    -stim_file 6 ${study}.${subj}.${task}.${scan}.motion.1D'[5]' -stim_base 6 \
+			    -stim_file 7 ${study}.${subj}.${task}.${scan}.motion.square.1D'[0]' -stim_base 7 \
+			    -stim_file 8 ${study}.${subj}.${task}.${scan}.motion.square.1D'[1]' -stim_base 8 \
+			    -stim_file 9 ${study}.${subj}.${task}.${scan}.motion.square.1D'[2]' -stim_base 9 \
+			    -stim_file 10 ${study}.${subj}.${task}.${scan}.motion.square.1D'[3]' -stim_base 10 \
+			    -stim_file 11 ${study}.${subj}.${task}.${scan}.motion.square.1D'[4]' -stim_base 11 \
+			    -stim_file 12 ${study}.${subj}.${task}.${scan}.motion.square.1D'[5]' -stim_base 12 \
+			    -stim_file 13 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[0]' -stim_base 13 \
+			    -stim_file 14 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[1]' -stim_base 14 \
+			    -stim_file 15 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[2]' -stim_base 15 \
+			    -stim_file 16 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[3]' -stim_base 16 \
+			    -stim_file 17 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[4]' -stim_base 17 \
+			    -stim_file 18 ${study}.${subj}.${task}.${scan}.motion_pre_t.1D'[5]' -stim_base 18 \
+			    -stim_file 19 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[0]' -stim_base 19 \
+			    -stim_file 20 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[1]' -stim_base 20 \
+			    -stim_file 21 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[2]' -stim_base 21 \
+			    -stim_file 22 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[3]' -stim_base 22 \
+			    -stim_file 23 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[4]' -stim_base 23 \
+			    -stim_file 24 ${study}.${subj}.${task}.${scan}.motion_pre_t_square.1D'[5]' -stim_base 24 \
+			    -stim_file 25 NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.1D'[0]' -stim_base 25 \
+			    -stim_file 26 NOISE_REGRESSOR.${task}.${scan}.mean.CSF.erode1.derivative.1D'[0]' -stim_base 26 \
+			    -stim_file 27 NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.1D'[0]' -stim_base 27 \
+			    -stim_file 28 NOISE_REGRESSOR.${task}.${scan}.mean.WM.erode2.derivative.1D'[0]' -stim_base 28 \
+			    -x1D ${activeSubjDir}/${task}/${scan}/${subj}.${task}.${scan}.resid.xmat.1D \
+			    -x1D_stop 
+		    endif   
+
+		    ##
+		    ## *** REGRESS OUT MOTION AND MEAN SIGNAL (WITH/WITHOUT GLOBAL) ***
+		    ##
+ 		    3dREMLfit -input ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc \
+			    -matrix ${activeSubjDir}/${task}/${scan}/${subj}.${task}.${scan}.resid.xmat.1D \
+			    -automask \
+			    -Rbuck temp.bucket \
+			    -Rerrts ${study}.${subj}.${task}.${scan}.motion.resid				
+
+		    rm *xmat.1D*
+		    rm ${study}.${subj}.${task}.${scan}.motion_py+orig*
+		    rm ${study}.${subj}.${task}.${scan}.motion_tlrc_py+tlrc*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo spatial smoothing
+		    echo -------------------------------------------------------------------------------
+
+		    rm ${study}.${subj}.${task}.${scan}.smooth.resid+tlrc*
+		    3dBlurToFWHM -input ${study}.${subj}.${task}.${scan}.motion.resid+tlrc \
+			    -prefix ${study}.${subj}.${task}.${scan}.smooth.resid \
+			    -FWHM 8.0 \
+			    -automask
+
+		    rm ${study}.${subj}.${task}.${scan}.motion.resid+tlrc*
+
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo detrending
+		    echo ------------------------------------------------------------------------------- 
+		    rm ${study}.${subj}.${task}.${scan}.detrend.resid+tlrc*
+		    3dDetrend -overwrite -verb -polort 2 \
+			    -prefix ${study}.${subj}.${task}.${scan}.detrend.resid \
+			    ${study}.${subj}.${task}.${scan}.smooth.resid+tlrc
+		    rm ${study}.${subj}.${task}.${scan}.smooth.resid+tlrc*
+
+		    rm add_mean+tlrc*
+		    3dcalc -a ${study}.${subj}.${task}.${scan}.detrend.resid+tlrc -b ${study}.${subj}.${task}.${scan}.mean+tlrc \
+			    -expr 'a+b' -prefix add_mean
+
+		    rm ${study}.${subj}.${task}.${scan}.detrend.resid+tlrc*
+		    3drename add_mean+tlrc ${study}.${subj}.${task}.${scan}.detrend.resid 
+		    rm add_mean+tlrc*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo temporal filtering
+		    echo -------------------------------------------------------------------------------
+
+		    rm ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc*
+
+		    #Task data: Use temporal filtering of .0078 high pass (josh) or none (andy's method)
+		    #Resting state data: Use temporal filtering of .1 low pass, .01 high pass
+			    #Alternate flags: -highpass .0078 
+			
+		    3dFourier -prefix ${study}.${subj}.${task}.${scan}.fourier.resid \
+			    -retrend -highpass .0078 ${study}.${subj}.${task}.${scan}.detrend.resid+tlrc
+			    
+		    rm ${study}.${subj}.${task}.${scan}.detrend.resid+tlrc*
+
+		    echo ""
+		    echo -------------------------------------------------------------------------------
+		    echo scaling to percent signal change
+		    echo -------------------------------------------------------------------------------
+		    rm ${study}.${subj}.${task}.${scan}.mean.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.mask.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.min.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.scaled.resid+tlrc*
+
+		    3dTstat -mean -prefix ${study}.${subj}.${task}.${scan}.mean.resid ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc
+		    3dTstat -min -prefix ${study}.${subj}.${task}.${scan}.min.resid ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc
+			
+		    3dAutomask -dilate 1 \
+			    -prefix ${study}.${subj}.${task}.${scan}.mask.resid \
+			    ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc
+
+		    3dcalc -a ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc \
+			    -b ${study}.${subj}.${task}.${scan}.mean.resid+tlrc \
+			    -c ${study}.${subj}.${task}.${scan}.mask.resid+tlrc \
+			    -d ${study}.${subj}.${task}.${scan}.min.resid+tlrc \
+			    -expr "c*((a/b)*100)" \
+			    -float \
+			    -prefix ${study}.${subj}.${task}.${scan}.scaled.resid
+
+			    #-expr "c*(100*((a-b)/abs(b)))" \
+			    #alternative method of scaling: expr "c*(100*((a-b)/abs(b)))"
+
+		    #Generate NIFTI version
+		    3dAFNItoNIFTI ${study}.${subj}.${task}.${scan}.scaled.resid+tlrc
+
+		    #Clean-up
+		    rm ${study}.${subj}.${task}.${scan}.fourier.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.mean.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.mask.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.min.resid+tlrc*
+		    rm ${study}.${subj}.${task}.${scan}.motion+orig*
+		    rm ${study}.${subj}.anat.*
+		    rm fullbrainmask*
+		    rm malldump.*
+	
+		end # end loop through scans
+
+	    end #end loop through tasks
+	
+	    cd ${activeSubjDir}
+
+   endif  #end epi section
+
+end #end loop through subjects
+
+
+
